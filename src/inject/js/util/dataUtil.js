@@ -1,5 +1,5 @@
-var dataUtil = {
-	getGitInfo : function(){
+const dataUtil = {
+	getGitInfo() {
     	var pathName = location.pathname;
     	var urlSplits = pathName.split('/');
     	var owner;
@@ -37,7 +37,7 @@ var dataUtil = {
     		owner, repo, branch, commit, file, pull
     	};
     },
-    getVisibleFlags : function () {
+    getVisibleFlags() {
     	var gitInfo = dataUtil.getGitInfo();
 
     	return {
@@ -45,7 +45,7 @@ var dataUtil = {
     		searchFile : !!(gitInfo.owner && gitInfo.repo)
     	};
     },
-    getSupportedLanguages: function(){
+    getSupportedLanguages() {
     	return [
 			'css',
 			'scss',

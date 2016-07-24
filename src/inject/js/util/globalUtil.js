@@ -1,31 +1,31 @@
-var util = {
-	getUrlForParam : function(params){
-		var queryString = util.getSerializedQueryString();
+const util = {
+	getUrlForParam(params) {
+		const queryString = util.getSerializedQueryString();
 		
 		return !!queryString ? 'https://' + location.hostname + location.pathname + '?' + queryString.join('&')
 			:'https://' + location.hostname + location.pathname;
 	},
-	getSerializedQueryString : function(params){
-		var paramKeys = Object.keys(params || {});
+	getSerializedQueryString(params) {
+		const paramKeys = Object.keys(params || {});
 		if(paramKeys.length === 0){
 			//no query string, just return it
 			return '';
 		}
 
 		//prepare the query string
-		var queryString = [];
-		paramKeys.map( function (paramKey) {
-			var paramVal = params[paramKey];
+		const queryString = [];
+		paramKeys.map( (paramKey) => {
+			const paramVal = params[paramKey];
 			queryString.push(paramKey + '=' + paramVal);
 		});
 		
 		return queryString.join('&');
 	},
-    getUrlVars: function() {
+    getUrlVars() {
         var vars = {},
             hash;
 
-        var url = location.href;
+        const url = location.href;
         if(url.indexOf('?') === -1){
         	//no query string
         	return vars;

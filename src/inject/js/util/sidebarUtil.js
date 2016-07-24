@@ -1,33 +1,33 @@
 import urlUtil from './urlUtil';
 
 var sideBarTool = {
-	onGoToSplitDiffUrl: function(){
+	onGoToSplitDiffUrl() {
 		location.href = urlUtil.getSplitDiffUrl();
 	},
-	onGoToUnifieDiffUrl: function(){
+	onGoToUnifieDiffUrl() {
 		location.href = urlUtil.getUnifiedDiffUrl();
 	},
-    onGoToDiffNonWhitespaceUrl: function() {
+    onGoToDiffNonWhitespaceUrl () {
         location.href = urlUtil.getDiffNonWhitespaceUrl();
     },
-    onGoTogetDiffWithWhitespaceUrl: function() {
+    onGoTogetDiffWithWhitespaceUrl () {
         location.href = urlUtil.getDiffWithWhitespaceUrl();
     },
-    onGoToGetSearchUrl : function(){
+    onGoToGetSearchUrl() {
     	location.href = urlUtil.getSearchUrl();
     },
-    onGoToOwnPRUrl : function(){
+    onGoToOwnPRUrl() {
     	location.href = urlUtil.getOwnPRUrl();
     },
-    onGoToAssignedPRUrl : function(){
+    onGoToAssignedPRUrl() {
     	location.href = urlUtil.getAssignedPRUrl();
     },
-    onGoToMentioningYouPRUrl: function () {
+    onGoToMentioningYouPRUrl() {
     	location.href = urlUtil.getMentioningPRUrl();
     },
-    onSearchRepo: function() {
-    	var formSearch = $('#side-bar-form-search') ; //$(this)
-    	var formSearchData = formSearch.serializeArray().reduce(
+    onSearchRepo() {
+    	const formSearch = $('#side-bar-form-search') ; //$(this)
+    	const formSearchData = formSearch.serializeArray().reduce(
     		(res, formData) => {
     			if(!!formData.value){
     				res[formData.name] = formData.value;

@@ -2,12 +2,13 @@ import dataUtil from './util/dataUtil';
 import sidebarUtil from './util/sidebarUtil';
 import util from './util/globalUtil';
 
+
 chrome.extension.sendMessage({}, (response) => {
     var sideBarContainer;
 
     function _init(){
-        var urlParams = util.getUrlVars();
-        var visibleFlags = dataUtil.getVisibleFlags();
+        const urlParams = util.getUrlVars();
+        const visibleFlags = dataUtil.getVisibleFlags();
         
         
         //empty if needed
@@ -16,16 +17,16 @@ chrome.extension.sendMessage({}, (response) => {
         sideBarContainer = $('<div id="side-bar-advanced-tool" />')
             .appendTo('body')
 
-        $('<h3 id="side-bar-title" />')
+        const titleContainer = $('<h3 id="side-bar-title" />')
             .appendTo(sideBarContainer)
             .text('Github Improved Toolbox')
 
-        var searchBarContainer = $('<form id="side-bar-form-search" />')
+        const searchBarContainer = $('<form id="side-bar-form-search" />')
             .appendTo(sideBarContainer)
             .on('submit', sidebarUtil.onSearchRepo)
             .toggle(visibleFlags.searchFile);
 
-        var cmdContainer = $('<div id="side-bar-cmd-palette" />')
+        const cmdContainer = $('<div id="side-bar-cmd-palette" />')
             .appendTo(sideBarContainer);
 
 
@@ -72,7 +73,7 @@ chrome.extension.sendMessage({}, (response) => {
         //search
         $('<input class="form-control" placeholder="Keyword" name="keyword" />')
             .appendTo(searchBarContainer)
-        var searchOption = $('<select class="form-control" name="type" />')
+        $('<select class="form-control" name="type" />')
             .appendTo(searchBarContainer)
             .append($('<option value="file" />').text('File Content'))
             .append($('<option value="path" />').text('Path Name'))
@@ -86,7 +87,7 @@ chrome.extension.sendMessage({}, (response) => {
         //     .appendTo(searchBarContainer)
 
         //auto comeplete
-        var dataListSearchLanguages = $('<datalist id="search-language" />')
+        const dataListSearchLanguages = $('<datalist id="search-language" />')
             .appendTo(searchBarContainer);
         dataUtil.getSupportedLanguages().map( (language) => {
             $('<option />').attr('value', language).appendTo(dataListSearchLanguages)
@@ -99,8 +100,8 @@ chrome.extension.sendMessage({}, (response) => {
     }
 
     function _eventLoopHandler(){
-        var urlParams = util.getUrlVars();
-        var visibleFlags = dataUtil.getVisibleFlags();
+        const urlParams = util.getUrlVars();
+        const visibleFlags = dataUtil.getVisibleFlags();
 
         sideBarContainer
             .find('#cmd-search-file')
