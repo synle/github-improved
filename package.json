@@ -1,0 +1,26 @@
+{
+  "name": "github-improved",
+  "version": "0.0.1",
+  "description": "Improved the experience of github ui",
+  "main": "index.js",
+  "scripts": {
+  	"start": "gulp",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/synle/github-improved"
+  },
+  "keywords": [
+    "github"
+  ],
+  "author": "Sy Le",
+  "license": "ISC",
+  "homepage": "https://github.com/synle/github-improved",
+  "dependencies": {
+    "zepto": "^1.2.0"
+  },
+  "devDependencies": {
+    "simple-gulp-builder": "github:synle/simple-gulp-builder"
+  }
+}

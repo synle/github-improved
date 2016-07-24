@@ -1,0 +1,24 @@
+#side-bar-advanced-tool {
+  border-right: 2px solid #999;
+  box-shadow: 2px 0 2px -2px #888;
+  position: fixed;
+  width: 250px;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  padding: 10px;
+  background-color: #666;
+  z-index: 50; }
+  #side-bar-advanced-tool button, #side-bar-advanced-tool input, #side-bar-advanced-tool select {
+    display: block;
+    margin-bottom: 10px;
+    width: 100%; }
+  #side-bar-advanced-tool select {
+    height: 40px; }
+  #side-bar-advanced-tool h1, #side-bar-advanced-tool h2, #side-bar-advanced-tool h3, #side-bar-advanced-tool h4, #side-bar-advanced-tool h5 {
+    color: white; }
+
+.container {
+  margin-left: 265px !important;
+  margin-right: 15px !important;
+  width: auto !important; }
