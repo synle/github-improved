@@ -28,7 +28,7 @@ const urlUtil = {
     	const repo = gitInfo.repo;
     	const branch = gitInfo.branch;
 
-    	return 'https://' + location.hostname + '/' + owner + '/' + repo + '/find/' + branch
+    	return `https://${location.hostname}/${owner}/${repo}/find/${branch}`;
     }, 
     getOwnPRUrl : function(){
     	return 'https://github.com/pulls';
@@ -63,8 +63,19 @@ const urlUtil = {
 
     	const searchQueryString = util.getSerializedQueryString(urlParams);
 
-    	return 'https://' + location.hostname + '/' + owner + '/' + repo + '/search?' + searchQueryString;
-    }
+    	return `https://${location.hostname}/${owner}/${repo}/search?${searchQueryString}`;
+    },
+    getCommitByAuthorUrl(user){
+    	return `https://github.com/${user}`;
+    },
+	getUserProfileUrl(user){
+		const gitInfo = dataUtil.getGitInfo();
+    	const owner = gitInfo.owner;
+    	const repo = gitInfo.repo;
+    	const branch = gitInfo.branch;
+
+    	return `https://github.com/${owner}/${repo}/commits/${branch}?author=${user}`;
+	}
 }
 
 export default urlUtil;

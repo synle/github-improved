@@ -1,4 +1,6 @@
-$width : 250px;
+$width : 300px;
+$margin-offset: 10px;
+$padding-offset: 10px;
 
 #side-bar-advanced-tool{
 	border-right:2px solid #999;
@@ -9,8 +11,9 @@ $width : 250px;
 	top:0;
 	bottom:0;
 	padding:10px;
-	background-color: #666;
 	z-index:50;
+	overflow-y:auto;
+	background-color: white;
 
 	& button, & input, & select{
 		display:block;
@@ -22,11 +25,104 @@ $width : 250px;
 		height:40px;
 	}
 
-
-	& h1, & h2, & h3, & h4, & h5{
-		color:white;
+	//margin
+	.margin-left0{
+		margin-left: $margin-offset;
 	}
 
+	.margin-right0{
+		margin-right: $margin-offset;
+	}
+
+	.margin-bottom0{
+		margin-bottom: $margin-offset;
+	}
+
+	.margin-top0{
+		margin-top: $margin-offset;
+	}
+
+	.margin-side0{
+		margin-left: $margin-offset;
+		margin-right: $margin-offset;
+	}
+
+	.margin-vert0{
+		margin-top: $margin-offset;
+		margin-bottom: $margin-offset;
+	}
+
+	//padding
+	.padding-left0{
+		padding-left: $padding-offset;
+	}
+
+	.padding-right0{
+		padding-right: $padding-offset;
+	}
+
+	.padding-bottom0{
+		padding-bottom: $padding-offset;
+	}
+
+	.padding-top0{
+		padding-top: $padding-offset;
+	}
+
+	.padding-side0{
+		padding-left: $padding-offset;
+		padding-right: $padding-offset;
+	}
+
+	.padding-vert0{
+		padding-top: $padding-offset;
+		padding-bottom: $padding-offset;
+	}
+
+	//flex
+	.flex-row{
+		display:flex;
+		flex-direction: row;
+	}
+
+	.flex-column{
+		display:flex;
+		flex-direction: column;
+	}
+
+	.flex-grow1{
+		flex-grow: 1;
+	}
+
+	.flex-shrink0{
+		flex-shrink: 0;
+	}
+
+	.ta-right{
+		text-align: right;
+	}
+
+	.ta-center{
+		text-align: center;
+	}
+
+	//panel craps
+	.panel{
+		&.panel-default .panel-heading{
+			background-color: #f5f5f5;
+		}
+
+		.panel-heading{
+			border: 1px solid #ddd;
+			@extend .padding-side0;
+		}
+
+		.panel-body{
+			border: 1px solid #ddd;
+			@extend .padding-side0;
+		}
+	}
+	
 }
 
 .container{

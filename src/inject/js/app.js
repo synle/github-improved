@@ -1,7 +1,8 @@
 import dataUtil from './util/dataUtil';
+import urlUtil from './util/dataUtil';
 import sidebarUtil from './util/sidebarUtil';
 import util from './util/globalUtil';
-
+import ghApiUtil from './util/apiUtil';
 
 chrome.extension.sendMessage({}, (response) => {
     var sideBarContainer;
@@ -9,7 +10,7 @@ chrome.extension.sendMessage({}, (response) => {
     function _init(){
         const urlParams = util.getUrlVars();
         const visibleFlags = dataUtil.getVisibleFlags();
-        
+        const gitInfo = dataUtil.getGitInfo();
         
         //empty if needed
         $('#side-bar-advanced-tool').remove();
@@ -17,7 +18,7 @@ chrome.extension.sendMessage({}, (response) => {
         sideBarContainer = $('<div id="side-bar-advanced-tool" />')
             .appendTo('body')
 
-        const titleContainer = $('<h3 id="side-bar-title" />')
+        const titleContainer = $('<h3 id="side-bar-title ta-center" />')
             .appendTo(sideBarContainer)
             .text('Github Improved Toolbox')
 
@@ -28,6 +29,9 @@ chrome.extension.sendMessage({}, (response) => {
 
         const cmdContainer = $('<div id="side-bar-cmd-palette" />')
             .appendTo(sideBarContainer);
+
+        const repoProfileContainer = $('<div id="side-bar-repo-info" />')
+        	.appendTo(sideBarContainer);
 
 
 
@@ -94,9 +98,56 @@ chrome.extension.sendMessage({}, (response) => {
         });
 
 
-        $('<button class="btn btn-sm" type="submit" />')
+        $('<button class="btn btn-sm btn-primary" type="submit" />')
             .appendTo(searchBarContainer)
             .text('Search')
+
+
+
+        //repo info
+        //populate the contributor
+    	if(!!gitInfo.owner && !!gitInfo.repo){
+    		repoProfileContainer.empty();
+
+    		const repoContribContainer = $(`
+				<div class="panel panel-default">
+				  <div class="panel-heading">
+				    <h3>Contributors</h3>
+				  </div>
+				  <div class="panel-body"></div>
+				</div>
+    			`)
+    			.appendTo(repoProfileContainer)
+    			.find('.panel-body')
+    			.hide();
+
+    		const repoInstance = ghApiUtil.getRepo(gitInfo.owner, gitInfo.repo);
+	        repoInstance.getContributors().then(({data : contributors}) => {
+	        	contributors.map( (contributor) => {
+	        		const author = contributor.author;
+	        		const totalContributions = contributor.total;
+	        		const commitByAuthorUrl = urlUtil.getCommitByAuthorUrl( author.login );
+	        		const userProfileUrl = urlUtil.getUserProfileUrl( author.login );
+
+	        		// avatar_url
+	        		$('<div class="flex-row" />')
+	        			.append(`
+	        				<div class="flex-grow1">
+	        					<a href="${userProfileUrl}">${author.login}</a>
+	        					<a class="margin-left0" href="${commitByAuthorUrl}" title="View commits made by ${author.login}"><svg aria-hidden="true" class="octicon octicon-history" heigithubApit="16" version="1.1" viewBox="0 0 14 16" width="14"><path d="M8 13H6V6h5v2H8v5zM7 1C4.81 1 2.87 2.02 1.59 3.59L0 2v4h4L2.5 4.5C3.55 3.17 5.17 2.3 7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-.34.03-.67.09-1H.08C.03 7.33 0 7.66 0 8c0 3.86 3.14 7 7 7s7-3.14 7-7-3.14-7-7-7z"></path></svg></a>
+        					</div>
+    					`)
+	        			.append(`<span class="flex-shrink0">${totalContributions}</span>`)
+	        			.appendTo(repoContribContainer);
+	        	});
+	        })
+    	}
+
+
+    	//event
+    	$(document).on('click', '.panel-heading', function(){
+    		$(this).closest('.panel').find('.panel-body').toggle();
+    	})
     }
 
     function _eventLoopHandler(){
