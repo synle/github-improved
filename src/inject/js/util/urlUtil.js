@@ -1,5 +1,5 @@
-import dataUtil from './dataUtil';
-import util from './globalUtil';
+import dataUtil from '@src/util/dataUtil';
+import util from '@src/util/globalUtil';
 
 const urlUtil = {
     getDiffNonWhitespaceUrl: function() {
@@ -75,6 +75,16 @@ const urlUtil = {
     },
 	getUserProfileUrl(user){
     	return `https://${location.hostname}/${user}`;
+	},
+	getCommitUrlBySha(sha){
+		const gitInfo = dataUtil.getGitInfo();
+    	const owner = gitInfo.owner;
+    	const repo = gitInfo.repo;
+
+
+    	// https://github.com/relateiq/riq/commit/66628ed91063c6cc3a7a39778097e7d1e38de029
+    	// https://github.com/relateiq/riq/commit/857f318e082d2cfd2aa1548e1bd23d73a15fcaed
+		return `https://${location.hostname}/${owner}/${repo}/commit/${sha}`;
 	}
 }
 

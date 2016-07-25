@@ -1,4 +1,4 @@
-import urlUtil from './urlUtil';
+import urlUtil from '@src/util/urlUtil';
 
 var sideBarTool = {
 	onGoToSplitDiffUrl() {

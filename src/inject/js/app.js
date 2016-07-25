@@ -1,8 +1,14 @@
-import dataUtil from './util/dataUtil';
-import urlUtil from './util/urlUtil';
-import sidebarUtil from './util/sidebarUtil';
-import util from './util/globalUtil';
-import ghApiUtil from './util/apiUtil';
+//external
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+//internal
+import dataUtil from '@src/util/dataUtil';
+import urlUtil from '@src/util/urlUtil';
+import sidebarUtil from '@src/util/sidebarUtil';
+import util from '@src/util/globalUtil';
+import ghApiUtil from '@src/util/apiUtil';
+import CommitBox from '@src/component/commitBox';
 
 chrome.extension.sendMessage({}, (response) => {
     var sideBarContainer;
@@ -121,6 +127,7 @@ chrome.extension.sendMessage({}, (response) => {
 				</div>
     			`)
     			.appendTo(repoProfileContainer)
+    			.toggle(visibleFlags.contributor)
     			.find('.panel-body')
     			.hide();
 	        repoInstance.getContributors().then(({data : contributors}) => {
@@ -144,52 +151,18 @@ chrome.extension.sendMessage({}, (response) => {
 	        			.appendTo(repoContribContainer);
 	        	});
 	        });
-
-
-	        //commits
-    		const commitContainer = $(`
-				<div id="side-bar-commit-container" class="panel panel-primary">
-				  <div class="panel-heading">
-				    <h4>Commits</h4>
-				  </div>
-				  <div class="panel-body"></div>
-				</div>
-    			`)
-    			.appendTo(repoProfileContainer)
-    			.find('.panel-body')
-    			.hide();
-
-			const listCommitPayload = {
-				// sha
-				// path
-				// author
-			};
-			//filter out by file name if needed
-			if(!!gitInfo.file){
-				listCommitPayload.path = gitInfo.file.substr(gitInfo.file.indexOf('/'));
-
-			}
-	        repoInstance.listCommits(listCommitPayload).then(({data : commits}) => {
-	        	commits.map((repoCommit) => {
-	        		const author = repoCommit.author;
-	        		const commit = repoCommit.commit;
-
-	        		const shortCommitMessage = commit.message.substr(0, 50);
-
-	        		$('<div class="side-bar-commit-logs flex-column border-bottom"/>')
-	        			.append(`
-        				<a href="${commit.url}"
-    					class="flex-grow1 tooltipped tooltipped-s"
-    					aria-label="${commit.message}">
-	        					${shortCommitMessage}
-    					</a>
-    					<span>${commit.author.date}</span>
-						<strong>${commit.author.name}</strong>
-    					`)
-	        			.appendTo(commitContainer);
-	        	});
-	        })
     	}
+
+
+		//commits box
+		$('<div id="side-bar-commit-container" />')
+			.appendTo(repoProfileContainer)
+
+		ReactDOM.render(
+			<CommitBox></CommitBox>,
+			document.getElementById('side-bar-commit-container')
+		);
+
 
 
     	//event

@@ -34,7 +34,8 @@ const dataUtil = {
 
     	return {
     		differ : !!(gitInfo.owner && gitInfo.repo) && !!(gitInfo.commit || gitInfo.pull),
-    		searchFile : !!(gitInfo.owner && gitInfo.repo)
+    		searchFile : !!(gitInfo.owner && gitInfo.repo),
+    		contributor : !!(gitInfo.owner && gitInfo.repo && !gitInfo.commit && !gitInfo.file && !gitInfo.pull)
     	};
     },
     getSupportedLanguages() {

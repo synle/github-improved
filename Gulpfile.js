@@ -14,8 +14,12 @@ var JS_CONFIG  = [ 'src/inject/js/app.js' ];
 var BUNDLED_JS_NAME = 'app.js';
 var JS_VENDOR_FILES = ['node_modules/zepto/dist/zepto.min.js'];
 //config for transformation
-var ALIASIFY_CONFIG =  {};
-var BABELIFY_CONFIG = { presets: [ "es2015" ] };
+var ALIASIFY_CONFIG =  {
+	"replacements": {
+      "@src/(\\w+)": "./src/inject/js/$1"
+    }
+};
+var BABELIFY_CONFIG = { presets: [ "es2015", "react" ] };
 
 
 //styles

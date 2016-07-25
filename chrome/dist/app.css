@@ -60,10 +60,18 @@
     text-align: center; }
   #side-bar-advanced-tool .panel.panel-default .panel-heading {
     background-color: #f5f5f5; }
+  #side-bar-advanced-tool .panel.panel-primary .panel-heading {
+    background-color: #4078c0;
+    color: white; }
   #side-bar-advanced-tool .panel .panel-heading {
     border: 1px solid #ddd; }
   #side-bar-advanced-tool .panel .panel-body {
     border: 1px solid #ddd; }
+  #side-bar-advanced-tool border-bottom {
+    border-bottom: 1px solid #ddd; }
+  #side-bar-advanced-tool .tooltipped::after {
+    width: 100% !important;
+    word-break: break-word !important; }
 
 .container {
   margin-left: 315px !important;
