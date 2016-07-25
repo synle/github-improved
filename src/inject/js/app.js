@@ -1,9 +1,10 @@
 //external
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux'
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 
-import AppStore from '@src/store/appStore.js';
+import AppReducer from '@src/store/appStore.js';
 
 //internal
 import dataUtil from '@src/util/dataUtil';
@@ -13,6 +14,8 @@ import util from '@src/util/globalUtil';
 import ghApiUtil from '@src/util/apiUtil';
 import CommitBox from '@src/component/commitBox';
 
+const AppStore = createStore( AppReducer );
+
 chrome.extension.sendMessage({}, (response) => {
     var sideBarContainer;
 
@@ -20,6 +23,11 @@ chrome.extension.sendMessage({}, (response) => {
         const urlParams = util.getUrlVars();
         const visibleFlags = dataUtil.getVisibleFlags();
         const gitInfo = dataUtil.getGitInfo();
+
+        AppStore.dispatch({
+            type: 'REFRESH',
+            value : gitInfo
+        })
 
         //empty if needed
         $('#side-bar-advanced-tool').remove();
@@ -209,7 +217,58 @@ chrome.extension.sendMessage({}, (response) => {
             clearInterval(readyStateCheckInterval);
             _init();
 
-            setInterval(_eventLoopHandler, 3000);
+            // setInterval(_eventLoopHandler, 3000);
+
+            //update self every 3 seconds
+            setInterval( function(){
+            	const gitInfo = dataUtil.getGitInfo();
+            	const newState = {
+            		owner: gitInfo.owner,
+            		repo: gitInfo.repo,
+            		branch: gitInfo.branch,
+            		commit: gitInfo.commit,
+            		file: gitInfo.file,
+            		pull: gitInfo.pull,
+                    commits: []
+            	}
+
+            	newState.repoInstance = (!!gitInfo.owner && !!gitInfo.repo) ? ghApiUtil.getRepo(gitInfo.owner, gitInfo.repo)
+            		: null;
+
+
+            	if(!!newState.repoInstance && typeof newState.repoInstance.listCommits === 'function'){
+            		const listCommitPayload = {
+            			// sha
+            			// path
+            			// author
+            		};
+            		//filter out by file name if needed
+            		if(!!gitInfo.file){
+            			listCommitPayload.path = newState.file.substr(newState.file.indexOf('/'));
+            		}
+            		newState.repoInstance.listCommits(listCommitPayload).then(({data : commits}) => {
+            			newState.commits = commits;
+                        console.log('re-sync the state 1.1', newState);
+                        AppStore.dispatch({
+            				type: 'REFRESH',
+            				value : newState
+            			});
+            		}, function(){
+                        console.log('re-sync the state 1.2', newState);
+                        AppStore.dispatch({
+            				type: 'REFRESH',
+            				value : newState
+            			});
+                    })
+            	} else {
+            		//no owner and repo ready, just set up empty commits
+                    console.log('re-sync the state 2', newState);
+                    AppStore.dispatch({
+                        type: 'REFRESH',
+                        value : newState
+                    });
+            	}
+            }, 3000);
         }
     }, 10);
 });

@@ -23,9 +23,11 @@ import _ from 'lodash';
 
 const CommitBox = React.createClass({
   render: function() {
-  	if(!!AppStore.owner && !!AppStore.repo){
-        debugger;
+     console.log('render is called with commit box', this.props);
 
+    let bodyDom;
+  	if(!!this.props.owner && !!this.props.repo && _.size(this.props.commits) > 0){
+        bodyDom = <div>Test...</div>;
 		// const bodyDom = this.props.commits.map((repoCommit) => {
 		// 	const author = repoCommit.author;
 		// 	const commit = repoCommit.commit;
@@ -39,27 +41,30 @@ const CommitBox = React.createClass({
 		// 		</div>
 		// 	);
 		// })
-
-  		return (
-			<div id="side-bar-commit-container" className="panel panel-primary">
-				<div className="panel-heading">
-					<h4>Commits</h4>
-				</div>
-				<div className="panel-body">
-					{bodyDom}
-				</div>
-			</div>
-	    );
   	} else {
-  		return null;
+  		bodyDom = <div>Not Available Here</div>
   	}
+
+
+    return (
+        <div id="side-bar-commit-container" className="panel panel-primary">
+            <div className="panel-heading">
+                <h4>Commits</h4>
+            </div>
+            <div className="panel-body">
+                {bodyDom}
+            </div>
+        </div>
+    );
   }
 });
 
 
 const mapStateToProps = function(state) {
   return {
-    commits : _.get( state, 'commits', []);
+    commits : _.get( state, 'commits', []),
+    owner : _.get( state, 'owner'),
+    repo : _.get( state, 'repo')
   };
 }
 

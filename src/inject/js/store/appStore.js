@@ -28,52 +28,11 @@ const AppReducer = (state, action) => {
 	if(action.type === 'REFRESH'){
 		state = action.value;
 	}
+
+    console.log('reduced called with', action.type, state);
+    return state;
 }
 
-const AppStore = createStore(AppReducer);
+// const AppStore = createStore(AppReducer);
 
-
-//update self every 3 seconds
-setInterval( function(){
-	const gitInfo = dataUtil.getGitInfo();
-	const newState = {
-		owner: gitInfo.owner,
-		repo: gitInfo.repo,
-		branch: gitInfo.branch,
-		commit: gitInfo.commit,
-		file: gitInfo.file,
-		pull: gitInfo.pull
-	}
-
-	newState.repoInstance = (!!gitInfo.owner && !!gitInfo.repo) ? ghApiUtil.getRepo(gitInfo.owner, gitInfo.repo)
-		: null;
-
-
-	if(!!AppStore.repoInstance){
-		const listCommitPayload = {
-			// sha
-			// path
-			// author
-		};
-		//filter out by file name if needed
-		if(!!gitInfo.file){
-			listCommitPayload.path = gitInfo.file.substr(gitInfo.file.indexOf('/'));
-		}
-		AppStore.repoInstance.listCommits(listCommitPayload).then(({data : commits}) => {
-			newState.commits = commits;
-			AppStore.dispatch({
-				type: 'REFRESH',
-				value : newState
-			});
-		})
-	} else {
-		//no owner and repo ready, just set up empty commits
-		newState.commits = [];
-		AppStore.dispatch({
-			type: 'REFRESH',
-			value : newState
-		});
-	}
-}, 3000);
-
-export default AppStore;
+export default AppReducer;
