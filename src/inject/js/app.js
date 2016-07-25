@@ -72,30 +72,8 @@ chrome.extension.sendMessage({}, (response) => {
 		);
 
 
-        //search
-        $('<input class="form-control" placeholder="Keyword" name="keyword" />')
-            .appendTo(searchBarContainer)
-        $('<select class="form-select" name="type" />')
-            .appendTo(searchBarContainer)
-            .append($('<option value="file" />').text('File Content'))
-            .append($('<option value="path" />').text('Path Name'))
-            .append($('<option value="file,path" />').text('File and Content'))
+        //search form
 
-
-        $('<input class="form-control" placeholder="Language" name="language" list="search-language" />')
-            .appendTo(searchBarContainer)
-
-        //auto comeplete
-        const dataListSearchLanguages = $('<datalist id="search-language" />')
-            .appendTo(searchBarContainer);
-        dataUtil.getSupportedLanguages().map( (language) => {
-            $('<option />').attr('value', language).appendTo(dataListSearchLanguages)
-        });
-
-
-        $('<button class="btn btn-sm btn-primary" type="submit" />')
-            .appendTo(searchBarContainer)
-            .text('Search')
 
         //diff option box
         ReactDOM.render(
@@ -143,6 +121,10 @@ chrome.extension.sendMessage({}, (response) => {
     	$(document).on('click', '.panel-heading', function(){
     		$(this).closest('.panel').find('.panel-body').toggle();
     	})
+
+
+        //trigger the first refresh
+        _refrehState();
     }
 
     function _eventLoopHandler(){
@@ -229,7 +211,7 @@ chrome.extension.sendMessage({}, (response) => {
             clearInterval(readyStateCheckInterval);
             _init();
 
-            //update self every 3 seconds
+            //retry - update self every 3 seconds
             setInterval(_refrehState , 3000);
         }
     }, 10);
