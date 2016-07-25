@@ -3,7 +3,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+import Q from 'q';
 
+//reducer
 import AppReducer from '@src/store/appStore.js';
 
 //internal
@@ -12,8 +14,13 @@ import urlUtil from '@src/util/urlUtil';
 import sidebarUtil from '@src/util/sidebarUtil';
 import util from '@src/util/globalUtil';
 import ghApiUtil from '@src/util/apiUtil';
-import CommitBox from '@src/component/commitBox';
 
+//component
+import CommitBox from '@src/component/commitBox';
+import ContributorBox from '@src/component/contributorBox';
+
+
+//create the store
 const AppStore = createStore( AppReducer );
 
 chrome.extension.sendMessage({}, (response) => {
@@ -119,59 +126,24 @@ chrome.extension.sendMessage({}, (response) => {
             .appendTo(searchBarContainer)
             .text('Search')
 
-        //repo info
-        //populate the contributor
-    	if(!!gitInfo.owner && !!gitInfo.repo){
-    		repoProfileContainer.empty();
 
-    		const repoInstance = ghApiUtil.getRepo(gitInfo.owner, gitInfo.repo);
-
-    		//contributors
-    		const repoContribContainer = $(`
-				<div id="side-bar-contributor-container" class="panel panel-primary">
-				  <div class="panel-heading">
-				    <h4>Contributors</h4>
-				  </div>
-				  <div class="panel-body"></div>
-				</div>
-    			`)
-    			.appendTo(repoProfileContainer)
-    			.toggle(visibleFlags.contributor)
-    			.find('.panel-body')
-    			.hide();
-	        repoInstance.getContributors().then(({data : contributors}) => {
-	        	contributors.map( (contributor) => {
-	        		const author = contributor.author;
-	        		const totalContributions = contributor.total;
-	        		const commitByAuthorUrl = urlUtil.getCommitByAuthorUrl( author.login );
-	        		const userProfileUrl = urlUtil.getUserProfileUrl( author.login );
-
-	        		// avatar_url
-	        		$('<div class="flex-row" />')
-	        			.append(`
-	        				<div class="flex-grow1">
-	        					<a href="${userProfileUrl}">${author.login}</a>
-	        					<a class="margin-left0 tooltipped tooltipped-s" href="${commitByAuthorUrl}" aria-label="${author.login}'s commits">
-	        						<svg aria-hidden="true" class="octicon octicon-history" heigithubApit="16" version="1.1" viewBox="0 0 14 16" width="14"><path d="M8 13H6V6h5v2H8v5zM7 1C4.81 1 2.87 2.02 1.59 3.59L0 2v4h4L2.5 4.5C3.55 3.17 5.17 2.3 7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-.34.03-.67.09-1H.08C.03 7.33 0 7.66 0 8c0 3.86 3.14 7 7 7s7-3.14 7-7-3.14-7-7-7z"></path></svg>
-        						</a>
-        					</div>
-    					`)
-	        			.append(`<span class="flex-shrink0">${totalContributions}</span>`)
-	        			.appendTo(repoContribContainer);
-	        	});
-	        });
-    	}
+        //contributor box
+        ReactDOM.render(
+            <Provider store={AppStore}>
+                <ContributorBox></ContributorBox>
+            </Provider>,
+            $('<div id="side-bar-contributor-box" />')
+    			.appendTo(repoProfileContainer)[0]
+		);
 
 
 		//commits box
-		$('<div id="side-bar-commit-container" />')
-			.appendTo(repoProfileContainer)
-
 		ReactDOM.render(
             <Provider store={AppStore}>
                 <CommitBox></CommitBox>
             </Provider>,
-			document.getElementById('side-bar-commit-container')
+            $('<div id="side-bar-commit-box" />')
+    			.appendTo(repoProfileContainer)[0]
 		);
 
 
@@ -215,8 +187,6 @@ chrome.extension.sendMessage({}, (response) => {
             clearInterval(readyStateCheckInterval);
             _init();
 
-            // setInterval(_eventLoopHandler, 3000);
-
             //update self every 3 seconds
             setInterval( function(){
             	const gitInfo = dataUtil.getGitInfo();
@@ -227,20 +197,18 @@ chrome.extension.sendMessage({}, (response) => {
             		commit: gitInfo.commit,
             		file: gitInfo.file,
             		pull: gitInfo.pull,
-                    commits: []
+                    commits: [],
+                    contributors: []
             	}
 
             	newState.repoInstance = (!!gitInfo.owner && !!gitInfo.repo) ? ghApiUtil.getRepo(gitInfo.owner, gitInfo.repo)
             		: null;
 
 
-                const _dispatchRefresh = () => {
-                    AppStore.dispatch({
-                        type: 'REFRESH',
-                        value : newState
-                    });
-                }
+                const deferredCommits = Q.defer();
+                const deferredContribs = Q.defer();
 
+                //list commits defer
             	if(!!newState.repoInstance && typeof newState.repoInstance.listCommits === 'function'){
             		const listCommitPayload = {
             			// sha
@@ -253,12 +221,36 @@ chrome.extension.sendMessage({}, (response) => {
             		}
             		newState.repoInstance.listCommits(listCommitPayload).then(({data : commits}) => {
             			newState.commits = commits;
-                        _dispatchRefresh();
-            		}, _dispatchRefresh)
+                        deferredCommits.resolve();
+            		}, deferredCommits.resolve);
             	} else {
             		//no owner and repo ready, just set up empty commits
-                    _dispatchRefresh();
+                    deferredCommits.resolve();
             	}
+
+
+                //list contrib
+            	if(!!newState.repoInstance && typeof newState.repoInstance.getContributors === 'function'){
+            		newState.repoInstance.getContributors().then(({data : contributors}) => {
+            			newState.contributors = contributors;
+                        deferredContribs.resolve();
+            		}, deferredContribs.resolve);
+            	} else {
+            		//no owner and repo ready, just set up empty commits
+                    deferredContribs.resolve();
+            	}
+
+
+                //when everything is done, let's refresh the ui
+                Q.allSettled([
+                    deferredCommits.promise,
+                    deferredContribs.promise
+                ]).then( function(){
+                    AppStore.dispatch({
+                        type: 'REFRESH',
+                        value : newState
+                    });
+                });
             }, 3000);
         }
     }, 10);

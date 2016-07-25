@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -37,7 +36,7 @@ const CommitBox = React.createClass({
 
 
     return (
-        <div id="side-bar-commit-container" className="panel panel-primary">
+        <div className="panel panel-primary">
             <div className="panel-heading">
                 <h4>Commits</h4>
             </div>

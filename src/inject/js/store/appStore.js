@@ -21,7 +21,8 @@ const AppReducer = (state, action) => {
 			file : null,
 			pull : null,
 			repoInstance : null, //api instance
-			commits : null//list of relavant commits
+			commits : null,//list of relavant commits
+            contributors : null// list of contributors
 		}
 	}
 

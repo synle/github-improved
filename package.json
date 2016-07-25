@@ -20,6 +20,7 @@
   "dependencies": {
     "github-api": "^2.3.0",
     "lodash": "~4.14.0",
+    "q": "~1.4.1",
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
     "react-redux": "^4.4.5",
