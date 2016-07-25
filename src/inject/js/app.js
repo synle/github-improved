@@ -20,6 +20,7 @@ import CommitBox from '@src/component/commitBox';
 import ContributorBox from '@src/component/contributorBox';
 import DiffOptionBox from '@src/component/diffOptionBox';
 import PrNavigation from '@src/component/prNavigation';
+import BtnQuickSearchFile from '@src/component/btnQuickSearchFile';
 
 
 //create the store
@@ -62,11 +63,13 @@ chrome.extension.sendMessage({}, (response) => {
 
 
         //whitespace diff
-        $('<button id="cmd-search-file" class="btn btn-sm" />')
-            .appendTo(cmdContainer)
-            .text('Search File')
-            .on('click', sidebarUtil.onGoToGetSearchUrl)
-            .toggle(visibleFlags.searchFile)
+        ReactDOM.render(
+            <Provider store={AppStore}>
+                <BtnQuickSearchFile></BtnQuickSearchFile>
+            </Provider>,
+            $('<div id="cmd-search-file" />')
+    			.appendTo(repoProfileContainer)[0]
+		);
 
 
         //search
@@ -103,6 +106,17 @@ chrome.extension.sendMessage({}, (response) => {
     			.appendTo(repoProfileContainer)[0]
 		);
 
+        //pr navigation
+        ReactDOM.render(
+            <Provider store={AppStore}>
+                <PrNavigation></PrNavigation>
+            </Provider>,
+            $('<div id="side-bar-pr-navigation" />')
+    			.appendTo(repoProfileContainer)[0]
+		);
+
+
+
 
         //contributor box
         ReactDOM.render(
@@ -136,13 +150,78 @@ chrome.extension.sendMessage({}, (response) => {
         const visibleFlags = dataUtil.getVisibleFlags();
 
         sideBarContainer
-            .find('#cmd-search-file')
-            .off('click')
-            .toggle(visibleFlags.searchFile)
-
-        sideBarContainer
             .find('#side-bar-form-search')
             .toggle(visibleFlags.searchFile)
+    }
+
+    function _refrehState(){
+        const urlParams = util.getUrlVars();
+        const gitInfo = dataUtil.getGitInfo();
+        const newState = {
+            urlParams : urlParams,
+            owner: gitInfo.owner,
+            repo: gitInfo.repo,
+            branch: gitInfo.branch,
+            commit: gitInfo.commit,
+            file: gitInfo.file,
+            pull: gitInfo.pull,
+            commits: [],
+            contributors: []
+        }
+
+        newState.repoInstance = (!!gitInfo.owner && !!gitInfo.repo) ? ghApiUtil.getRepo(gitInfo.owner, gitInfo.repo)
+            : null;
+
+
+        const deferredCommits = Q.defer();
+        const deferredContribs = Q.defer();
+
+        //list commits defer
+        if(!!newState.repoInstance && typeof newState.repoInstance.listCommits === 'function'){
+            const listCommitPayload = {
+                // sha
+                // path
+                // author
+            };
+            //filter out by file name if needed
+            if(!!gitInfo.file){
+                listCommitPayload.path = newState.file.substr(newState.file.indexOf('/'));
+            }
+            newState.repoInstance.listCommits(listCommitPayload).then(({data : commits}) => {
+                newState.commits = commits;
+                deferredCommits.resolve();
+            }, deferredCommits.resolve);
+        } else {
+            //no owner and repo ready, just set up empty commits
+            deferredCommits.resolve();
+        }
+
+
+        //list contrib
+        if(!!newState.repoInstance && typeof newState.repoInstance.getContributors === 'function'){
+            newState.repoInstance.getContributors().then(({data : contributors}) => {
+                newState.contributors = contributors;
+                deferredContribs.resolve();
+            }, deferredContribs.resolve);
+        } else {
+            //no owner and repo ready, just set up empty commits
+            deferredContribs.resolve();
+        }
+
+
+        //when everything is done, let's refresh the ui
+        Q.allSettled([
+            deferredCommits.promise,
+            deferredContribs.promise
+        ]).then( function(){
+            //limit things to 50
+            newState.contributors = newState.contributors.reverse().slice(0, 50);
+            newState.commits = newState.commits.slice(0, 50);
+            AppStore.dispatch({
+                type: 'REFRESH',
+                value : newState
+            });
+        });
     }
 
     var readyStateCheckInterval = setInterval(function() {
@@ -151,75 +230,7 @@ chrome.extension.sendMessage({}, (response) => {
             _init();
 
             //update self every 3 seconds
-            setInterval( function(){
-                const urlParams = util.getUrlVars();
-            	const gitInfo = dataUtil.getGitInfo();
-            	const newState = {
-                    urlParams : urlParams,
-            		owner: gitInfo.owner,
-            		repo: gitInfo.repo,
-            		branch: gitInfo.branch,
-            		commit: gitInfo.commit,
-            		file: gitInfo.file,
-            		pull: gitInfo.pull,
-                    commits: [],
-                    contributors: []
-            	}
-
-            	newState.repoInstance = (!!gitInfo.owner && !!gitInfo.repo) ? ghApiUtil.getRepo(gitInfo.owner, gitInfo.repo)
-            		: null;
-
-
-                const deferredCommits = Q.defer();
-                const deferredContribs = Q.defer();
-
-                //list commits defer
-            	if(!!newState.repoInstance && typeof newState.repoInstance.listCommits === 'function'){
-            		const listCommitPayload = {
-            			// sha
-            			// path
-            			// author
-            		};
-            		//filter out by file name if needed
-            		if(!!gitInfo.file){
-            			listCommitPayload.path = newState.file.substr(newState.file.indexOf('/'));
-            		}
-            		newState.repoInstance.listCommits(listCommitPayload).then(({data : commits}) => {
-            			newState.commits = commits;
-                        deferredCommits.resolve();
-            		}, deferredCommits.resolve);
-            	} else {
-            		//no owner and repo ready, just set up empty commits
-                    deferredCommits.resolve();
-            	}
-
-
-                //list contrib
-            	if(!!newState.repoInstance && typeof newState.repoInstance.getContributors === 'function'){
-            		newState.repoInstance.getContributors().then(({data : contributors}) => {
-            			newState.contributors = contributors;
-                        deferredContribs.resolve();
-            		}, deferredContribs.resolve);
-            	} else {
-            		//no owner and repo ready, just set up empty commits
-                    deferredContribs.resolve();
-            	}
-
-
-                //when everything is done, let's refresh the ui
-                Q.allSettled([
-                    deferredCommits.promise,
-                    deferredContribs.promise
-                ]).then( function(){
-                    //limit things to 50
-                    newState.contributors = newState.contributors.reverse().slice(0, 50);
-                    newState.commits = newState.commits.slice(0, 50);
-                    AppStore.dispatch({
-                        type: 'REFRESH',
-                        value : newState
-                    });
-                });
-            }, 3000);
+            setInterval(_refrehState , 3000);
         }
     }, 10);
 });

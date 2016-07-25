@@ -7,9 +7,10 @@ import sidebarUtil from '@src/util/sidebarUtil';
 const DiffBoxOption = React.createClass({
   render() {
       const urlParams = this.props.urlParams || {};
-      console.log('urlParams', urlParams);
 
       let whiteSpaceText, cbWhitespaceChange;
+
+      //diff whitespace
       if(urlParams.w !== '1'){
           whiteSpaceText = 'Diff Whitespace OFF';
           cbWhitespaceChange = sidebarUtil.onGoToDiffWhitespaceOffUrl;
@@ -18,13 +19,15 @@ const DiffBoxOption = React.createClass({
           cbWhitespaceChange = sidebarUtil.onGoToDiffWhitespaceOnUrl;
       }
 
-
-
-      const diffFormatText = urlParams.diff !== 'split' ? 'Split Diff' : 'Unified Diff';
-      const cbFormatChange = urlParams.diff !== 'split'
-        ? sidebarUtil.onGoToSplitDiffUrl
-        : sidebarUtil.onGoToUnifieDiffUrl;
-
+      //diff format
+      let diffFormatText, cbFormatChange;
+      if(urlParams.w !== 'split'){
+          diffFormatText = 'Split Diff';
+          cbFormatChange = sidebarUtil.onGoToSplitDiffUrl;
+      } else {
+          diffFormatText = 'Unified Diff';
+          cbFormatChange = sidebarUtil.onGoToUnifieDiffUrl;
+      }
 
       if($('.blob-num-addition, .blob-code-deletion').length > 0){
           return <div>
