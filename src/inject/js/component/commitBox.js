@@ -3,44 +3,34 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-// commits.map((repoCommit) => {
-// 	const author = repoCommit.author;
-// 	const commit = repoCommit.commit;
-// 	const commitUrl = urlUtil.getCommitUrlBySha(repoCommit.sha);
-// 	const shortCommitMessage = commit.message.substr(0, 50);
-// 	$('<div class="side-bar-commit-logs flex-column border-bottom"/>')
-// 		.append(`
-// 		<a href="${commitUrl}"
-// 		class="flex-grow1 tooltipped tooltipped-s"
-// 		aria-label="${commit.message}">
-// 				${shortCommitMessage}
-// 		</a>
-// 		<span>${commit.author.date}</span>
-// 		<strong>${commit.author.name}</strong>
-// 		`)
-// 		.appendTo(commitContainer);
-// });
+//internal
+import urlUtil from '@src/util/urlUtil';
 
 const CommitBox = React.createClass({
   render: function() {
-     console.log('render is called with commit box', this.props);
-
     let bodyDom;
   	if(!!this.props.owner && !!this.props.repo && _.size(this.props.commits) > 0){
-        bodyDom = <div>Test...</div>;
-		// const bodyDom = this.props.commits.map((repoCommit) => {
-		// 	const author = repoCommit.author;
-		// 	const commit = repoCommit.commit;
-		// 	const commitUrl = urlUtil.getCommitUrlBySha(repoCommit.sha);
-		// 	const shortCommitMessage = commit.message.substr(0, 50);
-		// 	const domId = `commit-sha-${repoCommit.sha}`;
-        //
-		// 	return(
-		// 		<div id="{domId}" class="side-bar-commit-logs flex-column border-bottom">
-		// 			{shortCommitMessage}
-		// 		</div>
-		// 	);
-		// })
+        bodyDom = this.props.commits.map((repoCommit, idx) => {
+			const author = repoCommit.author;
+			const commit = repoCommit.commit;
+			const commitUrl = urlUtil.getCommitUrlBySha(repoCommit.sha);
+			const shortCommitMessage = commit.message.substr(0, 50);
+			const domId = `commit-sha-${repoCommit.sha}`;
+
+			return(
+				<div key={domId} className="side-bar-commit-logs flex-column border-bottom">
+            		<a href={commitUrl}
+            		className="flex-grow1 tooltipped tooltipped-s"
+            		aria-label={commit.message}>
+        				{shortCommitMessage}
+            		</a>
+            		<span>{commit.author.date}</span>
+            		<strong>{commit.author.name}</strong>
+				</div>
+			);
+		})
+  	} else if(!!this.props.owner && !!this.props.repo){
+  		bodyDom = <div>Loading...</div>
   	} else {
   		bodyDom = <div>Not Available Here</div>
   	}

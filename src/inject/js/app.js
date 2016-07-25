@@ -119,8 +119,6 @@ chrome.extension.sendMessage({}, (response) => {
             .appendTo(searchBarContainer)
             .text('Search')
 
-		console.log('gitInfo', gitInfo);
-
         //repo info
         //populate the contributor
     	if(!!gitInfo.owner && !!gitInfo.repo){
@@ -236,6 +234,13 @@ chrome.extension.sendMessage({}, (response) => {
             		: null;
 
 
+                const _dispatchRefresh = () => {
+                    AppStore.dispatch({
+                        type: 'REFRESH',
+                        value : newState
+                    });
+                }
+
             	if(!!newState.repoInstance && typeof newState.repoInstance.listCommits === 'function'){
             		const listCommitPayload = {
             			// sha
@@ -248,25 +253,11 @@ chrome.extension.sendMessage({}, (response) => {
             		}
             		newState.repoInstance.listCommits(listCommitPayload).then(({data : commits}) => {
             			newState.commits = commits;
-                        console.log('re-sync the state 1.1', newState);
-                        AppStore.dispatch({
-            				type: 'REFRESH',
-            				value : newState
-            			});
-            		}, function(){
-                        console.log('re-sync the state 1.2', newState);
-                        AppStore.dispatch({
-            				type: 'REFRESH',
-            				value : newState
-            			});
-                    })
+                        _dispatchRefresh();
+            		}, _dispatchRefresh)
             	} else {
             		//no owner and repo ready, just set up empty commits
-                    console.log('re-sync the state 2', newState);
-                    AppStore.dispatch({
-                        type: 'REFRESH',
-                        value : newState
-                    });
+                    _dispatchRefresh();
             	}
             }, 3000);
         }

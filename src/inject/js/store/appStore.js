@@ -28,8 +28,6 @@ const AppReducer = (state, action) => {
 	if(action.type === 'REFRESH'){
 		state = action.value;
 	}
-
-    console.log('reduced called with', action.type, state);
     return state;
 }
 
