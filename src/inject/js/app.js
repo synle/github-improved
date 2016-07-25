@@ -1,5 +1,5 @@
 import dataUtil from './util/dataUtil';
-import urlUtil from './util/dataUtil';
+import urlUtil from './util/urlUtil';
 import sidebarUtil from './util/sidebarUtil';
 import util from './util/globalUtil';
 import ghApiUtil from './util/apiUtil';
@@ -77,7 +77,7 @@ chrome.extension.sendMessage({}, (response) => {
         //search
         $('<input class="form-control" placeholder="Keyword" name="keyword" />')
             .appendTo(searchBarContainer)
-        $('<select class="form-control" name="type" />')
+        $('<select class="form-select" name="type" />')
             .appendTo(searchBarContainer)
             .append($('<option value="file" />').text('File Content'))
             .append($('<option value="path" />').text('Path Name'))
@@ -102,17 +102,20 @@ chrome.extension.sendMessage({}, (response) => {
             .appendTo(searchBarContainer)
             .text('Search')
 
-
+		console.log('gitInfo', gitInfo);
 
         //repo info
         //populate the contributor
     	if(!!gitInfo.owner && !!gitInfo.repo){
     		repoProfileContainer.empty();
 
+    		const repoInstance = ghApiUtil.getRepo(gitInfo.owner, gitInfo.repo);
+
+    		//contributors
     		const repoContribContainer = $(`
-				<div class="panel panel-default">
+				<div id="side-bar-contributor-container" class="panel panel-primary">
 				  <div class="panel-heading">
-				    <h3>Contributors</h3>
+				    <h4>Contributors</h4>
 				  </div>
 				  <div class="panel-body"></div>
 				</div>
@@ -120,8 +123,6 @@ chrome.extension.sendMessage({}, (response) => {
     			.appendTo(repoProfileContainer)
     			.find('.panel-body')
     			.hide();
-
-    		const repoInstance = ghApiUtil.getRepo(gitInfo.owner, gitInfo.repo);
 	        repoInstance.getContributors().then(({data : contributors}) => {
 	        	contributors.map( (contributor) => {
 	        		const author = contributor.author;
@@ -134,11 +135,58 @@ chrome.extension.sendMessage({}, (response) => {
 	        			.append(`
 	        				<div class="flex-grow1">
 	        					<a href="${userProfileUrl}">${author.login}</a>
-	        					<a class="margin-left0" href="${commitByAuthorUrl}" title="View commits made by ${author.login}"><svg aria-hidden="true" class="octicon octicon-history" heigithubApit="16" version="1.1" viewBox="0 0 14 16" width="14"><path d="M8 13H6V6h5v2H8v5zM7 1C4.81 1 2.87 2.02 1.59 3.59L0 2v4h4L2.5 4.5C3.55 3.17 5.17 2.3 7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-.34.03-.67.09-1H.08C.03 7.33 0 7.66 0 8c0 3.86 3.14 7 7 7s7-3.14 7-7-3.14-7-7-7z"></path></svg></a>
+	        					<a class="margin-left0 tooltipped tooltipped-s" href="${commitByAuthorUrl}" aria-label="${author.login}'s commits">
+	        						<svg aria-hidden="true" class="octicon octicon-history" heigithubApit="16" version="1.1" viewBox="0 0 14 16" width="14"><path d="M8 13H6V6h5v2H8v5zM7 1C4.81 1 2.87 2.02 1.59 3.59L0 2v4h4L2.5 4.5C3.55 3.17 5.17 2.3 7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-.34.03-.67.09-1H.08C.03 7.33 0 7.66 0 8c0 3.86 3.14 7 7 7s7-3.14 7-7-3.14-7-7-7z"></path></svg>
+        						</a>
         					</div>
     					`)
 	        			.append(`<span class="flex-shrink0">${totalContributions}</span>`)
 	        			.appendTo(repoContribContainer);
+	        	});
+	        });
+
+
+	        //commits
+    		const commitContainer = $(`
+				<div id="side-bar-commit-container" class="panel panel-primary">
+				  <div class="panel-heading">
+				    <h4>Commits</h4>
+				  </div>
+				  <div class="panel-body"></div>
+				</div>
+    			`)
+    			.appendTo(repoProfileContainer)
+    			.find('.panel-body')
+    			.hide();
+
+			const listCommitPayload = {
+				// sha
+				// path
+				// author
+			};
+			//filter out by file name if needed
+			if(!!gitInfo.file){
+				listCommitPayload.path = gitInfo.file.substr(gitInfo.file.indexOf('/'));
+
+			}
+	        repoInstance.listCommits(listCommitPayload).then(({data : commits}) => {
+	        	commits.map((repoCommit) => {
+	        		const author = repoCommit.author;
+	        		const commit = repoCommit.commit;
+
+	        		const shortCommitMessage = commit.message.substr(0, 50);
+
+	        		$('<div class="side-bar-commit-logs flex-column border-bottom"/>')
+	        			.append(`
+        				<a href="${commit.url}"
+    					class="flex-grow1 tooltipped tooltipped-s"
+    					aria-label="${commit.message}">
+	        					${shortCommitMessage}
+    					</a>
+    					<span>${commit.author.date}</span>
+						<strong>${commit.author.name}</strong>
+    					`)
+	        			.appendTo(commitContainer);
 	        	});
 	        })
     	}

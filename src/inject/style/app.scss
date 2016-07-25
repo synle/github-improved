@@ -112,6 +112,11 @@ $padding-offset: 10px;
 			background-color: #f5f5f5;
 		}
 
+		&.panel-primary .panel-heading{
+			background-color: #4078c0;
+			color:white;
+		}
+
 		.panel-heading{
 			border: 1px solid #ddd;
 			@extend .padding-side0;
@@ -122,7 +127,16 @@ $padding-offset: 10px;
 			@extend .padding-side0;
 		}
 	}
+
+	border-bottom{
+		border-bottom:1px solid #ddd;
+	}
 	
+
+	.tooltipped::after{
+		width:100% !important;
+		word-break: break-word !important;
+	}
 }
 
 .container{

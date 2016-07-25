@@ -31,13 +31,13 @@ const urlUtil = {
     	return `https://${location.hostname}/${owner}/${repo}/find/${branch}`;
     }, 
     getOwnPRUrl : function(){
-    	return 'https://github.com/pulls';
+    	return `https://${location.hostname}/pulls`;
     },
     getAssignedPRUrl : function(){
-    	return 'https://github.com/pulls/assigned';
+    	return `https://${location.hostname}/pulls/assigned`;
     },
     getMentioningPRUrl : function() {
-    	return 'https://github.com/pulls/mentioned';
+    	return `https://${location.hostname}/pulls/mentioned`;
     },
     getRepoSearchResultUrl : function(keyword, language, searchIn, author){
     	const gitInfo = dataUtil.getGitInfo();
@@ -58,23 +58,23 @@ const urlUtil = {
     		urlParams.q += ` user:${author}`;
     	}
 
-    	// https://github.com/relateiq/riq/search?q=test&utf8=%E2%9C%93
-    	// https://github.com/search?l=json&q=octocat+in%3Afile%2Cpath&type=Code
+    	// https://${location.hostname}/relateiq/riq/search?q=test&utf8=%E2%9C%93
+    	// https://${location.hostname}/search?l=json&q=octocat+in%3Afile%2Cpath&type=Code
 
     	const searchQueryString = util.getSerializedQueryString(urlParams);
 
     	return `https://${location.hostname}/${owner}/${repo}/search?${searchQueryString}`;
     },
     getCommitByAuthorUrl(user){
-    	return `https://github.com/${user}`;
-    },
-	getUserProfileUrl(user){
-		const gitInfo = dataUtil.getGitInfo();
+    	const gitInfo = dataUtil.getGitInfo();
     	const owner = gitInfo.owner;
     	const repo = gitInfo.repo;
     	const branch = gitInfo.branch;
 
-    	return `https://github.com/${owner}/${repo}/commits/${branch}?author=${user}`;
+    	return `https://${location.hostname}/${owner}/${repo}/commits/${branch}?author=${user}`;
+    },
+	getUserProfileUrl(user){
+    	return `https://${location.hostname}/${user}`;
 	}
 }
 
