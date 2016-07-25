@@ -1,6 +1,9 @@
 //external
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux'
+
+import AppStore from '@src/store/appStore.js';
 
 //internal
 import dataUtil from '@src/util/dataUtil';
@@ -17,7 +20,7 @@ chrome.extension.sendMessage({}, (response) => {
         const urlParams = util.getUrlVars();
         const visibleFlags = dataUtil.getVisibleFlags();
         const gitInfo = dataUtil.getGitInfo();
-        
+
         //empty if needed
         $('#side-bar-advanced-tool').remove();
 
@@ -72,7 +75,7 @@ chrome.extension.sendMessage({}, (response) => {
             .appendTo(cmdContainer)
             .text('PR assigned to you')
             .on('click', sidebarUtil.onGoToAssignedPRUrl)
-                
+
 
         $('<button class="btn btn-sm" />')
             .appendTo(cmdContainer)
@@ -159,7 +162,9 @@ chrome.extension.sendMessage({}, (response) => {
 			.appendTo(repoProfileContainer)
 
 		ReactDOM.render(
-			<CommitBox></CommitBox>,
+            <Provider store={AppStore}>
+                <CommitBox></CommitBox>
+            </Provider>,
 			document.getElementById('side-bar-commit-container')
 		);
 
