@@ -7,10 +7,10 @@ var sideBarTool = {
 	onGoToUnifieDiffUrl() {
 		location.href = urlUtil.getUnifiedDiffUrl();
 	},
-    onGoToDiffNonWhitespaceUrl () {
+    onGoToDiffWhitespaceOffUrl () {
         location.href = urlUtil.getDiffNonWhitespaceUrl();
     },
-    onGoTogetDiffWithWhitespaceUrl () {
+    onGoToDiffWhitespaceOnUrl () {
         location.href = urlUtil.getDiffWithWhitespaceUrl();
     },
     onGoToGetSearchUrl() {

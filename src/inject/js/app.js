@@ -18,6 +18,8 @@ import ghApiUtil from '@src/util/apiUtil';
 //component
 import CommitBox from '@src/component/commitBox';
 import ContributorBox from '@src/component/contributorBox';
+import DiffOptionBox from '@src/component/diffOptionBox';
+import PrNavigation from '@src/component/prNavigation';
 
 
 //create the store
@@ -66,37 +68,6 @@ chrome.extension.sendMessage({}, (response) => {
             .on('click', sidebarUtil.onGoToGetSearchUrl)
             .toggle(visibleFlags.searchFile)
 
-        $('<button id="cmd-diff-whitespace-option" class="btn btn-sm" />')
-            .appendTo(cmdContainer)
-            .text(urlParams.w !== '1' ? 'Whitespace Diff' : 'Non-Whitespace Diff')
-            .on('click', urlParams.w !== '1' ? sidebarUtil.onGoToDiffNonWhitespaceUrl : sidebarUtil.onGoTogetDiffWithWhitespaceUrl)
-            .toggle(visibleFlags.differ)
-
-
-        $('<button id="cmd-diff-type" class="btn btn-sm" />')
-            .appendTo(cmdContainer)
-            .text(urlParams.diff !== 'split' ? 'Split Diff' : 'Unified Diff')
-            .on('click', urlParams.diff !== 'split' ? sidebarUtil.onGoToSplitDiffUrl : sidebarUtil.onGoToUnifieDiffUrl)
-            .toggle(visibleFlags.differ)
-
-
-        $('<button class="btn btn-sm" />')
-            .appendTo(cmdContainer)
-            .text('PR created by you')
-            .on('click', sidebarUtil.onGoToOwnPRUrl);
-
-
-        $('<button class="btn btn-sm" />')
-            .appendTo(cmdContainer)
-            .text('PR assigned to you')
-            .on('click', sidebarUtil.onGoToAssignedPRUrl)
-
-
-        $('<button class="btn btn-sm" />')
-            .appendTo(cmdContainer)
-            .text('PR mentioning you')
-            .on('click', sidebarUtil.onGoToMentioningYouPRUrl)
-
 
         //search
         $('<input class="form-control" placeholder="Keyword" name="keyword" />')
@@ -111,9 +82,6 @@ chrome.extension.sendMessage({}, (response) => {
         $('<input class="form-control" placeholder="Language" name="language" list="search-language" />')
             .appendTo(searchBarContainer)
 
-        // $('<input class="form-control" placeholder="Author" name="author" />')
-        //     .appendTo(searchBarContainer)
-
         //auto comeplete
         const dataListSearchLanguages = $('<datalist id="search-language" />')
             .appendTo(searchBarContainer);
@@ -125,6 +93,15 @@ chrome.extension.sendMessage({}, (response) => {
         $('<button class="btn btn-sm btn-primary" type="submit" />')
             .appendTo(searchBarContainer)
             .text('Search')
+
+        //diff option box
+        ReactDOM.render(
+            <Provider store={AppStore}>
+                <DiffOptionBox></DiffOptionBox>
+            </Provider>,
+            $('<div id="side-bar-diff-option" />')
+    			.appendTo(repoProfileContainer)[0]
+		);
 
 
         //contributor box
@@ -164,20 +141,6 @@ chrome.extension.sendMessage({}, (response) => {
             .toggle(visibleFlags.searchFile)
 
         sideBarContainer
-            .find('#cmd-diff-whitespace-option')
-            .off('click')
-            .text(urlParams.w !== '1' ? 'Whitespace Diff' : 'Non-Whitespace Diff')
-            .on('click', urlParams.w !== '1' ? sidebarUtil.onGoToDiffNonWhitespaceUrl : sidebarUtil.onGoTogetDiffWithWhitespaceUrl)
-            .toggle(visibleFlags.differ)
-
-        sideBarContainer
-            .find('#cmd-diff-type')
-            .off('click')
-            .text(urlParams.diff !== 'split' ? 'Split Diff' : 'Unified Diff')
-            .on('click', urlParams.diff !== 'split' ? sidebarUtil.onGoToSplitDiffUrl : sidebarUtil.onGoToUnifieDiffUrl)
-            .toggle(visibleFlags.differ)
-
-        sideBarContainer
             .find('#side-bar-form-search')
             .toggle(visibleFlags.searchFile)
     }
@@ -189,8 +152,10 @@ chrome.extension.sendMessage({}, (response) => {
 
             //update self every 3 seconds
             setInterval( function(){
+                const urlParams = util.getUrlVars();
             	const gitInfo = dataUtil.getGitInfo();
             	const newState = {
+                    urlParams : urlParams,
             		owner: gitInfo.owner,
             		repo: gitInfo.repo,
             		branch: gitInfo.branch,
@@ -246,6 +211,9 @@ chrome.extension.sendMessage({}, (response) => {
                     deferredCommits.promise,
                     deferredContribs.promise
                 ]).then( function(){
+                    //limit things to 50
+                    newState.contributors = newState.contributors.reverse().slice(0, 50);
+                    newState.commits = newState.commits.slice(0, 50);
                     AppStore.dispatch({
                         type: 'REFRESH',
                         value : newState

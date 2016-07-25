@@ -22,16 +22,16 @@ const AppReducer = (state, action) => {
 			pull : null,
 			repoInstance : null, //api instance
 			commits : null,//list of relavant commits
-            contributors : null// list of contributors
+            contributors : null,// list of contributors
+            urlParams: {}
 		}
 	}
 
 	if(action.type === 'REFRESH'){
 		state = action.value;
 	}
+    
     return state;
 }
-
-// const AppStore = createStore(AppReducer);
 
 export default AppReducer;

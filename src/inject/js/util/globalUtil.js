@@ -1,8 +1,8 @@
 const util = {
 	getUrlForParam(params) {
-		const queryString = util.getSerializedQueryString();
-		
-		return !!queryString ? 'https://' + location.hostname + location.pathname + '?' + queryString.join('&')
+		const queryString = util.getSerializedQueryString(params);
+
+		return !!queryString ? 'https://' + location.hostname + location.pathname + '?' + queryString
 			:'https://' + location.hostname + location.pathname;
 	},
 	getSerializedQueryString(params) {
@@ -18,7 +18,7 @@ const util = {
 			const paramVal = params[paramKey];
 			queryString.push(paramKey + '=' + paramVal);
 		});
-		
+
 		return queryString.join('&');
 	},
     getUrlVars() {
