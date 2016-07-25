@@ -1,31 +1,23 @@
+import _ from 'lodash';
+
 const dataUtil = {
 	getGitInfo() {
     	var pathName = location.pathname;
     	var urlSplits = pathName.split('/');
-    	var owner;
-    	var repo;
+    	var owner = $('.repohead-details-container [itemprop="author"]').text();
+    	var repo = $('.repohead-details-container [itemprop="name"]').text();
 
-    	if(urlSplits[1] !== 'pulls'){
-    		owner = urlSplits[1];
-    		repo = urlSplits[2];
+    	var branch = $('.branch-select-menu .select-menu-button').attr('title');
+    	if(!branch){
+    		branch = 'master';
     	}
 
-    	var branch = 'master';
-    	if(pathName.indexOf('/blob/') >= 0 || pathName.indexOf('/tree/') >= 0 && urlSplits.length >= 5){
-    		branch = urlSplits[4];
-    	}
-
-    	var commit;
-    	if(pathName.indexOf('/commit/') >= 0 || pathName.indexOf('/commits/') >= 0){
+    	var commit = $('.sha.user-select-contain').text();
+    	if(!commit && (pathName.indexOf('/commit/') >= 0 || pathName.indexOf('/commits/') >= 0)){
     		commit = urlSplits[urlSplits.length - 1];
     	}
 
-
-    	var file;
-    	if(pathName.indexOf('/blob/') >= 0){
-    		file = urlSplits.slice(5).join('/');
-    	}
-
+    	var file = _.trim($('.file-navigation .breadcrumb').text());
 
     	var pull;
 		if(pathName.indexOf('/pull/') >= 0 && pathName.indexOf('/files') >= 0){
