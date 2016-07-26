@@ -63,6 +63,7 @@ chrome.extension.sendMessage({}, (response) => {
     }
 
     function _refreshState(){
+        const countSlashInUrl =  location.href.match(/\//g).length;
         const urlParams = util.getUrlVars();
         const gitInfo = dataUtil.getGitInfo();
         const newState = {
@@ -76,7 +77,8 @@ chrome.extension.sendMessage({}, (response) => {
             commits: [],
             contributors: [],
             visible : {
-            	contributor: location.href.match(/\//g).length === 4
+            	contributor: countSlashInUrl === 4,
+                commit : countSlashInUrl > 3
             }
         }
 

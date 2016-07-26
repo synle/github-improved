@@ -11,7 +11,7 @@ import ghApiUtil from '@src/util/apiUtil';
 
 //App Store reducer
 const AppReducer = (state, action) => {
-	if(!!state){
+	if(!state){
 		//default state
 		state = {
 			owner : null,
@@ -33,7 +33,7 @@ const AppReducer = (state, action) => {
 	if(action.type === 'REFRESH'){
 		state = action.value;
 	}
-    
+
     return state;
 }
 

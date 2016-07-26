@@ -7,10 +7,13 @@ import urlUtil from '@src/util/urlUtil';
 
 const CommitBox = React.createClass({
   render: function() {
-  	const commitCount = _.size(this.props.commits);
+    const { commits, owner, repo, visible } = this.props;
+  	const commitCount = _.size(commits);
     let bodyDom;
-  	if(!!this.props.owner && !!this.props.repo && commitCount > 0){
-        bodyDom = this.props.commits.map((repoCommit, idx) => {
+  	if(_.get('visible') !== true){
+        return null;
+    }else if(!!owner && !!repo && commitCount > 0){
+        bodyDom = commits.map((repoCommit, idx) => {
 			const author = repoCommit.author;
 			const commit = repoCommit.commit;
 			const commitUrl = urlUtil.getCommitUrlBySha(repoCommit.sha);
@@ -32,7 +35,7 @@ const CommitBox = React.createClass({
 				</div>
 			);
 		});
-  	} else if(!!this.props.owner && !!this.props.repo){
+  	} else if(!!owner && !!repo){
   		bodyDom = <div>Loading...</div>
   	} else {
   		bodyDom = <div>Not Available Here</div>
@@ -61,7 +64,8 @@ const mapStateToProps = function(state) {
   return {
     commits : _.get( state, 'commits', []),
     owner : _.get( state, 'owner'),
-    repo : _.get( state, 'repo')
+    repo : _.get( state, 'repo'),
+    visible : _.get( state, 'visible')
   };
 }
 
