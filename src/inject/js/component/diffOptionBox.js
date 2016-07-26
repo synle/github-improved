@@ -32,10 +32,12 @@ const DiffBoxOption = React.createClass({
       }
 
       if($('.blob-num-addition, .blob-code-deletion').length > 0){
-          return <div>
-            <button onClick={cbWhitespaceChange} className="btn btn-sm">{whiteSpaceText}</button>
-            <button onClick={cbFormatChange} className="btn btn-sm">{diffFormatText}</button>
-          </div>;
+          return(
+              <div>
+                <button onClick={cbWhitespaceChange} className="btn btn-sm">{whiteSpaceText}</button>
+                <button onClick={cbFormatChange} className="btn btn-sm">{diffFormatText}</button>
+              </div>
+          );
       } else{
           return null;
       }
