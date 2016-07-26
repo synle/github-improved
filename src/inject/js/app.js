@@ -21,7 +21,7 @@ import ContributorBox from '@src/component/contributorBox';
 import DiffOptionBox from '@src/component/diffOptionBox';
 import PrNavigation from '@src/component/prNavigation';
 import BtnQuickSearchFile from '@src/component/btnQuickSearchFile';
-
+import SearchForm from '@src/component/searchForm';
 
 //create the store
 const AppStore = createStore( AppReducer );
@@ -73,6 +73,14 @@ chrome.extension.sendMessage({}, (response) => {
 
 
         //search form
+        ReactDOM.render(
+            <Provider store={AppStore}>
+                <SearchForm></SearchForm>
+            </Provider>,
+            $('<div id="side-bar-search-form" />')
+    			.appendTo(repoProfileContainer)[0]
+		);
+
 
 
         //diff option box
@@ -120,7 +128,10 @@ chrome.extension.sendMessage({}, (response) => {
     	//event
     	$(document).on('click', '.panel-heading', function(){
     		$(this).closest('.panel').find('.panel-body').toggle();
-    	})
+    	}).on('click', 'body', function(){
+            //refresh after 5 second of click
+            setTimeout(_refrehState , 5000);
+        })
 
 
         //trigger the first refresh
@@ -210,9 +221,6 @@ chrome.extension.sendMessage({}, (response) => {
         if (document.readyState === "complete") {
             clearInterval(readyStateCheckInterval);
             _init();
-
-            //retry - update self every 3 seconds
-            setInterval(_refrehState , 3000);
         }
     }, 10);
 });
