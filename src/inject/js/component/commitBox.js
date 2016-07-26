@@ -14,7 +14,10 @@ const CommitBox = React.createClass({
 			const author = repoCommit.author;
 			const commit = repoCommit.commit;
 			const commitUrl = urlUtil.getCommitUrlBySha(repoCommit.sha);
-			const shortCommitMessage = commit.message.substr(0, 50);
+			const shortCommitMessage = _.truncate( commit.message, {
+				length: 70,
+				omission : '...'
+			});
 			const domId = `commit-sha-${repoCommit.sha}`;
 
 			return(
