@@ -25,7 +25,7 @@ var sideBarTool = {
     onGoToMentioningYouPRUrl() {
     	location.href = urlUtil.getMentioningPRUrl();
     },
-    onSearchRepo() {
+    onSearchRepo(e) {
     	const formSearch = $('#side-bar-form-search') ; //$(this)
     	const formSearchData = formSearch.serializeArray().reduce(
     		(res, formData) => {
@@ -37,13 +37,17 @@ var sideBarTool = {
 			,{}
 		);
 
-    	location.href = urlUtil.getRepoSearchResultUrl(
+    	const newUrl = urlUtil.getRepoSearchResultUrl(
     		formSearchData.keyword,
     		formSearchData.language,
     		formSearchData.type,//in:file or in:path or in:file,path
     		formSearchData.author
 		);
 
+		//redirect
+		location.href = newUrl
+
+		e.preventDefault();
 		return false;
     }
 }

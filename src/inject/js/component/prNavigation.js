@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import sidebarUtil from '@src/util/sidebarUtil';
 
 //internal
+import sidebarUtil from '@src/util/sidebarUtil';
+
 const PRNavigation = React.createClass({
   render() {
       return <div>

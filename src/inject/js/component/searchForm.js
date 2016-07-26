@@ -1,9 +1,12 @@
+//external
 import React from 'react';
 import { connect } from 'react-redux';
-import sidebarUtil from '@src/util/sidebarUtil';
 import _ from 'lodash';
 
+
+//internal
 import dataUtil from '@src/util/dataUtil';
+import sidebarUtil from '@src/util/sidebarUtil';
 
 //internal
 const SearchForm = React.createClass({
@@ -15,7 +18,7 @@ const SearchForm = React.createClass({
           });
 
           return (
-            <form id="side-bar-form-search">
+            <form id="side-bar-form-search" onSubmit={sidebarUtil.onSearchRepo}>
                 <input className="form-control" placeholder="Keyword" name="keyword" />
                 <select className="form-select" name="type">
                     <option value="file">File Content</option>
@@ -23,7 +26,9 @@ const SearchForm = React.createClass({
                     <option value="file,path">File and Content</option>
                 </select>
                 <input className="form-control" placeholder="Language" name="language" list="search-language" />
-                <button class="btn btn-sm btn-primary" type="submit" />
+                <button className="btn btn-sm btn-primary" type="submit">
+                	Search
+                </button>
                 <datalist id="search-language">
                     {supportedLangOptions}
                 </datalist>

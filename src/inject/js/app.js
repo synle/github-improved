@@ -49,14 +49,6 @@ chrome.extension.sendMessage({}, (response) => {
             .appendTo(sideBarContainer)
             .text('Github Improved Toolbox')
 
-        const searchBarContainer = $('<form id="side-bar-form-search" />')
-            .appendTo(sideBarContainer)
-            .on('submit', sidebarUtil.onSearchRepo)
-            .toggle(visibleFlags.searchFile);
-
-        const cmdContainer = $('<div id="side-bar-cmd-palette" />')
-            .appendTo(sideBarContainer);
-
         const repoProfileContainer = $('<div id="side-bar-repo-info" />')
         	.appendTo(sideBarContainer);
 

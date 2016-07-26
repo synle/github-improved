@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+
+//internal
 import sidebarUtil from '@src/util/sidebarUtil';
 
 //internal
