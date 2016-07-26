@@ -10,7 +10,7 @@ const CommitBox = React.createClass({
     const { commits, owner, repo, visible } = this.props;
   	const commitCount = _.size(commits);
     let bodyDom;
-  	if(_.get('visible') !== true){
+  	if(visible.commit !== true){
         return null;
     }else if(!!owner && !!repo && commitCount > 0){
         bodyDom = commits.map((repoCommit, idx) => {
