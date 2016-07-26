@@ -9,10 +9,10 @@ import urlUtil from '@src/util/urlUtil';
 const ContributorBox = React.createClass({
   render: function() {
     let bodyDom;
-    const {contributors} = this.props;
+    const {contributors, visible} = this.props;
     const contributorCount = _.size(contributors);
 
-  	if(location.href.match(/\//g).length !== 4){
+  	if( _.get(visible, 'contributor') !== true ){
 		//shouldn't show here
 		return null;
 	} else if( contributorCount > 0){

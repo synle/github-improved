@@ -23,7 +23,10 @@ const AppReducer = (state, action) => {
 			repoInstance : null, //api instance
 			commits : null,//list of relavant commits
             contributors : null,// list of contributors
-            urlParams: {}
+            urlParams: {},
+            visible: {
+            	contributor : false
+            }
 		}
 	}
 

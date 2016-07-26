@@ -30,15 +30,6 @@ chrome.extension.sendMessage({}, (response) => {
     var sideBarContainer;
 
     function _init(){
-        const urlParams = util.getUrlVars();
-        const visibleFlags = dataUtil.getVisibleFlags();
-        const gitInfo = dataUtil.getGitInfo();
-
-        AppStore.dispatch({
-            type: 'REFRESH',
-            value : gitInfo
-        })
-
         //empty if needed
         $('#side-bar-advanced-tool').remove();
 
@@ -53,12 +44,14 @@ chrome.extension.sendMessage({}, (response) => {
         //render the app
         ReactDOM.render(
             <Provider store={AppStore}>
-            	<BtnQuickSearchFile></BtnQuickSearchFile>
-            	<SearchForm></SearchForm>
-            	<DiffOptionBox></DiffOptionBox>
-            	<PrNavigation></PrNavigation>
-                <ContributorBox></ContributorBox>
-                <CommitBox></CommitBox>
+            	<div>
+            		<BtnQuickSearchFile></BtnQuickSearchFile>
+	            	<SearchForm></SearchForm>
+	            	<DiffOptionBox></DiffOptionBox>
+	            	<PrNavigation></PrNavigation>
+	                <ContributorBox></ContributorBox>
+	                <CommitBox></CommitBox>
+            	</div>
             </Provider>,
             $('#side-bar-body')[0]
 		);
@@ -81,7 +74,10 @@ chrome.extension.sendMessage({}, (response) => {
             file: gitInfo.file,
             pull: gitInfo.pull,
             commits: [],
-            contributors: []
+            contributors: [],
+            visible : {
+            	contributor: location.href.match(/\//g).length !== 4
+            }
         }
 
         newState.repoInstance = (!!gitInfo.owner && !!gitInfo.repo) ? ghApiUtil.getRepo(gitInfo.owner, gitInfo.repo)
@@ -147,11 +143,11 @@ chrome.extension.sendMessage({}, (response) => {
 
 			//adapted from octotree for changes in the dom 
 			//reload the state
-		    const pageChangeObserver = new window.MutationObserver(() => {
-				_refreshState();
-		    })
 		    const pjaxContainer = $('#js-repo-pjax-container, .context-loader-container, [data-pjax-container]')[0];
 		    if (!!pjaxContainer){
+		    	const pageChangeObserver = new window.MutationObserver(() => {
+					_refreshState();
+			    })
 		    	pageChangeObserver.observe(pjaxContainer, {
 					childList: true
 				});
