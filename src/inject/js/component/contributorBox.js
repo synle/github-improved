@@ -61,7 +61,10 @@ const ContributorBox = React.createClass({
 
 
 const mapStateToProps = function(state) {
-  return state;
+  return {
+      contributors : _.get(state, 'contributors'),
+      visible : _.get(state, 'visible')
+  };
 }
 
 export default connect(mapStateToProps)(ContributorBox);
