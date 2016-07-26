@@ -25,6 +25,7 @@ import DiffOptionBox from '@src/component/diffOptionBox';
 import PrNavigation from '@src/component/prNavigation';
 import BtnQuickSearchFile from '@src/component/btnQuickSearchFile';
 import SearchForm from '@src/component/searchForm';
+import FileExplorer from '@src/component/fileExplorer';
 
 //create the store
 const AppStore = createStore( AppReducer );
@@ -53,6 +54,7 @@ chrome.extension.sendMessage({}, (response) => {
 	            	<SearchForm></SearchForm>
 	            	<DiffOptionBox></DiffOptionBox>
 	            	<PrNavigation></PrNavigation>
+                    <FileExplorer></FileExplorer>
 	                <ContributorBox></ContributorBox>
 	                <CommitBox></CommitBox>
             	</div>
@@ -77,9 +79,11 @@ chrome.extension.sendMessage({}, (response) => {
             branch: gitInfo.branch,
             commit: gitInfo.commit,
             file: gitInfo.file,
+            path: gitInfo.path,
             pull: gitInfo.pull,
-            commits: [],
-            contributors: [],
+            commits: null,
+            contributors: null,
+            trees: null,
             visible : {
             	contributor: countSlashInUrl === 4,
                 commit : countSlashInUrl > 3
@@ -92,21 +96,21 @@ chrome.extension.sendMessage({}, (response) => {
 
         const deferredCommits = Q.defer();
         const deferredContribs = Q.defer();
+        const deferredTrees = Q.defer();
 
-        //list commits defer
-        if(!!newState.repoInstance && typeof newState.repoInstance.listCommits === 'function'){
+        //fetch commits
+        if(!!newState.repoInstance){
             const listCommitPayload = {
                 // sha
                 // path
                 // author
             };
             //filter out by file name if needed
-            if(!!gitInfo.file){
-                listCommitPayload.path = newState.file.substr(newState.file.indexOf('/'));
+            if(!!newState.path){
+                listCommitPayload.path = newState.path;
             }
             newState.repoInstance.listCommits(listCommitPayload).then(({data : commits}) => {
-                newState.commits = commits;
-                deferredCommits.resolve();
+                deferredCommits.resolve( newState.commits = commits );
             }, deferredCommits.resolve);
         } else {
             //no owner and repo ready, just set up empty commits
@@ -114,15 +118,30 @@ chrome.extension.sendMessage({}, (response) => {
         }
 
 
-        //list contrib
+        //fetch contributors
         if(!!newState.repoInstance && typeof newState.repoInstance.getContributors === 'function'){
             newState.repoInstance.getContributors().then(({data : contributors}) => {
-                newState.contributors = contributors;
-                deferredContribs.resolve();
+                deferredContribs.resolve( newState.contributors = contributors );
             }, deferredContribs.resolve);
         } else {
             //no owner and repo ready, just set up empty commits
             deferredContribs.resolve();
+        }
+
+
+        //fetch trees
+        if(!!newState.repoInstance && typeof newState.repoInstance.getTree === 'function'){
+            //filter out by file name if needed
+            // if(!!newState.path){
+            //     listCommitPayload.path = newState.path;
+            // }
+
+            newState.repoInstance.getTree( newState.branch ).then(({data : trees}) => {
+                deferredTrees.resolve( newState.trees = trees);
+            }, deferredTrees.resolve);
+        } else {
+            //no owner and repo ready, just set up empty commits
+            deferredTrees.resolve();
         }
 
 
@@ -145,6 +164,8 @@ chrome.extension.sendMessage({}, (response) => {
                 $('.discussion-sidebar').appendTo('#side-bar-pr-toolbox');
             }, 2000)
         });
+
+
     }
 
     var readyStateCheckInterval = setInterval(function() {

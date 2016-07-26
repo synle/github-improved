@@ -26,7 +26,7 @@ const dataUtil = {
 			// Non-code page: commit page
 			($(GH_BRANCH_SEL_4).attr('title') || ' ').match(/([^\:]+)/g)[1] ||
 			// Non-code page: others
-			($(GH_BRANCH_SEL_5).length === 1 && ($(GH_BRANCH_SEL_5).attr('title') || ' ').match(/([^\:]+)/g)[1]) 
+			($(GH_BRANCH_SEL_5).length === 1 && ($(GH_BRANCH_SEL_5).attr('title') || ' ').match(/([^\:]+)/g)[1])
 
 
 
@@ -36,6 +36,7 @@ const dataUtil = {
     	}
 
     	var file = _.trim($('.file-navigation .breadcrumb').text());
+        var path = !!file ? file.substr( file.indexOf('/') ) : null;
 
     	var pull;
 		if(pathName.indexOf('/pull/') >= 0 && pathName.indexOf('/files') >= 0){
@@ -44,7 +45,7 @@ const dataUtil = {
 
 
     	return {
-    		owner, repo, branch, commit, file, pull
+    		owner, repo, branch, commit, file, pull, path
     	};
     },
     getVisibleFlags() {
