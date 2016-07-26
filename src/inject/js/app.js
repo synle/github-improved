@@ -41,6 +41,7 @@ chrome.extension.sendMessage({}, (response) => {
             .html(`
             	<h3 id="side-bar-title ta-center">Github Improved Toolbox</h3>
 				<div id="side-bar-body"></div>
+                <div id="side-bar-pr-toolbox"></div>
         	`);
 
 
@@ -139,7 +140,10 @@ chrome.extension.sendMessage({}, (response) => {
 
 
             //move the stuff
-            $('.discussion-sidebar').appendTo('#side-bar-advanced-tool');
+            $('#side-bar-pr-toolbox').empty();
+            setTimeout(() => {
+                $('.discussion-sidebar').appendTo('#side-bar-pr-toolbox');
+            }, 2000)
         });
     }
 

@@ -156,8 +156,25 @@ $padding-offset: 10px;
 	width: auto !important;
 }
 
-.discussion-timeline{
-    float: none !important;
-    position:static !important;
-    width: auto !important;
+#discussion_bucket{
+    .discussion-timeline{
+        float: none !important;
+        position:static !important;
+        width: auto !important;
+    }
+
+    $avatar-timeline-offset : 30px;
+    $avatar-timeline-offset-padding : 40px;
+    .timeline-comment-avatar{
+        width: $avatar-timeline-offset !important;
+        height: $avatar-timeline-offset !important;
+        margin-left: -1 * $avatar-timeline-offset-padding !important;
+    }
+    .timeline-comment-wrapper{
+        padding-left:$avatar-timeline-offset-padding !important;
+    }
+}
+
+#commits_bucket{
+    margin-left: 0 !important;
 }
