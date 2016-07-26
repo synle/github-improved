@@ -27,7 +27,7 @@ const ContributorBox = React.createClass({
 			return(
                 <div key={domId} className="flex-row">
                     <div className="flex-grow1">
-                        <a href={userProfileUrl}>{author.login}</a>
+                        <a href={userProfileUrl} class="tooltipped tooltipped-w" aria-label="View profile">{author.login}</a>
                     </div>
                     <div className="flex-shrink0">
                 		<a className="margin-left0 tooltipped tooltipped-w" href={commitByAuthorUrl} aria-label={tooltipText}>
