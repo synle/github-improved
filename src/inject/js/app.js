@@ -8,6 +8,9 @@ import Q from 'q';
 //reducer
 import AppReducer from '@src/store/appStore.js';
 
+//action
+import APP_ACTION from '@src/store/appAction.js';
+
 //internal
 import dataUtil from '@src/util/dataUtil';
 import urlUtil from '@src/util/urlUtil';
@@ -130,10 +133,9 @@ chrome.extension.sendMessage({}, (response) => {
             //limit things to 50
             newState.contributors = newState.contributors.reverse().slice(0, 50);
             newState.commits = newState.commits.slice(0, 50);
-            AppStore.dispatch({
-                type: 'REFRESH',
-                value : newState
-            });
+            AppStore.dispatch(
+                APP_ACTION.refresh(newState)
+            );
         });
     }
 

@@ -26,13 +26,19 @@ const AppReducer = (state, action) => {
             urlParams: {},
             visible: {
             	contributor : false
-            }
+            },
+            apiToken: null
 		}
 	}
 
-	if(action.type === 'REFRESH'){
-		state = action.value;
-	}
+    switch(action.type){
+        case 'REFRESH':
+            state = action.value;
+            break;
+        case 'UPDATE_API_TOKEN':
+            state = action.value;
+            break;
+    }
 
     return state;
 }
