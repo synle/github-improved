@@ -120,26 +120,10 @@ chrome.extension.sendMessage({}, (response) => {
     	//event
     	$(document).on('click', '.panel-heading', function(){
     		$(this).closest('.panel').find('.panel-body').toggle();
-    	}).on('click', 'body', function(){
-            //refresh after 5 second of click
-            setTimeout(_refrehState , 5000);
-        })
-
-
-        //trigger the first refresh
-        _refrehState();
+    	});
     }
 
-    function _eventLoopHandler(){
-        const urlParams = util.getUrlVars();
-        const visibleFlags = dataUtil.getVisibleFlags();
-
-        sideBarContainer
-            .find('#side-bar-form-search')
-            .toggle(visibleFlags.searchFile)
-    }
-
-    function _refrehState(){
+    function _refreshState(){
         const urlParams = util.getUrlVars();
         const gitInfo = dataUtil.getGitInfo();
         const newState = {
@@ -213,6 +197,19 @@ chrome.extension.sendMessage({}, (response) => {
         if (document.readyState === "complete") {
             clearInterval(readyStateCheckInterval);
             _init();
+            _refreshState();//trigger the first state change
+
+			//adapted from octotree for changes in the dom 
+			//reload the state
+		    const pageChangeObserver = new window.MutationObserver(() => {
+				_refreshState();
+		    })
+		    const pjaxContainer = $('#js-repo-pjax-container, .context-loader-container, [data-pjax-container]')[0];
+		    if (!!pjaxContainer){
+		    	pageChangeObserver.observe(pjaxContainer, {
+					childList: true
+				});
+		    }
         }
     }, 10);
 });
