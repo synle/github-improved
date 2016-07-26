@@ -11,8 +11,11 @@ const TokenRequestForm = React.createClass({
 
       const onPromptTokenRequest = () => {
           const apiToken = prompt('Enter your API Token below', '');
-          localStorage['github-improved.api-token'] = apiToken;
-          location.reload();
+
+          if (!apiToken){
+              localStorage['github-improved.api-token'] = apiToken;
+              location.reload();
+          }
       }
 
 
@@ -22,7 +25,8 @@ const TokenRequestForm = React.createClass({
                   <h4>Settings</h4>
               </div>
               <div className="panel-body">
-                <button onClick={onPromptTokenRequest} className="btn btn-sm">
+                <div>No access token provided. For better showing relavant data, we need to access to your api token.</div>
+                <button onClick={onPromptTokenRequest} className="btn btn-sm margin-top0">
                     Update API Token
                 </button>
               </div>
