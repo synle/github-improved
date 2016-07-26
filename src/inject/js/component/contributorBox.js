@@ -9,8 +9,14 @@ import urlUtil from '@src/util/urlUtil';
 const ContributorBox = React.createClass({
   render: function() {
     let bodyDom;
-  	if(!!this.props.owner && !!this.props.repo && _.size(this.props.contributors) > 0){
-        bodyDom = this.props.contributors.map((contributor) => {
+    const {contributors} = this.props;
+    const contributorCount = _.size(contributors);
+
+  	if(location.href.match(/\//g).length !== 4){
+		//shouldn't show here
+		return null;
+	} else if( contributorCount > 0){
+        bodyDom = contributors.map((contributor) => {
             const author = contributor.author;
             const totalContributions = contributor.total;
             const commitByAuthorUrl = urlUtil.getCommitByAuthorUrl( author.login );
@@ -31,17 +37,19 @@ const ContributorBox = React.createClass({
                 </div>
 			);
 		})
-  	} else if(!!this.props.owner && !!this.props.repo){
-  		bodyDom = <div>Loading...</div>
   	} else {
-  		return null;//hide it if no owner and repo
+  		bodyDom = <div>Not Available...</div>;
   	}
+
+  	const contributorCountDom = contributorCount > 0
+  		? <span>({contributorCount})</span>
+  		: null;
 
 
     return (
         <div className="panel panel-primary">
             <div className="panel-heading">
-                <h4>Contributors</h4>
+                <h4>Contributors {contributorCountDom}</h4>
             </div>
             <div className="panel-body">
                 {bodyDom}
@@ -53,11 +61,7 @@ const ContributorBox = React.createClass({
 
 
 const mapStateToProps = function(state) {
-  return {
-    contributors : _.get( state, 'contributors', []),
-    owner : _.get( state, 'owner'),
-    repo : _.get( state, 'repo')
-  };
+  return state;
 }
 
 export default connect(mapStateToProps)(ContributorBox);

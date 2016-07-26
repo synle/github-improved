@@ -39,7 +39,7 @@ const CommitBox = React.createClass({
   	}
 
   	const commitCountDom = commitCount > 0
-  		? <span>( {commitCount} )</span>
+  		? <span>({commitCount})</span>
   		: null;
 
 
