@@ -26,7 +26,9 @@ const AppReducer = (state, action) => {
             trees: null,//tree map
             urlParams: {},
             visible: {
-            	contributor : false
+                contributor : false,
+                fileExplorer : false,
+                commit : false
             },
             apiToken: null
 		}

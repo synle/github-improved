@@ -86,6 +86,7 @@ chrome.extension.sendMessage({}, (response) => {
             trees: null,
             visible : {
             	contributor: countSlashInUrl === 4,
+                fileExplorer: countSlashInUrl >= 3,
                 commit : countSlashInUrl > 3
             }
         }
