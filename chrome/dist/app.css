@@ -72,8 +72,18 @@
   #side-bar-advanced-tool .tooltipped::after {
     max-width: 290px !important;
     word-break: break-word !important; }
+  #side-bar-advanced-tool .discussion-sidebar {
+    float: none !important;
+    width: auto !important; }
+  #side-bar-advanced-tool .select-menu-modal {
+    width: auto !important; }
 
 .container {
   margin-left: 315px !important;
   margin-right: 15px !important;
+  width: auto !important; }
+
+.discussion-timeline {
+  float: none !important;
+  position: static !important;
   width: auto !important; }

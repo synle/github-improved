@@ -131,16 +131,33 @@ $padding-offset: 10px;
 	border-bottom{
 		border-bottom:1px solid #ddd;
 	}
-	
+
 
 	.tooltipped::after{
 		max-width: $width - $margin-offset !important;
 		word-break: break-word !important;
 	}
+
+
+    //overide
+    .discussion-sidebar{
+        float:none !important;
+        width:auto !important;
+    }
+    .select-menu-modal{
+        width: auto !important;
+    }
 }
 
+//over style found in github
 .container{
 	margin-left: $width + 15px !important;
 	margin-right: 15px !important;
 	width: auto !important;
+}
+
+.discussion-timeline{
+    float: none !important;
+    position:static !important;
+    width: auto !important;
 }

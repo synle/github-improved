@@ -136,6 +136,10 @@ chrome.extension.sendMessage({}, (response) => {
             AppStore.dispatch(
                 APP_ACTION.refresh(newState)
             );
+
+
+            //move the stuff
+            $('.discussion-sidebar').appendTo('#side-bar-advanced-tool');
         });
     }
 
