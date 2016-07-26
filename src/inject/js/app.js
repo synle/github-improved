@@ -7,6 +7,7 @@ import Q from 'q';
 
 //reducer
 import AppReducer from '@src/store/appStore.js';
+import APIReducer from '@src/store/apiStore.js';
 
 //action
 import APP_ACTION from '@src/store/appAction.js';
@@ -16,7 +17,6 @@ import dataUtil from '@src/util/dataUtil';
 import urlUtil from '@src/util/urlUtil';
 import sidebarUtil from '@src/util/sidebarUtil';
 import util from '@src/util/globalUtil';
-import ghApiUtil from '@src/util/apiUtil';
 
 //component
 import CommitBox from '@src/component/commitBox';
@@ -26,9 +26,11 @@ import PrNavigation from '@src/component/prNavigation';
 import BtnQuickSearchFile from '@src/component/btnQuickSearchFile';
 import SearchForm from '@src/component/searchForm';
 import FileExplorer from '@src/component/fileExplorer';
+import TokenRequestForm from '@src/component/tokenRequestForm';
 
 //create the store
 const AppStore = createStore( AppReducer );
+const APIStore = createStore( APIReducer );
 
 chrome.extension.sendMessage({}, (response) => {
     var sideBarContainer;
@@ -47,17 +49,22 @@ chrome.extension.sendMessage({}, (response) => {
 
         //render the app
         ReactDOM.render(
-            <Provider store={AppStore}>
-            	<div>
-            		<BtnQuickSearchFile></BtnQuickSearchFile>
-	            	<SearchForm></SearchForm>
-	            	<DiffOptionBox></DiffOptionBox>
-	            	<PrNavigation></PrNavigation>
-                    <FileExplorer></FileExplorer>
-	                <ContributorBox></ContributorBox>
-	                <CommitBox></CommitBox>
-            	</div>
-            </Provider>,
+            <div>
+                <Provider store={AppStore}>
+                    <div>
+                        <BtnQuickSearchFile></BtnQuickSearchFile>
+                        <SearchForm></SearchForm>
+                        <DiffOptionBox></DiffOptionBox>
+                        <PrNavigation></PrNavigation>
+                        <FileExplorer></FileExplorer>
+                        <ContributorBox></ContributorBox>
+                        <CommitBox></CommitBox>
+                    </div>
+                </Provider>
+                <Provider store={APIStore}>
+                    <TokenRequestForm></TokenRequestForm>
+                </Provider>
+            </div>,
             $('#side-bar-body')[0]
 		);
 
@@ -90,7 +97,8 @@ chrome.extension.sendMessage({}, (response) => {
             }
         }
 
-        newState.repoInstance = (!!gitInfo.owner && !!gitInfo.repo) ? ghApiUtil.getRepo(gitInfo.owner, gitInfo.repo)
+        newState.repoInstance = (!!gitInfo.owner && !!gitInfo.repo && !!APIStore.getState().apiInstance)
+            ? APIStore.getState().apiInstance.getRepo(gitInfo.owner, gitInfo.repo)
             : null;
 
 
@@ -98,8 +106,8 @@ chrome.extension.sendMessage({}, (response) => {
         const deferredContribs = Q.defer();
         const deferredTrees = Q.defer();
 
-        //fetch commits
         if(!!newState.repoInstance){
+            //fetch commits
             const listCommitPayload = {
                 // sha
                 // path
@@ -112,43 +120,39 @@ chrome.extension.sendMessage({}, (response) => {
             newState.repoInstance.listCommits(listCommitPayload).then(({data : commits}) => {
                 deferredCommits.resolve( newState.commits = commits );
             }, deferredCommits.resolve);
-        } else {
-            //no owner and repo ready, just set up empty commits
-            deferredCommits.resolve();
-        }
 
 
-        //fetch contributors
-        if(!!newState.repoInstance && typeof newState.repoInstance.getContributors === 'function'){
+
+
+            //fetch contributors
             newState.repoInstance.getContributors().then(({data : contributors}) => {
                 deferredContribs.resolve( newState.contributors = contributors );
             }, deferredContribs.resolve);
-        } else {
-            //no owner and repo ready, just set up empty commits
-            deferredContribs.resolve();
-        }
 
 
-        //fetch trees
-        if(!!newState.repoInstance && typeof newState.repoInstance.getTree === 'function'){
+
+            //fetch trees
             //filter out by file name if needed
             // if(!!newState.path){
             //     listCommitPayload.path = newState.path;
             // }
-
             newState.repoInstance.getTree( newState.branch ).then(({data : trees}) => {
                 deferredTrees.resolve( newState.trees = trees);
             }, deferredTrees.resolve);
         } else {
             //no owner and repo ready, just set up empty commits
+            deferredCommits.resolve();
+            deferredContribs.resolve();
             deferredTrees.resolve();
         }
+
 
 
         //when everything is done, let's refresh the ui
         Q.allSettled([
             deferredCommits.promise,
-            deferredContribs.promise
+            deferredContribs.promise,
+            deferredTrees.promise
         ]).then( function(){
             //limit things to 50
             newState.contributors = newState.contributors.reverse().slice(0, 50);
@@ -156,16 +160,13 @@ chrome.extension.sendMessage({}, (response) => {
             AppStore.dispatch(
                 APP_ACTION.refresh(newState)
             );
-
-
-            //move the stuff
-            $('#side-bar-pr-toolbox').empty();
-            setTimeout(() => {
-                $('.discussion-sidebar').appendTo('#side-bar-pr-toolbox');
-            }, 2000)
         });
 
-
+        //move the stuff
+        $('#side-bar-pr-toolbox').empty();
+        setTimeout(() => {
+            $('.discussion-sidebar').appendTo('#side-bar-pr-toolbox');
+        }, 2000)
     }
 
     var readyStateCheckInterval = setInterval(function() {
