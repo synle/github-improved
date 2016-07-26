@@ -1,14 +1,16 @@
 //external
 import { createStore } from 'redux';
-
 import GitHub from 'github-api';
+
+//internal
+import dataUtil from '@src/util/dataUtil';
 
 //App Store reducer
 const apiStore = (state, action) => {
 	if(!state){
 		//default state
 		state = {
-            apiToken: localStorage['github-improved.api-token']
+            apiToken: dataUtil.getPersistedProp('api-token')
 		}
         state.apiInstance = new GitHub({
            token: state.apiToken

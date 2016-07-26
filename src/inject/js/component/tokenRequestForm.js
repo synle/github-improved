@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
+//internal
+import dataUtil from '@src/util/dataUtil';
 
 const TokenRequestForm = React.createClass({
   render() {
@@ -10,10 +12,10 @@ const TokenRequestForm = React.createClass({
       }
 
       const onPromptTokenRequest = () => {
-          const apiToken = prompt('Enter your API Token below', '');
+          const apiToken = _.trim( prompt('Enter your API Token below', '') );
 
-          if (!apiToken){
-              localStorage['github-improved.api-token'] = apiToken;
+          if (_.size(apiToken) > 0){
+              dataUtil.setPersistedProp('api-token', apiToken);
               location.reload();
           }
       }
@@ -25,7 +27,7 @@ const TokenRequestForm = React.createClass({
                   <h4>Settings</h4>
               </div>
               <div className="panel-body">
-                <div>No access token provided. For better showing relavant data, we need to access to your api token.</div>
+                <div>For better experience of the extension (relavant commits, contributors, etc.), we need to access to your api token.</div>
                 <button onClick={onPromptTokenRequest} className="btn btn-sm margin-top0">
                     Update API Token
                 </button>
