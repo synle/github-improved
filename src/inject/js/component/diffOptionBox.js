@@ -23,7 +23,7 @@ const DiffBoxOption = React.createClass({
 
       //diff format
       let diffFormatText, cbFormatChange;
-      if(urlParams.w !== 'split'){
+      if(urlParams.diff !== 'split'){
           diffFormatText = 'Split Diff';
           cbFormatChange = sidebarUtil.onGoToSplitDiffUrl;
       } else {
