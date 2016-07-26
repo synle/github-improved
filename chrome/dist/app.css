@@ -70,7 +70,7 @@
   #side-bar-advanced-tool border-bottom {
     border-bottom: 1px solid #ddd; }
   #side-bar-advanced-tool .tooltipped::after {
-    width: 100% !important;
+    max-width: 290px !important;
     word-break: break-word !important; }
 
 .container {

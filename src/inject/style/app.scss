@@ -134,7 +134,7 @@ $padding-offset: 10px;
 	
 
 	.tooltipped::after{
-		width:100% !important;
+		max-width: $width - $margin-offset !important;
 		word-break: break-word !important;
 	}
 }

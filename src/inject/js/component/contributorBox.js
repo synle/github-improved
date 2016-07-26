@@ -24,7 +24,7 @@ const ContributorBox = React.createClass({
                         <a href={userProfileUrl}>{author.login}</a>
                     </div>
                     <div className="flex-shrink0">
-                		<a className="margin-left0 tooltipped tooltipped-s" href={commitByAuthorUrl} aria-label={tooltipText}>
+                		<a className="margin-left0 tooltipped tooltipped-w" href={commitByAuthorUrl} aria-label={tooltipText}>
                 			{totalContributions}
             			</a>
         			</div>
