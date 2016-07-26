@@ -44,14 +44,15 @@ chrome.extension.sendMessage({}, (response) => {
 
         sideBarContainer = $('<div id="side-bar-advanced-tool" />')
             .appendTo('body')
-
-        const titleContainer = $('<h3 id="side-bar-title ta-center" />')
-            .appendTo(sideBarContainer)
-            .text('Github Improved Toolbox')
-
-        const repoProfileContainer = $('<div id="side-bar-repo-info" />')
-        	.appendTo(sideBarContainer);
-
+            .html(`
+            	<h3 id="side-bar-title ta-center">Github Improved Toolbox</h3>
+				<div id="cmd-search-file"></div>
+				<div id="side-bar-search-form"></div>
+				<div id="side-bar-diff-option"></div>
+				<div id="side-bar-pr-navigation"></div>
+				<div id="side-bar-contributor-box"></div>
+				<div id="side-bar-commit-box"></div>
+        	`);
 
 
         //whitespace diff
@@ -59,18 +60,15 @@ chrome.extension.sendMessage({}, (response) => {
             <Provider store={AppStore}>
                 <BtnQuickSearchFile></BtnQuickSearchFile>
             </Provider>,
-            $('<div id="cmd-search-file" />')
-    			.appendTo(repoProfileContainer)[0]
+            $('#side-bar-search-form')[0]
 		);
-
 
         //search form
         ReactDOM.render(
             <Provider store={AppStore}>
                 <SearchForm></SearchForm>
             </Provider>,
-            $('<div id="side-bar-search-form" />')
-    			.appendTo(repoProfileContainer)[0]
+            $('#side-bar-search-form')[0]
 		);
 
 
@@ -80,8 +78,7 @@ chrome.extension.sendMessage({}, (response) => {
             <Provider store={AppStore}>
                 <DiffOptionBox></DiffOptionBox>
             </Provider>,
-            $('<div id="side-bar-diff-option" />')
-    			.appendTo(repoProfileContainer)[0]
+            $('#side-bar-diff-option')[0]
 		);
 
         //pr navigation
@@ -89,30 +86,23 @@ chrome.extension.sendMessage({}, (response) => {
             <Provider store={AppStore}>
                 <PrNavigation></PrNavigation>
             </Provider>,
-            $('<div id="side-bar-pr-navigation" />')
-    			.appendTo(repoProfileContainer)[0]
+            $('#side-bar-pr-navigation')[0]
 		);
-
-
-
 
         //contributor box
         ReactDOM.render(
             <Provider store={AppStore}>
                 <ContributorBox></ContributorBox>
             </Provider>,
-            $('<div id="side-bar-contributor-box" />')
-    			.appendTo(repoProfileContainer)[0]
+            $('#side-bar-contributor-box')[0]
 		);
-
 
 		//commits box
 		ReactDOM.render(
             <Provider store={AppStore}>
                 <CommitBox></CommitBox>
             </Provider>,
-            $('<div id="side-bar-commit-box" />')
-    			.appendTo(repoProfileContainer)[0]
+            $('#side-bar-commit-box')[0]
 		);
 
 
