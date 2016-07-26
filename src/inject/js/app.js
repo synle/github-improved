@@ -46,66 +46,22 @@ chrome.extension.sendMessage({}, (response) => {
             .appendTo('body')
             .html(`
             	<h3 id="side-bar-title ta-center">Github Improved Toolbox</h3>
-				<div id="cmd-search-file"></div>
-				<div id="side-bar-search-form"></div>
-				<div id="side-bar-diff-option"></div>
-				<div id="side-bar-pr-navigation"></div>
-				<div id="side-bar-contributor-box"></div>
-				<div id="side-bar-commit-box"></div>
+				<div id="side-bar-body"></div>
         	`);
 
 
-        //whitespace diff
+        //render the app
         ReactDOM.render(
             <Provider store={AppStore}>
-                <BtnQuickSearchFile></BtnQuickSearchFile>
-            </Provider>,
-            $('#side-bar-search-form')[0]
-		);
-
-        //search form
-        ReactDOM.render(
-            <Provider store={AppStore}>
-                <SearchForm></SearchForm>
-            </Provider>,
-            $('#side-bar-search-form')[0]
-		);
-
-
-
-        //diff option box
-        ReactDOM.render(
-            <Provider store={AppStore}>
-                <DiffOptionBox></DiffOptionBox>
-            </Provider>,
-            $('#side-bar-diff-option')[0]
-		);
-
-        //pr navigation
-        ReactDOM.render(
-            <Provider store={AppStore}>
-                <PrNavigation></PrNavigation>
-            </Provider>,
-            $('#side-bar-pr-navigation')[0]
-		);
-
-        //contributor box
-        ReactDOM.render(
-            <Provider store={AppStore}>
+            	<BtnQuickSearchFile></BtnQuickSearchFile>
+            	<SearchForm></SearchForm>
+            	<DiffOptionBox></DiffOptionBox>
+            	<PrNavigation></PrNavigation>
                 <ContributorBox></ContributorBox>
-            </Provider>,
-            $('#side-bar-contributor-box')[0]
-		);
-
-		//commits box
-		ReactDOM.render(
-            <Provider store={AppStore}>
                 <CommitBox></CommitBox>
             </Provider>,
-            $('#side-bar-commit-box')[0]
+            $('#side-bar-body')[0]
 		);
-
-
 
     	//event
     	$(document).on('click', '.panel-heading', function(){
