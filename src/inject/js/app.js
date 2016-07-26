@@ -42,7 +42,6 @@ chrome.extension.sendMessage({}, (response) => {
             .html(`
             	<h3 id="side-bar-title ta-center">Github Improved Toolbox</h3>
 				<div id="side-bar-body"></div>
-                <div id="side-bar-pr-toolbox"></div>
         	`);
 
 

@@ -6,11 +6,22 @@ import sidebarUtil from '@src/util/sidebarUtil';
 
 const PRNavigation = React.createClass({
   render() {
-      return <div>
-        <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">PR created by you</button>
-        <button onClick={sidebarUtil.onGoToAssignedPRUrl} className="btn btn-sm">PR assigned to you</button>
-        <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">PR mentioning you</button>
-      </div>;
+      return (
+          <div className="panel panel-primary">
+              <div className="panel-heading">
+                  <h4>Pull Request</h4>
+              </div>
+              <div className="panel-body">
+                <div id="side-bar-pr-toolbox"></div>
+                <hr />
+                <div>
+                    <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">PR created by you</button>
+                    <button onClick={sidebarUtil.onGoToAssignedPRUrl} className="btn btn-sm">PR assigned to you</button>
+                    <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">PR mentioning you</button>
+                </div>
+              </div>
+          </div>
+      );
   }
 });
 
