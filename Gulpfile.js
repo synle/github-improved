@@ -14,8 +14,12 @@ var JS_CONFIG  = [ 'src/inject/js/app.js' ];
 var BUNDLED_JS_NAME = 'app.js';
 var JS_VENDOR_FILES = ['node_modules/zepto/dist/zepto.min.js'];
 //config for transformation
-var ALIASIFY_CONFIG =  {};
-var BABELIFY_CONFIG = { presets: [ "es2015" ] };
+var ALIASIFY_CONFIG =  {
+	"replacements": {
+      "@src/(\\w+)": "./src/inject/js/$1"
+    }
+};
+var BABELIFY_CONFIG = { presets: [ "es2015", "react" ] };
 
 
 //styles
@@ -29,10 +33,21 @@ gulp.task('js', simpleGulpBuilder.compileJs( JS_CONFIG, DEST_PATH, BUNDLED_JS_NA
 gulp.task('js:vendor', simpleGulpBuilder.concatFiles( JS_VENDOR_FILES, DEST_PATH, 'vendor.js' ));
 
 //Watch task
-gulp.task('watch',function() {
+gulp.task('watch', ['watch:style', 'watch:js']);
+
+
+gulp.task('watch:style',function() {
     return gulp.watch(
-        ['src/**/*']
-        , ['styles', 'views', 'js', 'js:vendor']
+        ['src/inject/style/**/*']
+        , ['styles']
+    );
+});
+
+
+gulp.task('watch:js',function() {
+    return gulp.watch(
+        ['src/inject/js/**/*']
+        , ['js']
     );
 });
 

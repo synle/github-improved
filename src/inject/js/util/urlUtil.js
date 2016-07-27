@@ -1,52 +1,52 @@
-import dataUtil from './dataUtil';
-import util from './globalUtil';
+import dataUtil from '@src/util/dataUtil';
+import util from '@src/util/globalUtil';
 
-var urlUtil = {
+const urlUtil = {
     getDiffNonWhitespaceUrl: function() {
-    	var urlParams = util.getUrlVars();
+    	const urlParams = util.getUrlVars();
     	urlParams.w = 1;
         return util.getUrlForParam(urlParams);
     },
     getDiffWithWhitespaceUrl: function() {
-        var urlParams = util.getUrlVars();
+        const urlParams = util.getUrlVars();
     	urlParams.w = 0;
         return util.getUrlForParam(urlParams);
     },
     getSplitDiffUrl: function(){
-    	var urlParams = util.getUrlVars();
+    	const urlParams = util.getUrlVars();
     	urlParams.diff = 'split';
         return util.getUrlForParam(urlParams);
     },
     getUnifiedDiffUrl: function(){
-    	var urlParams = util.getUrlVars();
+    	const urlParams = util.getUrlVars();
     	urlParams.diff = 'unified';
         return util.getUrlForParam(urlParams);
     },
     getSearchUrl : function(){
-    	var gitInfo = dataUtil.getGitInfo();
-    	var owner = gitInfo.owner;
-    	var repo = gitInfo.repo;
-    	var branch = gitInfo.branch;
+    	const gitInfo = dataUtil.getGitInfo();
+    	const owner = gitInfo.owner;
+    	const repo = gitInfo.repo;
+    	const branch = gitInfo.branch;
 
-    	return 'https://' + location.hostname + '/' + owner + '/' + repo + '/find/' + branch
+    	return `https://${location.hostname}/${owner}/${repo}/find/${branch}`;
     }, 
     getOwnPRUrl : function(){
-    	return 'https://github.com/pulls';
+    	return `https://${location.hostname}/pulls`;
     },
     getAssignedPRUrl : function(){
-    	return 'https://github.com/pulls/assigned';
+    	return `https://${location.hostname}/pulls/assigned`;
     },
     getMentioningPRUrl : function() {
-    	return 'https://github.com/pulls/mentioned';
+    	return `https://${location.hostname}/pulls/mentioned`;
     },
     getRepoSearchResultUrl : function(keyword, language, searchIn, author){
-    	var gitInfo = dataUtil.getGitInfo();
-    	var owner = gitInfo.owner;
-    	var repo = gitInfo.repo;
-    	// var branch = gitInfo.branch;
+    	const gitInfo = dataUtil.getGitInfo();
+    	const owner = gitInfo.owner;
+    	const repo = gitInfo.repo;
+    	// const branch = gitInfo.branch;
 
 
-    	var urlParams = {
+    	const urlParams = {
     		q : `${keyword} in:${searchIn}`
     	};
 
@@ -58,13 +58,34 @@ var urlUtil = {
     		urlParams.q += ` user:${author}`;
     	}
 
-    	// https://github.com/relateiq/riq/search?q=test&utf8=%E2%9C%93
-    	// https://github.com/search?l=json&q=octocat+in%3Afile%2Cpath&type=Code
+    	// https://${location.hostname}/relateiq/riq/search?q=test&utf8=%E2%9C%93
+    	// https://${location.hostname}/search?l=json&q=octocat+in%3Afile%2Cpath&type=Code
 
-    	var searchQueryString = util.getSerializedQueryString(urlParams);
+    	const searchQueryString = util.getSerializedQueryString(urlParams);
 
-    	return 'https://' + location.hostname + '/' + owner + '/' + repo + '/search?' + searchQueryString;
-    }
+    	return `https://${location.hostname}/${owner}/${repo}/search?${searchQueryString}`;
+    },
+    getCommitByAuthorUrl(user){
+    	const gitInfo = dataUtil.getGitInfo();
+    	const owner = gitInfo.owner;
+    	const repo = gitInfo.repo;
+    	const branch = gitInfo.branch;
+
+    	return `https://${location.hostname}/${owner}/${repo}/commits/${branch}?author=${user}`;
+    },
+	getUserProfileUrl(user){
+    	return `https://${location.hostname}/${user}`;
+	},
+	getCommitUrlBySha(sha){
+		const gitInfo = dataUtil.getGitInfo();
+    	const owner = gitInfo.owner;
+    	const repo = gitInfo.repo;
+
+
+    	// https://github.com/relateiq/riq/commit/66628ed91063c6cc3a7a39778097e7d1e38de029
+    	// https://github.com/relateiq/riq/commit/857f318e082d2cfd2aa1548e1bd23d73a15fcaed
+		return `https://${location.hostname}/${owner}/${repo}/commit/${sha}`;
+	}
 }
 
 export default urlUtil;

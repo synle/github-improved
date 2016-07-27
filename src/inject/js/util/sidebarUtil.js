@@ -1,33 +1,33 @@
-import urlUtil from './urlUtil';
+import urlUtil from '@src/util/urlUtil';
 
 var sideBarTool = {
-	onGoToSplitDiffUrl: function(){
+	onGoToSplitDiffUrl() {
 		location.href = urlUtil.getSplitDiffUrl();
 	},
-	onGoToUnifieDiffUrl: function(){
+	onGoToUnifieDiffUrl() {
 		location.href = urlUtil.getUnifiedDiffUrl();
 	},
-    onGoToDiffNonWhitespaceUrl: function() {
+    onGoToDiffWhitespaceOffUrl () {
         location.href = urlUtil.getDiffNonWhitespaceUrl();
     },
-    onGoTogetDiffWithWhitespaceUrl: function() {
+    onGoToDiffWhitespaceOnUrl () {
         location.href = urlUtil.getDiffWithWhitespaceUrl();
     },
-    onGoToGetSearchUrl : function(){
+    onGoToGetSearchUrl() {
     	location.href = urlUtil.getSearchUrl();
     },
-    onGoToOwnPRUrl : function(){
+    onGoToOwnPRUrl() {
     	location.href = urlUtil.getOwnPRUrl();
     },
-    onGoToAssignedPRUrl : function(){
+    onGoToAssignedPRUrl() {
     	location.href = urlUtil.getAssignedPRUrl();
     },
-    onGoToMentioningYouPRUrl: function () {
+    onGoToMentioningYouPRUrl() {
     	location.href = urlUtil.getMentioningPRUrl();
     },
-    onSearchRepo: function() {
-    	var formSearch = $('#side-bar-form-search') ; //$(this)
-    	var formSearchData = formSearch.serializeArray().reduce(
+    onSearchRepo(e) {
+    	const formSearch = $('#side-bar-form-search') ; //$(this)
+    	const formSearchData = formSearch.serializeArray().reduce(
     		(res, formData) => {
     			if(!!formData.value){
     				res[formData.name] = formData.value;
@@ -37,13 +37,17 @@ var sideBarTool = {
 			,{}
 		);
 
-    	location.href = urlUtil.getRepoSearchResultUrl(
+    	const newUrl = urlUtil.getRepoSearchResultUrl(
     		formSearchData.keyword,
     		formSearchData.language,
     		formSearchData.type,//in:file or in:path or in:file,path
     		formSearchData.author
 		);
 
+		//redirect
+		location.href = newUrl
+
+		e.preventDefault();
 		return false;
     }
 }
