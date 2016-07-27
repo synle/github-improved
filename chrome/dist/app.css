@@ -83,7 +83,18 @@
   margin-right: 15px !important;
   width: auto !important; }
 
-.discussion-timeline {
+#discussion_bucket .discussion-timeline {
   float: none !important;
   position: static !important;
   width: auto !important; }
+
+#discussion_bucket .timeline-comment-avatar {
+  width: 30px !important;
+  height: 30px !important;
+  margin-left: -40px !important; }
+
+#discussion_bucket .timeline-comment-wrapper {
+  padding-left: 40px !important; }
+
+#commits_bucket {
+  margin-left: 0 !important; }
