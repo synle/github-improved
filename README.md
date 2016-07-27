@@ -15,8 +15,12 @@ https://chrome.google.com/webstore/detail/github-improved/dpcaldjgbfmpmjkffjdiim
 
 
 
-![alt Github UI Chrome Extension](https://github.com/synle/github-improved/blob/master/images/1.png?raw=true "Github Improved Chrome Extension")
+![alt Github UI Chrome Extension](https://github.com/synle/github-improved/blob/master/images/1.jpg?raw=true "Github Improved Chrome Extension")
 
 
 
-![alt Github UI Chrome Extension](https://github.com/synle/github-improved/blob/master/images/2.png?raw=true "Github Improved Chrome Extension")
+![alt Github UI Chrome Extension](https://github.com/synle/github-improved/blob/master/images/2.jpg?raw=true "Github Improved Chrome Extension")
+
+
+
+![alt Github UI Chrome Extension](https://github.com/synle/github-improved/blob/master/images/3.jpg?raw=true "Github Improved Chrome Extension")
