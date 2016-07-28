@@ -13,7 +13,6 @@ const PRNavigation = React.createClass({
               </div>
               <div className="panel-body">
                 <div id="side-bar-pr-toolbox"></div>
-                <hr />
                 <div>
                     <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">PR created by you</button>
                     <button onClick={sidebarUtil.onGoToAssignedPRUrl} className="btn btn-sm">PR assigned to you</button>
