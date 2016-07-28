@@ -8,7 +8,6 @@ import Q from 'q';
 
 //reducer
 import AppReducer from '@src/store/appStore.js';
-import APIReducer from '@src/store/apiStore.js';
 
 //action
 import APP_ACTION from '@src/store/appAction.js';
@@ -31,7 +30,6 @@ import TokenRequestForm from '@src/component/tokenRequestForm';
 
 //create the store
 const AppStore = createStore( AppReducer, applyMiddleware(thunk) );
-const APIStore = createStore( APIReducer, applyMiddleware(thunk) );
 
 chrome.extension.sendMessage({}, (response) => {
     var sideBarContainer;
@@ -60,10 +58,8 @@ chrome.extension.sendMessage({}, (response) => {
                         <FileExplorer></FileExplorer>
                         <ContributorBox></ContributorBox>
                         <CommitBox></CommitBox>
+                        <TokenRequestForm></TokenRequestForm>
                     </div>
-                </Provider>
-                <Provider store={APIStore}>
-                    <TokenRequestForm></TokenRequestForm>
                 </Provider>
             </div>,
             $('#side-bar-body')[0]
@@ -98,8 +94,8 @@ chrome.extension.sendMessage({}, (response) => {
             }
         }
 
-        const repoInstance = (!!gitInfo.owner && !!gitInfo.repo && !!APIStore.getState().apiInstance)
-            ? APIStore.getState().apiInstance.getRepo(gitInfo.owner, gitInfo.repo)
+        const repoInstance = (!!gitInfo.owner && !!gitInfo.repo && !!AppStore.getState().apiInstance)
+            ? AppStore.getState().apiInstance.getRepo(gitInfo.owner, gitInfo.repo)
             : null;
 
         newState.repoInstance = repoInstance;

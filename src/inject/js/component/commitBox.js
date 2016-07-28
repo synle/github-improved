@@ -66,4 +66,4 @@ export default connect(state => ({
 	owner : _.get( state, 'owner'),
 	repo : _.get( state, 'repo'),
 	visible : _.get( state, 'visible')
-})(CommitBox);
+}))(CommitBox);

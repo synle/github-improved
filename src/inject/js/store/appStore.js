@@ -1,5 +1,6 @@
 //external
 import { createStore } from 'redux';
+import GitHub from 'github-api';
 
 //internal
 import dataUtil from '@src/util/dataUtil';
@@ -8,12 +9,9 @@ import sidebarUtil from '@src/util/sidebarUtil';
 import util from '@src/util/globalUtil';
 
 
+
 //App Store reducer
 const AppReducer = (state, {type, value}) => {
-	console.error('Before 1', type);
-	console.error('Before 2', value);
-	console.error('Before 3', state);
-
 	if(!state){
 		//default state
 		state = {
@@ -31,13 +29,24 @@ const AppReducer = (state, {type, value}) => {
                 contributor : false,
                 fileExplorer : false,
                 commit : false
-            }
-		}
+            },
+            apiToken: dataUtil.getPersistedProp('api-token')
+		};
+
+        state.apiInstance = new GitHub({
+           token: state.apiToken
+        })
 	}
 
     switch(type){
         case 'REFRESH':
             state = value;
+            break;
+        case 'UPDATE_API_TOKEN':
+            state.apiToken = action.value;
+            state.apiInstance = new GitHub({
+               token: state.apiToken
+            })
             break;
         case 'UPDATE_COMMIT_LIST':
         	state.commits = value;
@@ -51,9 +60,6 @@ const AppReducer = (state, {type, value}) => {
     		state.contributors = value;
         	break;
     }
-
-    console.error('After 1', type);
-    console.error('After 2', state);
 
     return Object.assign({}, state);
 }
