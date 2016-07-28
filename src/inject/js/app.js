@@ -106,31 +106,30 @@ chrome.extension.sendMessage({}, (response) => {
 
 
         //initial sync
-        AppStore.dispatch(
-            APP_ACTION.refresh(newState)
-        );
+        AppStore.dispatch(APP_ACTION.refresh(newState));
 
         //fetch async
         AppStore.dispatch(
-            APP_ACTION.fetchCommitList(
-            	gitInfo.path,
-            	newState.repoInstance
-        	)
-        );
-
-        AppStore.dispatch(
-            APP_ACTION.fetchContributorList(
-            	newState.repoInstance
-        	)
-        );
+        	APP_ACTION.fetchCommitList(
+	        	gitInfo.path,
+	        	newState.repoInstance
+	    	)
+    	);
 
 
         AppStore.dispatch(
-            APP_ACTION.fetchTreeList(
-            	newState.branch,
-            	newState.repoInstance
-        	)
-        );
+	        APP_ACTION.fetchContributorList(
+	        	newState.repoInstance
+	    	)
+    	);
+
+
+    	AppStore.dispatch(
+	        APP_ACTION.fetchTreeList(
+	        	newState.branch,
+	        	newState.repoInstance
+	    	)
+    	);
 
 
 

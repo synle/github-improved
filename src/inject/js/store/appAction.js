@@ -1,12 +1,20 @@
 export default {
-    refresh : (value) => ({
-        type : 'REFRESH',
-        value : value
-    }),
-    updateApiToken : (value) => ({
-        type : 'UPDATE_API_TOKEN',
-        value : value
-    }),
+    refresh : (value) => {
+    	return function(dispatch){
+    		return dispatch({
+		        type : 'REFRESH',
+		        value : value
+		    });
+    	}
+    },
+    updateApiToken : (value) => {
+    	return function(dispatch){
+    		return dispatch({
+		        type : 'UPDATE_API_TOKEN',
+		        value : value
+		    });
+    	}
+    },
 	fetchCommitList: (path, repoInstance) => {
 		return function (dispatch, getState){
 			//fetch commits

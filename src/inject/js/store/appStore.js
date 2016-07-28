@@ -55,7 +55,7 @@ const AppReducer = (state, {type, value}) => {
     console.error('After 1', type);
     console.error('After 2', state);
 
-    return state;
+    return Object.assign({}, state);
 }
 
 export default AppReducer;
