@@ -9,8 +9,11 @@ import util from '@src/util/globalUtil';
 
 
 //App Store reducer
-const AppReducer = (state, action) => {
-	console.error('AppReducer', action.type, action.value, state);
+const AppReducer = (state, {type, value}) => {
+	console.error('Before 1', type);
+	console.error('Before 2', value);
+	console.error('Before 3', state);
+
 	if(!state){
 		//default state
 		state = {
@@ -32,32 +35,25 @@ const AppReducer = (state, action) => {
 		}
 	}
 
-    switch(action.type){
+    switch(type){
         case 'REFRESH':
-            state = action.value;
+            state = value;
             break;
         case 'UPDATE_COMMIT_LIST':
-        	state.commits = action.value;
+        	state.commits = value;
         	break;
 
     	case 'UPDATE_TREE_LIST':
-            //fetch trees
-            //filter out by file name if needed
-            // if(!!state.path){
-            //     listCommitPayload.path = state.path;
-            // }
-            state.repoInstance.getTree( state.branch ).then(({data : trees}) => {
-                // deferredTrees.resolve( state.trees = trees);
-            });
+            state.trees = value;
         	break;
 
     	case 'UPDATE_CONTRIBUTOR_LIST':
-            //fetch contributors
-            state.repoInstance.getContributors().then(({data : contributors}) => {
-                // deferredContribs.resolve( state.contributors = contributors );
-            });
+    		state.contributors = value;
         	break;
     }
+
+    console.error('After 1', type);
+    console.error('After 2', state);
 
     return state;
 }

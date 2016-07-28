@@ -10,6 +10,9 @@ const CommitBox = React.createClass({
     const { commits, owner, repo, visible } = this.props;
   	const commitCount = _.size(commits);
     let bodyDom;
+
+    console.log('state2', this.props);
+
   	if(visible.commit !== true){
         return null;
     }else if(!!owner && !!repo && commitCount > 0){
@@ -61,12 +64,13 @@ const CommitBox = React.createClass({
 
 
 const mapStateToProps = function(state) {
-  return {
-    commits : _.get( state, 'commits', []),
-    owner : _.get( state, 'owner'),
-    repo : _.get( state, 'repo'),
-    visible : _.get( state, 'visible')
-  };
+	console.log('state1', state);
+	return {
+		commits : _.get( state, 'commits', []),
+		owner : _.get( state, 'owner'),
+		repo : _.get( state, 'repo'),
+		visible : _.get( state, 'visible')
+	};
 }
 
 export default connect(mapStateToProps)(CommitBox);
