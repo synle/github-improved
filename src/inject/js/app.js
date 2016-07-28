@@ -2,7 +2,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 import Q from 'q';
 
 //reducer
@@ -29,8 +30,8 @@ import FileExplorer from '@src/component/fileExplorer';
 import TokenRequestForm from '@src/component/tokenRequestForm';
 
 //create the store
-const AppStore = createStore( AppReducer );
-const APIStore = createStore( APIReducer );
+const AppStore = createStore( AppReducer, applyMiddleware(thunk) );
+const APIStore = createStore( APIReducer, applyMiddleware(thunk) );
 
 chrome.extension.sendMessage({}, (response) => {
     var sideBarContainer;
@@ -97,70 +98,43 @@ chrome.extension.sendMessage({}, (response) => {
             }
         }
 
-        newState.repoInstance = (!!gitInfo.owner && !!gitInfo.repo && !!APIStore.getState().apiInstance)
+        const repoInstance = (!!gitInfo.owner && !!gitInfo.repo && !!APIStore.getState().apiInstance)
             ? APIStore.getState().apiInstance.getRepo(gitInfo.owner, gitInfo.repo)
             : null;
 
-
-        const deferredCommits = Q.defer();
-        const deferredContribs = Q.defer();
-        const deferredTrees = Q.defer();
-
-        if(!!newState.repoInstance){
-            //fetch commits
-            const listCommitPayload = {
-                // sha
-                // path
-                // author
-            };
-            //filter out by file name if needed
-            if(!!newState.path){
-                listCommitPayload.path = newState.path;
-            }
-            newState.repoInstance.listCommits(listCommitPayload).then(({data : commits}) => {
-                deferredCommits.resolve( newState.commits = commits );
-            }, deferredCommits.resolve);
+        newState.repoInstance = repoInstance;
 
 
+        //initial sync
+        AppStore.dispatch(
+            APP_ACTION.refresh(newState)
+        );
+
+        //fetch async
+        AppStore.dispatch(
+            APP_ACTION.fetchCommitList(
+            	gitInfo.path,
+            	newState.repoInstance
+        	)
+        );
+
+        AppStore.dispatch(
+            APP_ACTION.fetchContributorList(
+            	newState.repoInstance
+        	)
+        );
 
 
-            //fetch contributors
-            newState.repoInstance.getContributors().then(({data : contributors}) => {
-                deferredContribs.resolve( newState.contributors = contributors );
-            }, deferredContribs.resolve);
-
-
-
-            //fetch trees
-            //filter out by file name if needed
-            // if(!!newState.path){
-            //     listCommitPayload.path = newState.path;
-            // }
-            newState.repoInstance.getTree( newState.branch ).then(({data : trees}) => {
-                deferredTrees.resolve( newState.trees = trees);
-            }, deferredTrees.resolve);
-        } else {
-            //no owner and repo ready, just set up empty commits
-            deferredCommits.resolve();
-            deferredContribs.resolve();
-            deferredTrees.resolve();
-        }
+        AppStore.dispatch(
+            APP_ACTION.fetchTreeList(
+            	newState.branch,
+            	newState.repoInstance
+        	)
+        );
 
 
 
-        //when everything is done, let's refresh the ui
-        Q.allSettled([
-            deferredCommits.promise,
-            deferredContribs.promise,
-            deferredTrees.promise
-        ]).then( function(){
-            //limit things to 50
-            newState.contributors = newState.contributors.reverse().slice(0, 50);
-            newState.commits = newState.commits.slice(0, 50);
-            AppStore.dispatch(
-                APP_ACTION.refresh(newState)
-            );
-        });
+        
 
         //move the stuff
         $('#side-bar-pr-toolbox').empty();

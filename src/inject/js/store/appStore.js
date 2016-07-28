@@ -10,6 +10,7 @@ import util from '@src/util/globalUtil';
 
 //App Store reducer
 const AppReducer = (state, action) => {
+	console.error('AppReducer', action.type, action.value, state);
 	if(!state){
 		//default state
 		state = {
@@ -35,6 +36,27 @@ const AppReducer = (state, action) => {
         case 'REFRESH':
             state = action.value;
             break;
+        case 'UPDATE_COMMIT_LIST':
+        	state.commits = action.value;
+        	break;
+
+    	case 'UPDATE_TREE_LIST':
+            //fetch trees
+            //filter out by file name if needed
+            // if(!!state.path){
+            //     listCommitPayload.path = state.path;
+            // }
+            state.repoInstance.getTree( state.branch ).then(({data : trees}) => {
+                // deferredTrees.resolve( state.trees = trees);
+            });
+        	break;
+
+    	case 'UPDATE_CONTRIBUTOR_LIST':
+            //fetch contributors
+            state.repoInstance.getContributors().then(({data : contributors}) => {
+                // deferredContribs.resolve( state.contributors = contributors );
+            });
+        	break;
     }
 
     return state;
