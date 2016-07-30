@@ -12,7 +12,7 @@ export default {
 	    };
     },
 	fetchCommitList: (path, repoInstance) => {
-		return function (dispatch, getState){
+		return function (dispatch, getState) {
 			//fetch commits
 			const listCommitPayload = {
 				// sha

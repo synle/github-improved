@@ -2,12 +2,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import Q from 'q';
 
 //reducer
-import AppReducer from '@src/store/appStore.js';
+import AppStore from '@src/store/appStore.js';
 
 //action
 import APP_ACTION from '@src/store/appAction.js';
@@ -27,9 +24,6 @@ import BtnQuickSearchFile from '@src/component/btnQuickSearchFile';
 import SearchForm from '@src/component/searchForm';
 import FileExplorer from '@src/component/fileExplorer';
 import TokenRequestForm from '@src/component/tokenRequestForm';
-
-//create the store
-const AppStore = createStore( AppReducer, applyMiddleware(thunk) );
 
 chrome.extension.sendMessage({}, (response) => {
     var sideBarContainer;
@@ -107,23 +101,19 @@ chrome.extension.sendMessage({}, (response) => {
         //fetch async
         AppStore.dispatch(
         	APP_ACTION.fetchCommitList(
-	        	gitInfo.path,
-	        	newState.repoInstance
-	    	)
+	        	gitInfo.path
+        	)
     	);
 
 
         AppStore.dispatch(
-	        APP_ACTION.fetchContributorList(
-	        	newState.repoInstance
-	    	)
+	        APP_ACTION.fetchContributorList()
     	);
 
 
     	AppStore.dispatch(
 	        APP_ACTION.fetchTreeList(
-	        	newState.branch,
-	        	newState.repoInstance
+	        	newState.branch
 	    	)
     	);
 

@@ -1,5 +1,6 @@
 //external
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 import GitHub from 'github-api';
 
 //internal
@@ -64,4 +65,6 @@ const AppReducer = (state, {type, value}) => {
     return Object.assign({}, state);
 }
 
-export default AppReducer;
+const AppStore = createStore( AppReducer, applyMiddleware(thunk) );
+
+export default AppStore;
