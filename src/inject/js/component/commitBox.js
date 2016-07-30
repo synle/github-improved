@@ -62,8 +62,8 @@ class CommitBox extends Component{
 }
 
 export default connect(state => ({
-	commits : _.get( state, 'commits', []),
-	owner : _.get( state, 'owner'),
-	repo : _.get( state, 'repo'),
-	visible : _.get( state, 'visible')
+	commits : _.get( state, 'repo.commits', []),
+	owner : _.get( state, 'repo.owner'),
+	repo : _.get( state, 'repo.repo'),
+	visible : _.get( state, 'repo.visible')
 }))(CommitBox);

@@ -47,7 +47,7 @@ const DiffBoxOption = React.createClass({
 
 const mapStateToProps = function(state) {
   return {
-    urlParams : _.get( state, 'urlParams', {})
+    urlParams : _.get( state, 'repo.urlParams', {})
   };
 }
 

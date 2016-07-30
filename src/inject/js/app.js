@@ -35,9 +35,9 @@ chrome.extension.sendMessage({}, (response) => {
         sideBarContainer = $('<div id="side-bar-advanced-tool" />')
             .appendTo('body')
             .html(`
-            	<h3 id="side-bar-title ta-center">Github Improved Toolbox</h3>
-				<div id="side-bar-body"></div>
-        	`);
+                <h3 id="side-bar-title ta-center">Github Improved Toolbox</h3>
+                <div id="side-bar-body"></div>
+            `);
 
 
         //render the app
@@ -57,20 +57,19 @@ chrome.extension.sendMessage({}, (response) => {
                 </Provider>
             </div>,
             $('#side-bar-body')[0]
-		);
+        );
 
-    	//event
-    	// $(document).on('click', '.panel-heading', function(){
-    	// 	$(this).closest('.panel').find('.panel-body').toggle();
-    	// });
+        //event
+        // $(document).on('click', '.panel-heading', function(){
+        //  $(this).closest('.panel').find('.panel-body').toggle();
+        // });
     }
 
     function _refreshState(){
         const countSlashInUrl =  location.href.match(/\//g).length;
-        const urlParams = util.getUrlVars();
         const gitInfo = dataUtil.getGitInfo();
         const newState = {
-            urlParams : urlParams,
+            urlParams : util.getUrlVars(),
             owner: gitInfo.owner,
             repo: gitInfo.repo,
             branch: gitInfo.branch,
@@ -82,40 +81,38 @@ chrome.extension.sendMessage({}, (response) => {
             contributors: null,
             trees: null,
             visible : {
-            	contributor: countSlashInUrl === 4,
+                contributor: countSlashInUrl === 4,
                 fileExplorer: countSlashInUrl >= 3,
                 commit : countSlashInUrl > 3
             }
-        }
-
-        const repoInstance = (!!gitInfo.owner && !!gitInfo.repo && !!AppStore.getState().apiInstance)
-            ? AppStore.getState().apiInstance.getRepo(gitInfo.owner, gitInfo.repo)
-            : null;
-
-        newState.repoInstance = repoInstance;
-
+        };
 
         //initial sync
         AppStore.dispatch(AppAction.refresh(newState));
 
+        // const repoInstance = (!!gitInfo.owner && !!gitInfo.repo && !!AppStore.getState().apiInstance)
+        //     ? AppStore.getState().apiInstance.getRepo(gitInfo.owner, gitInfo.repo)
+        //     : null;
+        // newState.repoInstance = repoInstance;
+
         //fetch async
-        AppStore.dispatch(
-        	AppAction.fetchCommitList(
-	        	gitInfo.path
-        	)
-    	);
+        // AppStore.dispatch(
+        //     AppAction.fetchCommitList(
+        //         gitInfo.path
+        //     )
+        // );
 
 
-        AppStore.dispatch(
-	        AppAction.fetchContributorList()
-    	);
+        // AppStore.dispatch(
+        //     AppAction.fetchContributorList()
+        // );
 
 
-    	AppStore.dispatch(
-	        AppAction.fetchTreeList(
-	        	newState.branch
-	    	)
-    	);
+        // AppStore.dispatch(
+        //     AppAction.fetchTreeList(
+        //         newState.branch
+        //     )
+        // );
 
 
 
@@ -134,17 +131,17 @@ chrome.extension.sendMessage({}, (response) => {
             _init();
             _refreshState();//trigger the first state change
 
-			//adapted from octotree for changes in the dom
-			//reload the state
-		    const pjaxContainer = $('#js-repo-pjax-container, .context-loader-container, [data-pjax-container]')[0];
-		    if (!!pjaxContainer){
-		    	const pageChangeObserver = new window.MutationObserver(() => {
-					_refreshState();
-			    })
-		    	pageChangeObserver.observe(pjaxContainer, {
-					childList: true
-				});
-		    }
+            //adapted from octotree for changes in the dom
+            //reload the state
+            const pjaxContainer = $('#js-repo-pjax-container, .context-loader-container, [data-pjax-container]')[0];
+            if (!!pjaxContainer){
+                const pageChangeObserver = new window.MutationObserver(() => {
+                    _refreshState();
+                })
+                pageChangeObserver.observe(pjaxContainer, {
+                    childList: true
+                });
+            }
         }
     }, 10);
 });

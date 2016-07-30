@@ -62,8 +62,8 @@ const ContributorBox = React.createClass({
 
 const mapStateToProps = function(state) {
   return {
-      contributors : _.get(state, 'contributors'),
-      visible : _.get(state, 'visible')
+      contributors : _.get(state, 'repo.contributors'),
+      visible : _.get(state, 'repo.visible')
   };
 }
 
