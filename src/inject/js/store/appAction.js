@@ -11,71 +11,81 @@ export default {
 	        value : value
 	    };
     },
-	fetchCommitList: (path, repoInstance) => {
+	fetchCommitList: (path) => {
 		return function (dispatch, getState) {
-			//fetch commits
-			const listCommitPayload = {
-				// sha
-				// path
-				// author
-			};
-			//filter out by file name if needed
-			if(!!path){
-				listCommitPayload.path = path;
-			}
+			const repoInstance = getState().repoInstance;
 
-			repoInstance.listCommits( listCommitPayload ).then(
-				resp => {
-					dispatch({
-						type : 'UPDATE_COMMIT_LIST',
-						value : resp.data
-					})
-				},
-				() => {
-					dispatch({
-						type : 'UPDATE_COMMIT_LIST',
-						value : []
-					})
+			if(!!repoInstance){
+				//fetch commits
+				const listCommitPayload = {
+					// sha
+					// path
+					// author
+				};
+				//filter out by file name if needed
+				if(!!path){
+					listCommitPayload.path = path;
 				}
-			);
+
+				repoInstance.listCommits( listCommitPayload ).then(
+					resp => {
+						dispatch({
+							type : 'UPDATE_COMMIT_LIST',
+							value : resp.data
+						})
+					},
+					() => {
+						dispatch({
+							type : 'UPDATE_COMMIT_LIST',
+							value : []
+						})
+					}
+				);
+			}
 		};
 	},
-	fetchTreeList: (branch, repoInstance) => {
+	fetchTreeList: (branch) => {
 		return function (dispatch, getState) {
 			//fetch trees
-            repoInstance.getTree( branch ).then(
-        		resp => {
-					dispatch({
-						type : 'UPDATE_TREE_LIST',
-						value : resp.data
-					})
-				},
-				() => {
-					dispatch({
-						type : 'UPDATE_TREE_LIST',
-						value : []
-					})
-				}
-			);
+			const repoInstance = getState().repoInstance;
+			if(!!repoInstance){
+				repoInstance.getTree( branch ).then(
+	        		resp => {
+						dispatch({
+							type : 'UPDATE_TREE_LIST',
+							value : resp.data
+						})
+					},
+					() => {
+						dispatch({
+							type : 'UPDATE_TREE_LIST',
+							value : []
+						})
+					}
+				);
+			}
 		}
 	},
 	fetchContributorList: (repoInstance) => {
 		return function(dispatch, getState){
 			//fetch contributors
-            repoInstance.getContributors().then(
-            	resp => {
-					dispatch({
-						type : 'UPDATE_CONTRIBUTOR_LIST',
-						value : resp.data
-					})
-				},
-				() => {
-					dispatch({
-						type : 'UPDATE_CONTRIBUTOR_LIST',
-						value : []
-					})
-				}
-        	);
+			const repoInstance = getState().repoInstance;
+			if(!!repoInstance){
+				repoInstance.getContributors().then(
+	            	resp => {
+						dispatch({
+							type : 'UPDATE_CONTRIBUTOR_LIST',
+							value : resp.data
+						})
+					},
+					() => {
+						dispatch({
+							type : 'UPDATE_CONTRIBUTOR_LIST',
+							value : []
+						})
+					}
+	        	);
+			}
 		}
 	}
 }
