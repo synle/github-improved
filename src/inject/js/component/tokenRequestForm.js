@@ -20,7 +20,6 @@ const TokenRequestForm = React.createClass({
           }
       }
 
-
       return (
           <div className="panel panel-primary">
               <div className="panel-heading">

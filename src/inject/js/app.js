@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import AppStore from '@src/store/appStore.js';
 
 //action
-import APP_ACTION from '@src/store/appAction.js';
+import AppAction from '@src/store/appAction.js';
 
 //internal
 import dataUtil from '@src/util/dataUtil';
@@ -60,9 +60,9 @@ chrome.extension.sendMessage({}, (response) => {
 		);
 
     	//event
-    	$(document).on('click', '.panel-heading', function(){
-    		$(this).closest('.panel').find('.panel-body').toggle();
-    	});
+    	// $(document).on('click', '.panel-heading', function(){
+    	// 	$(this).closest('.panel').find('.panel-body').toggle();
+    	// });
     }
 
     function _refreshState(){
@@ -96,23 +96,23 @@ chrome.extension.sendMessage({}, (response) => {
 
 
         //initial sync
-        AppStore.dispatch(APP_ACTION.refresh(newState));
+        AppStore.dispatch(AppAction.refresh(newState));
 
         //fetch async
         AppStore.dispatch(
-        	APP_ACTION.fetchCommitList(
+        	AppAction.fetchCommitList(
 	        	gitInfo.path
         	)
     	);
 
 
         AppStore.dispatch(
-	        APP_ACTION.fetchContributorList()
+	        AppAction.fetchContributorList()
     	);
 
 
     	AppStore.dispatch(
-	        APP_ACTION.fetchTreeList(
+	        AppAction.fetchTreeList(
 	        	newState.branch
 	    	)
     	);

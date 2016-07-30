@@ -41,10 +41,10 @@ const AppReducer = (state, {type, value}) => {
 
     switch(type){
         case 'REFRESH':
-            state = value;
+            state = Object.assign({}, state, value);
             break;
         case 'UPDATE_API_TOKEN':
-            state.apiToken = action.value;
+            state.apiToken = value;
             state.apiInstance = new GitHub({
                token: state.apiToken
             })
@@ -62,7 +62,7 @@ const AppReducer = (state, {type, value}) => {
         	break;
     }
 
-    return Object.assign({}, state);
+    return state;
 }
 
 const AppStore = createStore( AppReducer, applyMiddleware(thunk) );
