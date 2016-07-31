@@ -6,12 +6,14 @@ const DataReducer = (state, {type, value}) => {
 	if(!state){
 		//default state
 		state = {
-            
+			urlParams : '',
+            visible : {},
+            expand : {}
 		};
 	}
 
     switch(type){
-        case 'UPDATE_API_TOKEN':
+        case 'REFRESH':
             break;
     }
 

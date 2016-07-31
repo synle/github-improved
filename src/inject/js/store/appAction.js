@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export default {
     refresh : (value) => {
     	return {
@@ -13,9 +15,14 @@ export default {
     },
 	fetchCommitList: (path) => {
 		return function (dispatch, getState) {
-			const repoInstance = getState().repoInstance;
+			const state = getState();
+			const owner = _.get( state, 'repo.owner');
+			const repo = _.get( state, 'repo.repo');
+			const apiInstance = _.get( state, 'data.apiInstance');
 
-			if(!!repoInstance){
+			if(!!owner && !!repo && !!apiInstance){
+				const repoInstance = apiInstance.getRepo( owner, repo );
+
 				//fetch commits
 				const listCommitPayload = {
 					// sha
@@ -47,8 +54,14 @@ export default {
 	fetchTreeList: (branch) => {
 		return function (dispatch, getState) {
 			//fetch trees
-			const repoInstance = getState().repoInstance;
-			if(!!repoInstance){
+			const state = getState();
+			const owner = _.get( state, 'repo.owner');
+			const repo = _.get( state, 'repo.repo');
+			const apiInstance = _.get( state, 'data.apiInstance');
+
+			if(!!owner && !!repo && !!apiInstance){
+				const repoInstance = apiInstance.getRepo( owner, repo );
+
 				repoInstance.getTree( branch ).then(
 	        		resp => {
 						dispatch({
@@ -69,8 +82,13 @@ export default {
 	fetchContributorList: (repoInstance) => {
 		return function(dispatch, getState){
 			//fetch contributors
-			const repoInstance = getState().repoInstance;
-			if(!!repoInstance){
+			const state = getState();
+			const owner = _.get( state, 'repo.owner');
+			const repo = _.get( state, 'repo.repo');
+			const apiInstance = _.get( state, 'data.apiInstance');
+
+			if(!!owner && !!repo && !!apiInstance){
+				const repoInstance = apiInstance.getRepo( owner, repo );
 				repoInstance.getContributors().then(
 	            	resp => {
 						dispatch({

@@ -90,29 +90,25 @@ chrome.extension.sendMessage({}, (response) => {
         //initial sync
         AppStore.dispatch(AppAction.refresh(newState));
 
-        // const repoInstance = (!!gitInfo.owner && !!gitInfo.repo && !!AppStore.getState().apiInstance)
-        //     ? AppStore.getState().apiInstance.getRepo(gitInfo.owner, gitInfo.repo)
-        //     : null;
-        // newState.repoInstance = repoInstance;
 
         //fetch async
-        // AppStore.dispatch(
-        //     AppAction.fetchCommitList(
-        //         gitInfo.path
-        //     )
-        // );
+        AppStore.dispatch(
+            AppAction.fetchCommitList(
+                gitInfo.path
+            )
+        );
 
 
-        // AppStore.dispatch(
-        //     AppAction.fetchContributorList()
-        // );
+        AppStore.dispatch(
+            AppAction.fetchContributorList()
+        );
 
 
-        // AppStore.dispatch(
-        //     AppAction.fetchTreeList(
-        //         newState.branch
-        //     )
-        // );
+        AppStore.dispatch(
+            AppAction.fetchTreeList(
+                newState.branch
+            )
+        );
 
 
 
