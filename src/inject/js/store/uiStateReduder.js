@@ -26,14 +26,23 @@ const UIStateReducer = (state, {type, value}) => {
       state.visible.fileExplorer = false;
       state.visible.commitBox = false;
       break;
-    case 'SET_VISIBLE_contributorBox':
+    case 'SET_VISIBLE_CONTRIBUTOR_BOX':
       state.visible.contributorBox = value;
       break;
-    case 'SET_VISIBLE_FILE_EXPLORER':
+    case 'SET_VISIBLE_FILE_EXPLORER_BOX':
       state.visible.fileExplorer = value;
       break;
-    case 'SET_VISIBLE_COMMIT':
+    case 'SET_VISIBLE_COMMIT_BOX':
       state.visible.commitBox = value;
+      break;
+    case 'SET_LOADING_CONTRIBUTOR_BOX':
+      state.loading.contributorBox = value;
+      break;
+    case 'SET_LOADING_FILE_EXPLORER_BOX':
+      state.loading.fileExplorer = value;
+      break;
+    case 'SET_LOADING_COMMIT_BOX':
+      state.loading.commitBox = value;
       break;
   }
 

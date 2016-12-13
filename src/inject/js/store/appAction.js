@@ -1,10 +1,46 @@
 import _ from 'lodash';
 
 const AppAction = {
-  refresh : (value) => {
-    return {
-      type : 'REFRESH',
-      value : value
+  refresh : (state) => {
+    // init
+    return function (dispatch, getState) {
+      dispatch({
+        type : 'REFRESH',
+        value : state
+      });
+
+      const apiInstance = _getApiInstance(getState);
+      const userInstance = apiInstance.getUser();
+
+      const owner = _.get( state, 'owner');
+      const branch = _.get( state, 'branch');
+      const repo = _.get( state, 'repo');
+      const path = _.get( state, 'path');
+
+      let hasError = false;
+      userInstance.getProfile()
+        .then(
+          resp => {
+            // success
+            // set visible
+            dispatch({ type: 'SET_VISIBLE_CONTRIBUTOR_BOX', value: true});
+            dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: true});
+            dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: true});
+
+            //trigger async dispatch
+            [
+              AppAction.fetchCommitList( { path, owner, branch, repo } ),
+              AppAction.fetchContributorList( { path, owner, branch, repo } ),
+              AppAction.fetchTreeList( { path, owner, branch, repo } )
+            ].forEach(function(func){
+              func(dispatch, getState);
+            });
+          },
+          resp => {
+            //failure
+            dispatch({ type : 'CLEAR_TOKEN' });
+          }
+        );
     };
   },
   updateApiToken : (value) => {
@@ -13,56 +49,10 @@ const AppAction = {
       value : value
     };
   },
-  initApi: () => {
+  fetchCommitList: ({path, owner, repo}) => {
     return function (dispatch, getState) {
       const state = getState();
-      const apiInstance = _.get( state, 'data.apiInstance');
-      const userInstance = apiInstance.getUser();
-
-      let hasError = false;
-      userInstance.getProfile()
-        .then(
-          (resp) => {
-            // success
-            // dispatch({
-            //   type : 'CLEAR_TOKEN'
-            // })
-            // AppStore.dispatch(
-            //     AppAction.fetchCommitList(
-            //         gitInfo.path
-            //     )
-            // );
-
-
-            // AppStore.dispatch(
-            //     AppAction.fetchContributorList()
-            // );
-
-
-            // AppStore.dispatch(
-            //     AppAction.fetchTreeList(
-            //         newState.branch
-            //     )
-            // );
-
-
-            dispatch({ type: 'SET_VISIBLE_CONTRIBUTOR', value: true});
-            dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER', value: true});
-            dispatch({ type: 'SET_VISIBLE_COMMIT', value: true});
-          },
-          (resp) => {
-            //failure
-            dispatch({ type : 'CLEAR_TOKEN' });
-          }
-        );
-    };
-  },
-  fetchCommitList: (path) => {
-    return function (dispatch, getState) {
-      const state = getState();
-      const owner = _.get( state, 'repo.owner');
-      const repo = _.get( state, 'repo.repo');
-      const apiInstance = _.get( state, 'data.apiInstance');
+      const apiInstance = _getApiInstance(getState);
 
       if(!!owner && !!repo && !!apiInstance){
         const repoInstance = apiInstance.getRepo( owner, repo );
@@ -78,14 +68,20 @@ const AppAction = {
           listCommitPayload.path = path;
         }
 
+        dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
+
         repoInstance.listCommits( listCommitPayload ).then(
           resp => {
+            dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+
             dispatch({
               type : 'UPDATE_COMMIT_LIST',
               value : resp.data
             })
           },
           () => {
+            dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+
             dispatch({
               type : 'UPDATE_COMMIT_LIST',
               value : []
@@ -95,25 +91,29 @@ const AppAction = {
       }
     };
   },
-  fetchTreeList: (branch) => {
+  fetchTreeList: ({branch, owner, repo}) => {
     return function (dispatch, getState) {
       //fetch trees
       const state = getState();
-      const owner = _.get( state, 'repo.owner');
-      const repo = _.get( state, 'repo.repo');
-      const apiInstance = _.get( state, 'data.apiInstance');
+      const apiInstance = _getApiInstance(getState);
 
       if(!!owner && !!repo && !!apiInstance){
         const repoInstance = apiInstance.getRepo( owner, repo );
 
+        dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
+
         repoInstance.getTree( branch ).then(
           resp => {
+            dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
+
             dispatch({
               type : 'UPDATE_TREE_LIST',
               value : resp.data
             })
           },
           () => {
+            dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
+
             dispatch({
               type : 'UPDATE_TREE_LIST',
               value : []
@@ -123,24 +123,25 @@ const AppAction = {
       }
     }
   },
-  fetchContributorList: (repoInstance) => {
+  fetchContributorList: ({owner, repo}) => {
     return function(dispatch, getState){
       //fetch contributors
       const state = getState();
-      const owner = _.get( state, 'repo.owner');
-      const repo = _.get( state, 'repo.repo');
-      const apiInstance = _.get( state, 'data.apiInstance');
+      const apiInstance = _getApiInstance(getState);
 
       if(!!owner && !!repo && !!apiInstance){
         const repoInstance = apiInstance.getRepo( owner, repo );
+        dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: true});
         repoInstance.getContributors().then(
           resp => {
+            dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: false});
             dispatch({
               type : 'UPDATE_CONTRIBUTOR_LIST',
               value : resp.data
             })
           },
           () => {
+            dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: false});
             dispatch({
               type : 'UPDATE_CONTRIBUTOR_LIST',
               value : []
@@ -152,5 +153,9 @@ const AppAction = {
   }
 }
 
+
+function _getApiInstance(getState){
+  return getState().data.apiInstance;
+}
 
 export default AppAction;

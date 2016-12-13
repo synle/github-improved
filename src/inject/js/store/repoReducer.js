@@ -9,6 +9,7 @@ const RepoReducer = (state, {type, value}) => {
     //default state
     state = {
       owner : null,
+      path: null,
       repo : null,
       branch : null,
       commit : null,//current commit id

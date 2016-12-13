@@ -26,101 +26,97 @@ import FileExplorer from '@src/component/fileExplorer';
 import TokenRequestForm from '@src/component/tokenRequestForm';
 
 chrome.extension.sendMessage({}, (response) => {
-    var sideBarContainer;
+  var sideBarContainer;
 
-    function _init(){
-        //empty if needed
-        $('#side-bar-advanced-tool').remove();
+  function _init(){
+    //empty if needed
+    $('#side-bar-advanced-tool').remove();
 
-        sideBarContainer = $('<div id="side-bar-advanced-tool" />')
-            .appendTo('body')
-            .html(`
-                <h3 id="side-bar-title ta-center">Github Improved Toolbox</h3>
-                <div id="side-bar-body"></div>
-            `);
+    sideBarContainer = $('<div id="side-bar-advanced-tool" />')
+      .appendTo('body')
+      .html(`
+        <h3 id="side-bar-title ta-center">Github Improved Toolbox</h3>
+        <div id="side-bar-body"></div>
+      `);
 
 
-        //render the app
-        ReactDOM.render(
-            <div>
-                <Provider store={AppStore}>
-                    <div>
-                        <BtnQuickSearchFile></BtnQuickSearchFile>
-                        <SearchForm></SearchForm>
-                        <DiffOptionBox></DiffOptionBox>
-                        <PrNavigation></PrNavigation>
-                        <FileExplorer></FileExplorer>
-                        <ContributorBox></ContributorBox>
-                        <CommitBox></CommitBox>
-                        <TokenRequestForm></TokenRequestForm>
-                    </div>
-                </Provider>
-            </div>,
-            $('#side-bar-body')[0]
-        );
+    //render the app
+    ReactDOM.render(
+      <div>
+        <Provider store={AppStore}>
+          <div>
+            <BtnQuickSearchFile></BtnQuickSearchFile>
+            <SearchForm></SearchForm>
+            <DiffOptionBox></DiffOptionBox>
+            <PrNavigation></PrNavigation>
+            <FileExplorer></FileExplorer>
+            <ContributorBox></ContributorBox>
+            <CommitBox></CommitBox>
+            <TokenRequestForm></TokenRequestForm>
+          </div>
+        </Provider>
+      </div>,
+      $('#side-bar-body')[0]
+    );
 
-        //event
-        // $(document).on('click', '.panel-heading', function(){
-        //  $(this).closest('.panel').find('.panel-body').toggle();
-        // });
+    //event
+    // $(document).on('click', '.panel-heading', function(){
+    //  $(this).closest('.panel').find('.panel-body').toggle();
+    // });
+  }
+
+  function _refreshState(){
+    const countSlashInUrl =  location.href.match(/\//g).length;
+    const gitInfo = dataUtil.getGitInfo();
+    const newState = {
+      urlParams : util.getUrlVars(),
+      owner: gitInfo.owner,
+      repo: gitInfo.repo,
+      branch: gitInfo.branch,
+      commit: gitInfo.commit,
+      file: gitInfo.file,
+      path: gitInfo.path,
+      pull: gitInfo.pull,
+      commits: null,
+      contributors: null,
+      trees: null,
+      visible : {
+        contributor: countSlashInUrl === 4,
+        fileExplorer: countSlashInUrl >= 3,
+        commit : countSlashInUrl > 3
+      }
+    };
+
+    //initialization
+    AppStore.dispatch(
+      AppAction.refresh(newState)
+    );
+
+
+    //move the stuff
+    $('#side-bar-pr-toolbox').empty();
+    setTimeout(() => {
+      $('.discussion-sidebar').appendTo('#side-bar-pr-toolbox');
+    }, 2000)
+  }
+
+  var readyStateCheckInterval = setInterval(function() {
+    if (document.readyState === "complete") {
+      clearInterval(readyStateCheckInterval);
+      _init();
+      _refreshState();//trigger the first state change
+
+      //adapted from octotree for changes in the dom
+      //reload the state
+      const pjaxContainer = $('#js-repo-pjax-container, .context-loader-container, [data-pjax-container]')[0];
+      if (!!pjaxContainer){
+        const pageChangeObserver = new window.MutationObserver(() => {
+          _refreshState();
+        })
+        pageChangeObserver.observe(pjaxContainer, {
+          childList: true
+        });
+      }
     }
-
-    function _refreshState(){
-        const countSlashInUrl =  location.href.match(/\//g).length;
-        const gitInfo = dataUtil.getGitInfo();
-        const newState = {
-            urlParams : util.getUrlVars(),
-            owner: gitInfo.owner,
-            repo: gitInfo.repo,
-            branch: gitInfo.branch,
-            commit: gitInfo.commit,
-            file: gitInfo.file,
-            path: gitInfo.path,
-            pull: gitInfo.pull,
-            commits: null,
-            contributors: null,
-            trees: null,
-            visible : {
-                contributor: countSlashInUrl === 4,
-                fileExplorer: countSlashInUrl >= 3,
-                commit : countSlashInUrl > 3
-            }
-        };
-
-        //initial sync
-        AppStore.dispatch(AppAction.refresh(newState));
-
-
-        //init
-        AppStore.dispatch(
-            AppAction.initApi()
-        );
-
-
-        //move the stuff
-        $('#side-bar-pr-toolbox').empty();
-        setTimeout(() => {
-            $('.discussion-sidebar').appendTo('#side-bar-pr-toolbox');
-        }, 2000)
-    }
-
-    var readyStateCheckInterval = setInterval(function() {
-        if (document.readyState === "complete") {
-            clearInterval(readyStateCheckInterval);
-            _init();
-            _refreshState();//trigger the first state change
-
-            //adapted from octotree for changes in the dom
-            //reload the state
-            const pjaxContainer = $('#js-repo-pjax-container, .context-loader-container, [data-pjax-container]')[0];
-            if (!!pjaxContainer){
-                const pageChangeObserver = new window.MutationObserver(() => {
-                    _refreshState();
-                })
-                pageChangeObserver.observe(pjaxContainer, {
-                    childList: true
-                });
-            }
-        }
-    }, 10);
+  }, 10);
 });
