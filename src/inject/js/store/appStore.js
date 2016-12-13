@@ -1,7 +1,9 @@
 //external
 import { combineReducers, createStore, applyMiddleware } from 'redux';
+import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
 import GitHub from 'github-api';
+
 
 //internal
 import dataReducer from '@src/store/dataReducer';
@@ -10,10 +12,12 @@ import repoReducer from '@src/store/repoReducer';
 
 //combine the reducer
 const AppReducer = combineReducers({
-	data : dataReducer,//api related
-	repo : repoReducer//the repo info itself
+    data : dataReducer,//api related
+    repo : repoReducer//the repo info itself
 });
 
-const AppStore = createStore( AppReducer, applyMiddleware(thunk) );
+
+const logger = createLogger();
+const AppStore = createStore( AppReducer, applyMiddleware(thunk, logger) );
 
 export default AppStore;
