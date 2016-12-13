@@ -19,7 +19,7 @@ if(apiToken){
 }
 
 const AppAction = {
-  refresh : (state) => {
+  init : (state) => {
     // init
     return function (dispatch, getState) {
       dispatch({
@@ -27,7 +27,16 @@ const AppAction = {
         value : state
       });
 
+      //trigger refresh
+      AppAction.refresh()(dispatch, getState);
+    };
+  },
+  refresh : () => {
+    // init
+    return function (dispatch, getState) {
       const userInstance = apiInstance.getUser();
+
+      const state = _.get(getState(), 'repo');
 
       const owner = _.get( state, 'owner');
       const branch = _.get( state, 'branch');
@@ -41,9 +50,12 @@ const AppAction = {
           resp => {
             // success
             // set visible
-            dispatch({ type: 'SET_VISIBLE_CONTRIBUTOR_BOX', value: true});
-            dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: true});
-            dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: true});
+            dispatch({ type: 'SET_VISIBLE_CONTRIBUTOR_BOX', value: _shouldShowContributorBox()});
+            dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: _shouldShowFileExplorerBox()});
+            dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: _shouldShowCommitBox(commit)});
+
+            // set token valid
+            dispatch({ type: 'SET_TOKEN_VALID', value: true});
 
             //trigger async dispatch
             [
@@ -58,6 +70,10 @@ const AppAction = {
             //failure
             apiInstance = null;
             apiToken = null;
+
+
+            // set token valid
+            dispatch({ type: 'SET_TOKEN_VALID', value: false});
           }
         );
     };
@@ -71,8 +87,12 @@ const AppAction = {
     //persist it
     dataUtil.setPersistedProp('api-token', apiToken);
 
+    //TODO: clean up the reinit
+    location.reload();
+
     return {
-      type : 'UPDATE_API_TOKEN'
+      type: 'SET_TOKEN_VALID',
+      value: true
     };
   },
   fetchCommitList: ({path, owner, repo}) => {
@@ -177,6 +197,24 @@ const AppAction = {
       }
     }
   }
+}
+
+
+function _shouldShowContributorBox(){
+  var pathName = location.pathname;
+  var urlSplits = pathName.split('/').filter(url => !!url);
+  return urlSplits.length === 2;
+}
+
+function _shouldShowFileExplorerBox(){
+  var pathName = location.pathname;
+  var urlSplits = pathName.split('/').filter(url => !!url);
+  return urlSplits.length === 2;
+}
+
+
+function _shouldShowCommitBox(sha){
+  return !sha || sha.length === 0;
 }
 
 export default AppAction;

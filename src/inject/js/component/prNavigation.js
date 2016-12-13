@@ -11,7 +11,7 @@ const PRNavigation = React.createClass({
               <div className="panel-heading">
                   <h4>Pull Request</h4>
               </div>
-              <div className="panel-body">
+              <div className="panel-body" class="padding-top0">
                 <div id="side-bar-pr-toolbox"></div>
                 <div>
                     <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">PR created by you</button>

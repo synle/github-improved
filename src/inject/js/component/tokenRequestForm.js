@@ -40,7 +40,7 @@ const TokenRequestForm = React.createClass({
 
 const mapStateToProps = function(state) {
   return {
-      isVisible : _.size( _.get( state, 'data.apiToken' ) ) === 0
+      isVisible : _.get( state, 'ui.isAuthenticated' ) !== true
   };
 }
 

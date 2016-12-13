@@ -6,6 +6,7 @@ const UIStateReducer = (state, {type, value}) => {
   if(!state){
     //default state
     state = {
+      isAuthenticated: false,
       visible: {
         contributorBox : false,
         fileExplorer : false,
@@ -43,6 +44,9 @@ const UIStateReducer = (state, {type, value}) => {
       break;
     case 'SET_LOADING_COMMIT_BOX':
       state.loading.commitBox = value;
+      break;
+    case 'SET_TOKEN_VALID':
+      state.isAuthenticated = value;
       break;
   }
 

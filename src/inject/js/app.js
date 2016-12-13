@@ -79,17 +79,12 @@ chrome.extension.sendMessage({}, (response) => {
       pull: gitInfo.pull,
       commits: null,
       contributors: null,
-      trees: null,
-      visible : {
-        contributor: countSlashInUrl === 4,
-        fileExplorer: countSlashInUrl >= 3,
-        commit : countSlashInUrl > 3
-      }
+      trees: null
     };
 
     //initialization
     AppStore.dispatch(
-      AppAction.refresh(newState)
+      AppAction.init(newState)
     );
 
 
