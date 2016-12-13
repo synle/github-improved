@@ -12,7 +12,7 @@ class CommitBox extends Component{
     const commitCount = _.size(commits);
     let bodyDom;
 
-    if(visible.commit !== true){
+    if(visible !== true){
       return null;
     }else if(!!owner && !!repo && commitCount > 0){
       bodyDom = commits.map((repoCommit, idx) => {
@@ -67,5 +67,5 @@ export default connect(state => ({
   commits : _.get( state, 'repo.commits', []),
   owner : _.get( state, 'repo.owner'),
   repo : _.get( state, 'repo.repo'),
-  visible : _.get( state, 'repo.visible')
+  visible : _.get(state, 'ui.visible.commitBox')
 }))(CommitBox);

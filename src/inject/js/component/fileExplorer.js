@@ -12,7 +12,7 @@ const ContributorBox = React.createClass({
         const trees = _.get(treesMap, 'tree', []);
         const treeCount = _.size(trees);
 
-        if(visible.fileExplorer !== true){
+        if(visible !== true){
             return null;
         }
         else if( treeCount > 0){
@@ -52,7 +52,7 @@ const ContributorBox = React.createClass({
 const mapStateToProps = function(state) {
     return {
         treesMap : _.get(state, 'repo.trees', {}),
-        visible : _.get( state, 'repo.visible', {}),
+        visible : _.get(state, 'ui.visible.fileExplorer'),
         repo : _.get( state, 'repo.repo'),
         owner : _.get( state, 'repo.owner'),
         branch: _.get( state, 'repo.branch'),

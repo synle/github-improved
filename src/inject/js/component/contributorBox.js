@@ -12,7 +12,7 @@ const ContributorBox = React.createClass({
     const {contributors, visible} = this.props;
     const contributorCount = _.size(contributors);
 
-    if( _.get(visible, 'contributor') !== true ){
+    if( visible !== true ){
       //shouldn't show here
       return null;
     } else if( contributorCount > 0){
@@ -63,7 +63,7 @@ const ContributorBox = React.createClass({
 const mapStateToProps = function(state) {
   return {
     contributors : _.get(state, 'repo.contributors'),
-    visible : _.get(state, 'repo.visible')
+    visible : _.get(state, 'ui.visible.contributorBox')
   };
 }
 

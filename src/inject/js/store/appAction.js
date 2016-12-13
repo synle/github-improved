@@ -44,12 +44,15 @@ const AppAction = {
             //         newState.branch
             //     )
             // );
+
+
+            dispatch({ type: 'SET_VISIBLE_CONTRIBUTOR', value: true});
+            dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER', value: true});
+            dispatch({ type: 'SET_VISIBLE_COMMIT', value: true});
           },
           (resp) => {
             //failure
-            dispatch({
-              type : 'CLEAR_TOKEN'
-            })
+            dispatch({ type : 'CLEAR_TOKEN' });
           }
         );
     };
