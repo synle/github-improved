@@ -9,12 +9,14 @@ import urlUtil from '@src/util/urlUtil';
 const ContributorBox = React.createClass({
   render: function() {
     let bodyDom;
-    const {contributors, visible} = this.props;
+    const { visible, loading, contributors } = this.props;
     const contributorCount = _.size(contributors);
 
     if( visible !== true ){
       //shouldn't show here
       return null;
+    } else if(loading === true){
+      bodyDom = <div>Loading...</div>
     } else if( contributorCount > 0){
       bodyDom = contributors.map((contributor) => {
         const author = contributor.author;
@@ -62,8 +64,9 @@ const ContributorBox = React.createClass({
 
 const mapStateToProps = function(state) {
   return {
-    contributors : _.get(state, 'repo.contributors'),
-    visible : _.get(state, 'ui.visible.contributorBox')
+    visible : _.get(state, 'ui.visible.contributorBox'),
+    loading : _.get(state, 'ui.loading.contributorBox'),
+    contributors : _.get(state, 'repo.contributors')
   };
 }
 

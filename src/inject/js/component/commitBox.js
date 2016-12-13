@@ -8,13 +8,15 @@ import urlUtil from '@src/util/urlUtil';
 
 class CommitBox extends Component{
   render() {
-    const { commits, owner, repo, visible } = this.props;
+    const { visible, loading, commits, owner, repo } = this.props;
     const commitCount = _.size(commits);
     let bodyDom;
 
     if(visible !== true){
       return null;
-    }else if(!!owner && !!repo && commitCount > 0){
+    } else if(loading === true){
+      bodyDom = <div>Loading...</div>
+    } else if(!!owner && !!repo && commitCount > 0){
       bodyDom = commits.map((repoCommit, idx) => {
         const author = repoCommit.author;
         const commit = repoCommit.commit;
@@ -39,8 +41,6 @@ class CommitBox extends Component{
           </div>
         );
       });
-    } else if(!!owner && !!repo){
-      bodyDom = <div>Loading...</div>
     } else {
       bodyDom = <div>Not Available Here</div>
     }
@@ -64,8 +64,9 @@ class CommitBox extends Component{
 }
 
 export default connect(state => ({
+  visible : _.get(state, 'ui.visible.commitBox'),
+  loading : _.get(state, 'ui.loading.commitBox'),
   commits : _.get( state, 'repo.commits', []),
   owner : _.get( state, 'repo.owner'),
-  repo : _.get( state, 'repo.repo'),
-  visible : _.get(state, 'ui.visible.commitBox')
+  repo : _.get( state, 'repo.repo')
 }))(CommitBox);
