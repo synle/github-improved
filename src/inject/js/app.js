@@ -91,6 +91,11 @@ chrome.extension.sendMessage({}, (response) => {
         AppStore.dispatch(AppAction.refresh(newState));
 
 
+        //init
+        AppStore.dispatch(
+            AppAction.initApi()
+        );
+
         //fetch async
         AppStore.dispatch(
             AppAction.fetchCommitList(
@@ -112,7 +117,7 @@ chrome.extension.sendMessage({}, (response) => {
 
 
 
-        
+
 
         //move the stuff
         $('#side-bar-pr-toolbox').empty();

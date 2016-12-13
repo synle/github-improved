@@ -1,5 +1,8 @@
 //external
 import GitHub from 'github-api';
+// https://www.npmjs.com/package/github-api
+// https://github.com/github-tools/github
+// http://github-tools.github.io/github/
 
 //internal
 import dataUtil from '@src/util/dataUtil';

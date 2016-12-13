@@ -13,6 +13,31 @@ export default {
       value : value
     };
   },
+  initApi: () => {
+    return function (dispatch, getState) {
+      const state = getState();
+      const apiInstance = _.get( state, 'data.apiInstance');
+      const userInstance = apiInstance.getUser();
+
+      let hasError = false;
+      userInstance.getProfile()
+        .then(
+          (resp) => {
+            console.log('aaaa11', resp)
+            return resp;
+          },
+          (resp) => {
+            console.log('aaaa22', resp)
+            return resp;
+          }
+        )
+        .finally(
+          (resp) => {
+            console.log('aaaa333', resp)
+          }
+        );
+    };
+  },
   fetchCommitList: (path) => {
     return function (dispatch, getState) {
       const state = getState();
