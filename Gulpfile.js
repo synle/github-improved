@@ -51,6 +51,12 @@ gulp.task('watch:js',function() {
     );
 });
 
-gulp.task('build', ['styles', 'views', 'js', 'js:vendor']);
+gulp.task('apply-prod-environment', function() {
+    process.env.NODE_ENV = 'production';
+});
+
+
+// gulp.task('build', ['styles', 'views', 'js', 'js:vendor']);
+gulp.task('build', ['apply-prod-environment', 'styles', 'views', 'js', 'js:vendor']);
 
 gulp.task('default', ['build', 'watch']);

@@ -3,7 +3,7 @@ import _ from 'lodash';
 const dataUtil = {
   getGitInfo() {
     var pathName = location.pathname;
-    var urlSplits = pathName.split('/');
+    var urlSplits = pathName.split('/').filter(url => !!url);
     var owner = $('.repohead-details-container [itemprop="author"]').text();
     var repo = $('.repohead-details-container [itemprop="name"]').text();
 
@@ -26,8 +26,7 @@ const dataUtil = {
       // Non-code page: commit page
       ($(GH_BRANCH_SEL_4).attr('title') || ' ').match(/([^\:]+)/g)[1] ||
       // Non-code page: others
-      ($(GH_BRANCH_SEL_5).length === 1 && ($(GH_BRANCH_SEL_5).attr('title') || ' ').match(/([^\:]+)/g)[1])
-
+      ($(GH_BRANCH_SEL_5).length === 1 && ($(GH_BRANCH_SEL_5).attr('title') || ' ').match(/([^\:]+)/g)[1]);
 
 
     var commit = $('.sha.user-select-contain').text();

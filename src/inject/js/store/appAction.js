@@ -16,6 +16,7 @@ const AppAction = {
       const branch = _.get( state, 'branch');
       const repo = _.get( state, 'repo');
       const path = _.get( state, 'path');
+      const commit = _.get( state, 'commit');
 
       let hasError = false;
       userInstance.getProfile()
@@ -29,9 +30,9 @@ const AppAction = {
 
             //trigger async dispatch
             [
-              AppAction.fetchCommitList( { path, owner, branch, repo } ),
-              AppAction.fetchContributorList( { path, owner, branch, repo } ),
-              AppAction.fetchTreeList( { path, owner, branch, repo } )
+              AppAction.fetchCommitList( { path, owner, branch, repo, commit } ),
+              AppAction.fetchContributorList( { path, owner, branch, repo, commit } ),
+              AppAction.fetchTreeList( { path, owner, branch, repo, commit } )
             ].forEach(function(func){
               func(dispatch, getState);
             });
@@ -51,7 +52,6 @@ const AppAction = {
   },
   fetchCommitList: ({path, owner, repo}) => {
     return function (dispatch, getState) {
-      const state = getState();
       const apiInstance = _getApiInstance(getState);
 
       if(!!owner && !!repo && !!apiInstance){
@@ -91,18 +91,20 @@ const AppAction = {
       }
     };
   },
-  fetchTreeList: ({branch, owner, repo}) => {
+  fetchTreeList: ({branch, owner, repo, commit}) => {
     return function (dispatch, getState) {
       //fetch trees
-      const state = getState();
       const apiInstance = _getApiInstance(getState);
 
       if(!!owner && !!repo && !!apiInstance){
         const repoInstance = apiInstance.getRepo( owner, repo );
 
+        alert(branch)
+        alert(commit)
+
         dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
 
-        repoInstance.getTree( branch ).then(
+        repoInstance.getTree( commit || branch ).then(
           resp => {
             dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
 
@@ -126,7 +128,6 @@ const AppAction = {
   fetchContributorList: ({owner, repo}) => {
     return function(dispatch, getState){
       //fetch contributors
-      const state = getState();
       const apiInstance = _getApiInstance(getState);
 
       if(!!owner && !!repo && !!apiInstance){
