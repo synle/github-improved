@@ -1,5 +1,23 @@
 import _ from 'lodash';
 
+//external
+import GitHub from 'github-api';
+// https://www.npmjs.com/package/github-api
+// https://github.com/github-tools/github
+// http://github-tools.github.io/github/
+
+//internal
+import dataUtil from '@src/util/dataUtil';
+
+
+let apiToken = dataUtil.getPersistedProp('api-token');
+let apiInstance;
+if(apiToken){
+  apiInstance = new GitHub({
+    token: apiToken
+  })
+}
+
 const AppAction = {
   refresh : (state) => {
     // init
@@ -9,7 +27,6 @@ const AppAction = {
         value : state
       });
 
-      const apiInstance = _getApiInstance(getState);
       const userInstance = apiInstance.getUser();
 
       const owner = _.get( state, 'owner');
@@ -39,20 +56,27 @@ const AppAction = {
           },
           resp => {
             //failure
-            dispatch({ type : 'CLEAR_TOKEN' });
+            apiInstance = null;
+            apiToken = null;
           }
         );
     };
   },
   updateApiToken : (value) => {
+    apiToken = value;
+    apiInstance = new GitHub({
+      token: apiToken
+    });
+
+    //persist it
+    dataUtil.setPersistedProp('api-token', apiToken);
+
     return {
-      type : 'UPDATE_API_TOKEN',
-      value : value
+      type : 'UPDATE_API_TOKEN'
     };
   },
   fetchCommitList: ({path, owner, repo}) => {
     return function (dispatch, getState) {
-      const apiInstance = _getApiInstance(getState);
 
       if(!!owner && !!repo && !!apiInstance){
         const repoInstance = apiInstance.getRepo( owner, repo );
@@ -91,18 +115,20 @@ const AppAction = {
       }
     };
   },
-  fetchTreeList: ({branch, owner, repo, commit}) => {
+  fetchTreeList: ({branch, owner, repo, commit, path}) => {
     return function (dispatch, getState) {
       //fetch trees
-      const apiInstance = _getApiInstance(getState);
 
       if(!!owner && !!repo && !!apiInstance){
         const repoInstance = apiInstance.getRepo( owner, repo );
 
-        alert(branch)
-        alert(commit)
-
         dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
+
+
+        repoInstance.getContents(commit || branch, path).then(
+            resp => { 'aa11', console.log(resp) },
+            resp => { 'aa22', console.log(resp) }
+          )
 
         repoInstance.getTree( commit || branch ).then(
           resp => {
@@ -128,7 +154,6 @@ const AppAction = {
   fetchContributorList: ({owner, repo}) => {
     return function(dispatch, getState){
       //fetch contributors
-      const apiInstance = _getApiInstance(getState);
 
       if(!!owner && !!repo && !!apiInstance){
         const repoInstance = apiInstance.getRepo( owner, repo );
@@ -152,11 +177,6 @@ const AppAction = {
       }
     }
   }
-}
-
-
-function _getApiInstance(getState){
-  return getState().data.apiInstance;
 }
 
 export default AppAction;
