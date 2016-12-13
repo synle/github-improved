@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export default {
+const AppAction = {
   refresh : (value) => {
     return {
       type : 'REFRESH',
@@ -23,17 +23,33 @@ export default {
       userInstance.getProfile()
         .then(
           (resp) => {
-            console.log('aaaa11', resp)
-            return resp;
+            // success
+            // dispatch({
+            //   type : 'CLEAR_TOKEN'
+            // })
+            // AppStore.dispatch(
+            //     AppAction.fetchCommitList(
+            //         gitInfo.path
+            //     )
+            // );
+
+
+            // AppStore.dispatch(
+            //     AppAction.fetchContributorList()
+            // );
+
+
+            // AppStore.dispatch(
+            //     AppAction.fetchTreeList(
+            //         newState.branch
+            //     )
+            // );
           },
           (resp) => {
-            console.log('aaaa22', resp)
-            return resp;
-          }
-        )
-        .finally(
-          (resp) => {
-            console.log('aaaa333', resp)
+            //failure
+            dispatch({
+              type : 'CLEAR_TOKEN'
+            })
           }
         );
     };
@@ -132,3 +148,6 @@ export default {
     }
   }
 }
+
+
+export default AppAction;

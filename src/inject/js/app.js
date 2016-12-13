@@ -96,28 +96,6 @@ chrome.extension.sendMessage({}, (response) => {
             AppAction.initApi()
         );
 
-        //fetch async
-        AppStore.dispatch(
-            AppAction.fetchCommitList(
-                gitInfo.path
-            )
-        );
-
-
-        AppStore.dispatch(
-            AppAction.fetchContributorList()
-        );
-
-
-        AppStore.dispatch(
-            AppAction.fetchTreeList(
-                newState.branch
-            )
-        );
-
-
-
-
 
         //move the stuff
         $('#side-bar-pr-toolbox').empty();

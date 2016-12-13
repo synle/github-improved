@@ -27,6 +27,11 @@ const DataReducer = (state, {type, value}) => {
         token: state.apiToken
       });
       break;
+    case 'CLEAR_TOKEN':
+      state.apiToken = null;
+      state.apiInstance = null;
+      dataUtil.clearPersistedProp('api-token');
+      break;
   }
 
   return Object.assign(

@@ -65,6 +65,9 @@ const dataUtil = {
   setPersistedProp(key, value){
     localStorage[`github-improved.${key}`] = value;
     return localStorage[`github-improved.${key}`];
+  },
+  clearPersistedProp(key){
+    localStorage[`github-improved.${key}`] = null;
   }
 }
 
