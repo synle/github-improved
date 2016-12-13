@@ -8,7 +8,7 @@ import urlUtil from '@src/util/urlUtil';
 const ContributorBox = React.createClass({
   render: function() {
     let bodyDom;
-    const {visible, loading, treesMap, owner, repo, branch} = this.props;
+    const {visible, loading, treesMap, owner, repo, branch, path} = this.props;
     const trees = _.get(treesMap, 'tree', []);
     const treeCount = _.size(trees);
 
@@ -42,7 +42,8 @@ const ContributorBox = React.createClass({
           <h4>File Explorer</h4>
         </div>
         <div className="panel-body">
-          {bodyDom}
+          <div><strong>{path}</strong></div>
+          <div>{bodyDom}</div>
         </div>
       </div>
     );
@@ -58,6 +59,7 @@ const mapStateToProps = function(state) {
     repo : _.get( state, 'repo.repo'),
     owner : _.get( state, 'repo.owner'),
     branch: _.get( state, 'repo.branch'),
+    path : _.get( state, 'repo.path')
   };
 }
 

@@ -66,7 +66,7 @@ const mapStateToProps = function(state) {
   return {
     visible : _.get(state, 'ui.visible.contributorBox'),
     loading : _.get(state, 'ui.loading.contributorBox'),
-    contributors : _.get(state, 'repo.contributors')
+    contributors : _.slice( _.reverse( _.get(state, 'repo.contributors') ), 0, 10) // Cap the page size at 10
   };
 }
 
