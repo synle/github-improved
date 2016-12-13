@@ -21,12 +21,15 @@ const DataReducer = (state, {type, value}) => {
     case 'UPDATE_API_TOKEN':
       state.apiToken = value;
       state.apiInstance = new GitHub({
-       token: state.apiToken
-      })
+        token: state.apiToken
+      });
       break;
   }
 
-  return state;
+  return Object.assign(
+    {},
+    state
+  );
 }
 
 export default DataReducer;

@@ -27,7 +27,7 @@ const ContributorBox = React.createClass({
 
                 return (
                     <div key={key}>
-                        <a href={fileLink}>{typeDom}{path}</a>
+                        <a href={fileLink} data-sha={sha}>{typeDom}{path}</a>
                     </div>
                 );
             })

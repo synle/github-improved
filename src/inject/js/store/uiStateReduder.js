@@ -2,14 +2,10 @@
 import GitHub from 'github-api';
 
 //App Store reducer
-const DataReducer = (state, {type, value}) => {
+const UIStateReducer = (state, {type, value}) => {
   if(!state){
     //default state
-    state = {
-      urlParams : '',
-      visible : {},
-      expand : {}
-    };
+    state = {};
   }
 
   switch(type){
@@ -20,4 +16,4 @@ const DataReducer = (state, {type, value}) => {
   return state;
 }
 
-export default DataReducer;
+export default UIStateReducer;

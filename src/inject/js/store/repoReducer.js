@@ -4,7 +4,7 @@ import dataUtil from '@src/util/dataUtil';
 
 
 //App Store reducer
-const AppReducer = (state, {type, value}) => {
+const RepoReducer = (state, {type, value}) => {
   if(!state){
     //default state
     state = {
@@ -28,7 +28,7 @@ const AppReducer = (state, {type, value}) => {
 
   switch(type){
     case 'REFRESH':
-      state = Object.assign({}, state, value);
+      state = value;
       break;
 
     case 'UPDATE_COMMIT_LIST':
@@ -44,7 +44,10 @@ const AppReducer = (state, {type, value}) => {
       break;
   }
 
-  return state;
+  return Object.assign(
+    {},
+    state
+  );
 }
 
-export default AppReducer;
+export default RepoReducer;
