@@ -28,16 +28,18 @@ class CommitBox extends Component{
         });
         const domId = `commit-sha-${repoCommit.sha}`;
 
+        const commitDate = _.get( commit, 'author.date');
+        const commitAuthorName = _.get( commit, 'author.name');
+
         return(
-          <div key={domId} className="side-bar-commit-logs flex-column border-bottom">
+          <div key={domId} className="side-bar-commit-logs small-text flex-column border-bottom">
             <a href={commitUrl}
             className="flex-grow1"
             title={commit.message}
             data-sha={sha}>
               {shortCommitMessage}
             </a>
-            <span>{commit.author.date}</span>
-            <strong>{commit.author.name}</strong>
+            <strong>{commitAuthorName}</strong>
           </div>
         );
       });

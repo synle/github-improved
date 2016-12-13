@@ -27,7 +27,7 @@ const ContributorBox = React.createClass({
         const typeDom = type === 'tree' ? '> ' : '';
 
         return (
-          <div key={key}>
+          <div key={key} className="small-text">
             <a href={fileLink} data-sha={sha}>{typeDom}{path}</a>
           </div>
         );
