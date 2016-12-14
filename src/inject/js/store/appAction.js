@@ -118,6 +118,8 @@ const AppAction = {
 
         dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
 
+        $.get('https://github.com/relateiq/riq/tree-list/f3f4384768bcfabc9ea435af3fa29a3f8ca0d0ff');
+
         repoInstance.listCommits( listCommitPayload ).then(
           resp => {
             dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
@@ -204,36 +206,30 @@ const AppAction = {
 }
 
 
-function __getUrlNavSplits(){
-  const pathName = location.pathname;
-  const urlSplits = pathName.split('/').filter(url => !!url);
-  return urlSplits;
-}
-
 function _shouldShowContributorBox(){
-  const urlSplits = __getUrlNavSplits();
+  const urlSplits = dataUtil.getUrlSplits();
   return urlSplits.length === 2;
 }
 
 function _shouldShowFileExplorerBox(){
-  const urlSplits = __getUrlNavSplits();
+  const urlSplits = dataUtil.getUrlSplits();
   return urlSplits.length === 2;
 }
 
 
 function _shouldShowCommitBox(sha){
-  const urlSplits = __getUrlNavSplits();
+  const urlSplits = dataUtil.getUrlSplits();
   return (!sha || sha.length === 0) && urlSplits.length >= 2;
 }
 
 
 function _shouldShowSearchBox(){
-  const urlSplits = __getUrlNavSplits();
+  const urlSplits = dataUtil.getUrlSplits();
   return urlSplits.length >= 2;
 }
 
 function _shouldShowPrNavBox(){
-  const urlSplits = __getUrlNavSplits();
+  const urlSplits = dataUtil.getUrlSplits();
   return urlSplits.length < 2;
 }
 
