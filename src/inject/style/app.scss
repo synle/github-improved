@@ -11,7 +11,7 @@ $padding-offset: 10px;
   top:0;
   bottom:0;
   padding:10px;
-  z-index:50;
+  z-index:100;
   overflow-y:auto;
   background-color: white;
 
@@ -132,64 +132,7 @@ $padding-offset: 10px;
     border-bottom:1px solid #ddd;
   }
 
-
-  .tooltipped::after{
-    max-width: $width - $margin-offset !important;
-    word-break: break-word !important;
+  .small-text{
+    font-size: 12px;
   }
-
-
-  //overide
-  .discussion-sidebar{
-    float:none !important;
-    width:auto !important;
-  }
-  .select-menu-modal{
-    width: auto !important;
-  }
-}
-
-//over style found in github
-.container{
-  margin-left: $width + 15px !important;
-  margin-right: 15px !important;
-  width: auto !important;
-}
-
-#discussion_bucket{
-  .discussion-timeline{
-    float: none !important;
-    position:static !important;
-    width: auto !important;
-  }
-
-  $avatar-timeline-offset : 30px;
-  $avatar-timeline-offset-padding : 40px;
-  .timeline-comment-avatar{
-    width: $avatar-timeline-offset !important;
-    height: $avatar-timeline-offset !important;
-    margin-left: -1 * $avatar-timeline-offset-padding !important;
-  }
-  .timeline-comment-wrapper{
-    padding-left:$avatar-timeline-offset-padding !important;
-  }
-}
-
-#commits_bucket{
-  margin-left: 0 !important;
-}
-
-
-.small-text{
-  font-size: 12px;
-}
-
-
-// sticky profile fix
-.js-sticky, .user-profile-sticky-bar {
-  position: static !important;
-}
-
-.user-profile-sticky-bar.is-stuck::after{
-  display: none !important;
 }

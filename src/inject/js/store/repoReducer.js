@@ -18,12 +18,7 @@ const RepoReducer = (state, {type, value}) => {
       commits : null,//list of relavant commits
       contributors : null,// list of contributors
       trees: null,//tree map
-      urlParams: {},
-      visible: {
-        contributor : false,
-        fileExplorer : false,
-        commit : false
-      }
+      urlParams: {}
     };
   }
 

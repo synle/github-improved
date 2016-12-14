@@ -56,9 +56,9 @@ chrome.extension.sendMessage({}, (response) => {
     );
 
     //event
-    // $(document).on('click', '.panel-heading', function(){
-    //  $(this).closest('.panel').find('.panel-body').toggle();
-    // });
+    $(document).on('click', '.panel-heading', function(){
+     $(this).closest('.panel').find('.panel-body').toggle();
+    });
   }
 
   function _refreshState(){

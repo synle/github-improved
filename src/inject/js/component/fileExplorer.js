@@ -49,7 +49,7 @@ const mapStateToProps = function(state) {
   return {
     visible : _.get(state, 'ui.visible.fileExplorer'),
     loading : _.get(state, 'ui.loading.fileExplorer'),
-    trees : _.get(state, 'repo.trees', []),
+    trees : _.slice( _.get(state, 'repo.trees', []), 0, 40 ),//TODO: use constant for paging
     repo : _.get( state, 'repo.repo'),
     owner : _.get( state, 'repo.owner'),
     branch: _.get( state, 'repo.branch'),
