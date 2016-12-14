@@ -106,7 +106,10 @@ const AppAction = {
       if(!!owner && !!repo && !!apiInstance){
         const repoInstance = apiInstance.getRepo( owner, repo );
 
-        //fetch commits
+        //fetch commits based on PR
+
+
+        //fetch commits based on commit hash
         const listCommitPayload = {
           // sha
           // path
@@ -213,30 +216,45 @@ const AppAction = {
 
 
 function _shouldShowContributorBox(){
+  if($('.repohead-details-container').length === 0){
+    return false;
+  }
   const urlSplits = dataUtil.getUrlSplits();
   return urlSplits.length === 2;
 }
 
 function _shouldShowFileExplorerBox(){
+  if($('.repohead-details-container').length === 0){
+    return false;
+  }
   const urlSplits = dataUtil.getUrlSplits();
   return urlSplits.length >= 2;
 }
 
 
 function _shouldShowCommitBox(sha){
+  if($('.repohead-details-container').length === 0){
+    return false;
+  }
   const urlSplits = dataUtil.getUrlSplits();
   return (!sha || sha.length === 0) && urlSplits.length >= 2;
 }
 
 
 function _shouldShowSearchBox(){
+  if($('.repohead-details-container').length === 0){
+    return false;
+  }
   const urlSplits = dataUtil.getUrlSplits();
   return urlSplits.length >= 2;
 }
 
 function _shouldShowPrNavBox(){
-  const urlSplits = dataUtil.getUrlSplits();
-  return urlSplits.length < 2;
+  if($('.repohead-details-container').length === 0){
+    return true;
+  }
+
+  return false;
 }
 
 

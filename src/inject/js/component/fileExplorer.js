@@ -34,7 +34,8 @@ const ContributorBox = React.createClass({
         );
       });
     } else {
-      bodyDom = <div>Not Available...</div>;
+      return null;
+      // bodyDom = <div>Not Available...</div>;
     }
 
     return (

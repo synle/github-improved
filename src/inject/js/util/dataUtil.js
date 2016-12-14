@@ -26,7 +26,7 @@ const dataUtil = {
       branch = branchDom2.text();
     } else {
       if(urlSplits.length >= 2){
-        const relavantUrlSplits = urlSplits.filter(url => ['tree', owner, repo].indexOf(url) === -1);
+        const relavantUrlSplits = urlSplits.filter(url => ['pulls', 'tree', owner, repo].indexOf(url) === -1);
         branch = _.get(relavantUrlSplits, '0') || '';
       }
     }
