@@ -8,8 +8,7 @@ import urlUtil from '@src/util/urlUtil';
 const ContributorBox = React.createClass({
   render: function() {
     let bodyDom;
-    const {visible, loading, treesMap, owner, repo, branch, path} = this.props;
-    const trees = _.get(treesMap, 'tree', []);
+    const {visible, loading, trees, owner, repo, branch, path} = this.props;
     const treeCount = _.size(trees);
 
     if(visible !== true){
@@ -17,21 +16,16 @@ const ContributorBox = React.createClass({
     } else if(loading === true){
       bodyDom = <div>Loading...</div>
     } else if( treeCount > 0){
-      bodyDom = trees.map( (tree) => {
-        const path = tree.path;
-        const sha = tree.sha;
-        const type = tree.type;
-        const fileLink = `https://github.com/${owner}/${repo}/tree/${branch}/${path}`
-        const key = `blob-${sha}`;
-
-        const typeDom = type === 'tree' ? '> ' : '';
+      bodyDom = trees.map( (treePath) => {
+        const fileLink = `https://github.com/${owner}/${repo}/tree/${branch}/${treePath}`
+        const key = `blob-${treePath}`;
 
         return (
           <div key={key} className="small-text">
-            <a href={fileLink} data-sha={sha}>{typeDom}{path}</a>
+            <a href={fileLink}>{treePath}</a>
           </div>
         );
-      })
+      });
     } else {
       bodyDom = <div>Not Available...</div>;
     }
@@ -55,7 +49,7 @@ const mapStateToProps = function(state) {
   return {
     visible : _.get(state, 'ui.visible.fileExplorer'),
     loading : _.get(state, 'ui.loading.fileExplorer'),
-    treesMap : _.get(state, 'repo.trees', {}),
+    trees : _.get(state, 'repo.trees', []),
     repo : _.get( state, 'repo.repo'),
     owner : _.get( state, 'repo.owner'),
     branch: _.get( state, 'repo.branch'),

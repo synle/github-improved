@@ -66,8 +66,7 @@ const AppAction = {
             //trigger async dispatch
             [
               AppAction.fetchCommitList( { path, owner, branch, repo, commit } ),
-              AppAction.fetchContributorList( { path, owner, branch, repo, commit } ),
-              AppAction.fetchTreeList( { path, owner, branch, repo, commit } )
+              AppAction.fetchContributorList( { path, owner, branch, repo, commit } )
             ].forEach(function(func){
               func(dispatch, getState);
             });
@@ -101,7 +100,7 @@ const AppAction = {
       value: true
     };
   },
-  fetchCommitList: ({path, owner, repo}) => {
+  fetchCommitList: ({path, owner, branch, repo, commit}) => {
     return function (dispatch, getState) {
 
       if(!!owner && !!repo && !!apiInstance){
@@ -120,8 +119,6 @@ const AppAction = {
 
         dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
 
-        $.get('https://github.com/relateiq/riq/tree-list/f3f4384768bcfabc9ea435af3fa29a3f8ca0d0ff');
-
         repoInstance.listCommits( listCommitPayload ).then(
           resp => {
             dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
@@ -130,6 +127,11 @@ const AppAction = {
               type : 'UPDATE_COMMIT_LIST',
               value : resp.data
             })
+
+
+            commit = commit || resp.data[0].sha;
+
+            AppAction.fetchTreeList( { path, owner, branch, repo, commit } )(dispatch, getState);
           },
           () => {
             dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
@@ -153,29 +155,31 @@ const AppAction = {
         dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
 
 
-        repoInstance.getContents(commit || branch, path).then(
-            resp => { 'aa11', console.log(resp) },
-            resp => { 'aa22', console.log(resp) }
+        var request = new Request(`https://github.com/${owner}/${repo}/tree-list/${commit}`, {
+            method: 'GET',
+            mode: 'cors',
+            redirect: 'follow',
+            cache: "no-cache",
+            credentials: "include",
+            headers: new Headers({
+              "Accept": "application/json"
+            })
+        });
+
+        fetch(request).then(
+            resp => {
+              return resp.ok ? resp.json() : {};
+            }
+          ).then(
+            resp => {
+              dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
+
+              dispatch({
+                type : 'UPDATE_TREE_LIST',
+                value : resp.paths || []
+              })
+            }
           )
-
-        repoInstance.getTree( commit || branch ).then(
-          resp => {
-            dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
-
-            dispatch({
-              type : 'UPDATE_TREE_LIST',
-              value : resp.data
-            })
-          },
-          () => {
-            dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
-
-            dispatch({
-              type : 'UPDATE_TREE_LIST',
-              value : []
-            })
-          }
-        );
       }
     }
   },
@@ -215,7 +219,7 @@ function _shouldShowContributorBox(){
 
 function _shouldShowFileExplorerBox(){
   const urlSplits = dataUtil.getUrlSplits();
-  return urlSplits.length === 2;
+  return urlSplits.length >= 2;
 }
 
 

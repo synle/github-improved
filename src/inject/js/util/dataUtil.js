@@ -17,17 +17,20 @@ const dataUtil = {
     // }
 
     //get branch
-    let branchDom1 = $('[aria-label="Switch branches or tags"] span');
+    let branchDom1 = $('[aria-label="Switch branches or tags"] span').first();
+    let branchDom2 = $('.commit-branches a').first();
     let branch = '';
-    if(branchDom1){
+    if(branchDom1.length > 0){
       branch = branchDom1.text();
+    } else if(branchDom2.length > 0){
+      branch = branchDom2.text();
     } else {
       if(urlSplits.length >= 2){
         const relavantUrlSplits = urlSplits.filter(url => ['tree', owner, repo].indexOf(url) === -1);
         branch = _.get(relavantUrlSplits, '0') || '';
       }
     }
-    branch = branch.trim();
+    branch = _.trim(branch);
 
 
     var commit = $('.sha.user-select-contain').text();
@@ -37,7 +40,7 @@ const dataUtil = {
 
     var file = _.trim($('.file-navigation .breadcrumb').text());
     var path = !!file ? file.substr( file.indexOf('/') ) : null ||
-      '/';
+      '';
 
     var pull;
     if(pathName.indexOf('/pull/') >= 0 && pathName.indexOf('/files') >= 0){
