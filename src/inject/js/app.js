@@ -24,39 +24,35 @@ import BtnQuickSearchFile from '@src/component/btnQuickSearchFile';
 import SearchForm from '@src/component/searchForm';
 import FileExplorer from '@src/component/fileExplorer';
 import TokenRequestForm from '@src/component/tokenRequestForm';
+import PageHeader from '@src/component/pageHeader';
 
 chrome.extension.sendMessage({}, (response) => {
   var sideBarContainer;
 
   function _init(){
     //empty if needed
-    $('#side-bar-advanced-tool').remove();
+    $('#side-bar-body').remove();
 
-    sideBarContainer = $('<div id="side-bar-advanced-tool" />')
-      .appendTo('body')
-      .html(`
-        <h3 id="side-bar-title ta-center">Github Improved Toolbox</h3>
-        <div id="side-bar-body"></div>
-      `);
+    sideBarContainer = $('<div id="side-bar-body" />')
+      .appendTo('body');
 
 
     //render the app
     ReactDOM.render(
-      <div>
-        <Provider store={AppStore}>
-          <div>
-            <BtnQuickSearchFile></BtnQuickSearchFile>
-            <SearchForm></SearchForm>
-            <DiffOptionBox></DiffOptionBox>
-            <PrNavigation></PrNavigation>
-            <FileExplorer></FileExplorer>
-            <ContributorBox></ContributorBox>
-            <CommitBox></CommitBox>
-            <TokenRequestForm></TokenRequestForm>
-          </div>
-        </Provider>
-      </div>,
-      $('#side-bar-body')[0]
+      <Provider store={AppStore}>
+        <div>
+          <PageHeader></PageHeader>
+          <BtnQuickSearchFile></BtnQuickSearchFile>
+          <SearchForm></SearchForm>
+          <DiffOptionBox></DiffOptionBox>
+          <PrNavigation></PrNavigation>
+          <FileExplorer></FileExplorer>
+          <ContributorBox></ContributorBox>
+          <CommitBox></CommitBox>
+          <TokenRequestForm></TokenRequestForm>
+        </div>
+      </Provider>,
+      document.querySelector('#side-bar-body')
     );
 
     //event
