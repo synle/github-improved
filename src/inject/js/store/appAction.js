@@ -214,7 +214,9 @@ function _shouldShowFileExplorerBox(){
 
 
 function _shouldShowCommitBox(sha){
-  return !sha || sha.length === 0;
+  var pathName = location.pathname;
+  var urlSplits = pathName.split('/').filter(url => !!url);
+  return (!sha || sha.length === 0) && urlSplits.length >= 2;
 }
 
 export default AppAction;
