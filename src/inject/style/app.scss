@@ -183,3 +183,13 @@ $padding-offset: 10px;
 .small-text{
   font-size: 12px;
 }
+
+
+// sticky profile fix
+.js-sticky, .user-profile-sticky-bar {
+  position: static !important;
+}
+
+.user-profile-sticky-bar.is-stuck::after{
+  display: none !important;
+}

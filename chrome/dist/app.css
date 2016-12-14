@@ -98,3 +98,12 @@
 
 #commits_bucket {
   margin-left: 0 !important; }
+
+.small-text {
+  font-size: 12px; }
+
+.js-sticky, .user-profile-sticky-bar {
+  position: static !important; }
+
+.user-profile-sticky-bar.is-stuck::after {
+  display: none !important; }
