@@ -39,7 +39,7 @@ const dataUtil = {
     }
 
     var file = _.trim($('.file-navigation .breadcrumb').text());
-    var path = !!file ? file.substr( file.indexOf('/') ) : null ||
+    var path = !!file ? file.substr( file.indexOf('/') + 1 ) : null ||
       '';
 
     var pull;
