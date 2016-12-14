@@ -11,7 +11,9 @@ const UIStateReducer = (state, {type, value}) => {
         contributorBox : false,
         fileExplorer : false,
         commitBox : false,
-        tokenRequestForm: false
+        tokenRequestForm: false,
+        searchBox: false,
+        prNavBox: false
       },
       loading: {
         contributorBox : true,
@@ -22,12 +24,11 @@ const UIStateReducer = (state, {type, value}) => {
   }
 
   switch(type){
-    case 'CLEAR_TOKEN':
-      // when token is cleared, then hide all of these
-      state.visible.contributorBox = false;
-      state.visible.fileExplorer = false;
-      state.visible.commitBox = false;
+    case 'SET_TOKEN_VALID':
+      state.isAuthenticated = value;
+      state.visible.tokenRequestForm = !state.isAuthenticated;
       break;
+    // visible flags
     case 'SET_VISIBLE_CONTRIBUTOR_BOX':
       state.visible.contributorBox = value;
       break;
@@ -37,6 +38,13 @@ const UIStateReducer = (state, {type, value}) => {
     case 'SET_VISIBLE_COMMIT_BOX':
       state.visible.commitBox = value;
       break;
+    case 'SET_VISIBLE_SEARCH_BOX':
+      state.visible.searchBox = value;
+      break;
+    case 'SET_VISIBLE_PR_NAVIGATION_BOX':
+      state.visible.prNavBox = value;
+      break;
+    // loading flags
     case 'SET_LOADING_CONTRIBUTOR_BOX':
       state.loading.contributorBox = value;
       break;
@@ -45,10 +53,6 @@ const UIStateReducer = (state, {type, value}) => {
       break;
     case 'SET_LOADING_COMMIT_BOX':
       state.loading.commitBox = value;
-      break;
-    case 'SET_TOKEN_VALID':
-      state.isAuthenticated = value;
-      state.visible.tokenRequestForm = !state.isAuthenticated;
       break;
   }
 

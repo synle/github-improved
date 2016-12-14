@@ -1,12 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 //internal
 import sidebarUtil from '@src/util/sidebarUtil';
 
 const PRNavigation = React.createClass({
   render() {
-      return (
+      const { visible } = this.props;
+
+      if(visible){
+        return (
           <div className="panel panel-primary">
               <div className="panel-heading">
                   <h4>Pull Request</h4>
@@ -20,13 +24,18 @@ const PRNavigation = React.createClass({
                 </div>
               </div>
           </div>
-      );
+        );
+      } else {
+        return null;
+      }
   }
 });
 
 
 const mapStateToProps = function(state) {
-  return {};
+  return {
+    visible: _.get( state, 'ui.visible.prNavBox')
+  };
 }
 
 export default connect(mapStateToProps)(PRNavigation);

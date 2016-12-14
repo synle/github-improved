@@ -11,7 +11,9 @@ import sidebarUtil from '@src/util/sidebarUtil';
 //internal
 const SearchForm = React.createClass({
   render() {
-      if(!!this.props.owner && !!this.props.repo){
+      const { owner, repo, visible } = this.props;
+
+      if(visible && (!!owner && !!repo)){
           //auto complete
           const supportedLangOptions = dataUtil.getSupportedLanguages().map( (language) => {
               return (<option key={language} value={language}>{language}</option>);
@@ -50,6 +52,7 @@ const SearchForm = React.createClass({
 
 const mapStateToProps = function(state) {
   return {
+      visible: _.get( state, 'ui.visible.searchBox'),
       owner : _.get( state, 'repo.owner'),
       repo : _.get( state, 'repo.repo')
   };

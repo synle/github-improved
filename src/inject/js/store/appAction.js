@@ -53,6 +53,10 @@ const AppAction = {
             dispatch({ type: 'SET_VISIBLE_CONTRIBUTOR_BOX', value: _shouldShowContributorBox()});
             dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: _shouldShowFileExplorerBox()});
             dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: _shouldShowCommitBox(commit)});
+            dispatch({ type: 'SET_VISIBLE_SEARCH_BOX', value: _shouldShowSearchBox()});
+            dispatch({ type: 'SET_VISIBLE_PR_NAVIGATION_BOX', value: _shouldShowPrNavBox()});
+
+
 
             // set token valid
             dispatch({ type: 'SET_TOKEN_VALID', value: true});
@@ -200,23 +204,37 @@ const AppAction = {
 }
 
 
+function __getUrlNavSplits(){
+  const pathName = location.pathname;
+  const urlSplits = pathName.split('/').filter(url => !!url);
+  return urlSplits;
+}
+
 function _shouldShowContributorBox(){
-  var pathName = location.pathname;
-  var urlSplits = pathName.split('/').filter(url => !!url);
+  const urlSplits = __getUrlNavSplits();
   return urlSplits.length === 2;
 }
 
 function _shouldShowFileExplorerBox(){
-  var pathName = location.pathname;
-  var urlSplits = pathName.split('/').filter(url => !!url);
+  const urlSplits = __getUrlNavSplits();
   return urlSplits.length === 2;
 }
 
 
 function _shouldShowCommitBox(sha){
-  var pathName = location.pathname;
-  var urlSplits = pathName.split('/').filter(url => !!url);
+  const urlSplits = __getUrlNavSplits();
   return (!sha || sha.length === 0) && urlSplits.length >= 2;
+}
+
+
+function _shouldShowSearchBox(){
+  const urlSplits = __getUrlNavSplits();
+  return urlSplits.length >= 2;
+}
+
+function _shouldShowPrNavBox(){
+  const urlSplits = __getUrlNavSplits();
+  return urlSplits.length < 2;
 }
 
 export default AppAction;
