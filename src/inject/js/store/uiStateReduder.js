@@ -13,7 +13,8 @@ const UIStateReducer = (state, {type, value}) => {
         commitBox : false,
         tokenRequestForm: false,
         searchBox: false,
-        prNavBox: false
+        prNavBox: false,
+        diffOptionBox: false
       },
       loading: {
         contributorBox : true,
@@ -43,6 +44,9 @@ const UIStateReducer = (state, {type, value}) => {
       break;
     case 'SET_VISIBLE_PR_NAVIGATION_BOX':
       state.visible.prNavBox = value;
+      break;
+    case 'SET_VISIBLE_DIFF_OPTION_BOX':
+      state.visible.diffOptionBox = value;
       break;
     // loading flags
     case 'SET_LOADING_CONTRIBUTOR_BOX':

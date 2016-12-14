@@ -55,6 +55,8 @@ const AppAction = {
             dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: _shouldShowCommitBox(commit)});
             dispatch({ type: 'SET_VISIBLE_SEARCH_BOX', value: _shouldShowSearchBox()});
             dispatch({ type: 'SET_VISIBLE_PR_NAVIGATION_BOX', value: _shouldShowPrNavBox()});
+            dispatch({ type: 'SET_VISIBLE_DIFF_OPTION_BOX', value: _shouldShowDiffBox()});
+
 
 
 
@@ -231,6 +233,11 @@ function _shouldShowSearchBox(){
 function _shouldShowPrNavBox(){
   const urlSplits = dataUtil.getUrlSplits();
   return urlSplits.length < 2;
+}
+
+
+function _shouldShowDiffBox(){
+  return true;
 }
 
 export default AppAction;
