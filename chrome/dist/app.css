@@ -7,7 +7,7 @@
   top: 0;
   bottom: 0;
   padding: 10px;
-  z-index: 50;
+  z-index: 100;
   overflow-y: auto;
   background-color: white; }
   #side-bar-body button, #side-bar-body input, #side-bar-body select {
@@ -69,41 +69,5 @@
     border: 1px solid #ddd; }
   #side-bar-body border-bottom {
     border-bottom: 1px solid #ddd; }
-  #side-bar-body .tooltipped::after {
-    max-width: 290px !important;
-    word-break: break-word !important; }
-  #side-bar-body .discussion-sidebar {
-    float: none !important;
-    width: auto !important; }
-  #side-bar-body .select-menu-modal {
-    width: auto !important; }
-
-.container {
-  margin-left: 315px !important;
-  margin-right: 15px !important;
-  width: auto !important; }
-
-#discussion_bucket .discussion-timeline {
-  float: none !important;
-  position: static !important;
-  width: auto !important; }
-
-#discussion_bucket .timeline-comment-avatar {
-  width: 30px !important;
-  height: 30px !important;
-  margin-left: -40px !important; }
-
-#discussion_bucket .timeline-comment-wrapper {
-  padding-left: 40px !important; }
-
-#commits_bucket {
-  margin-left: 0 !important; }
-
-.small-text {
-  font-size: 12px; }
-
-.js-sticky, .user-profile-sticky-bar {
-  position: static !important; }
-
-.user-profile-sticky-bar.is-stuck::after {
-  display: none !important; }
+  #side-bar-body .small-text {
+    font-size: 12px; }
