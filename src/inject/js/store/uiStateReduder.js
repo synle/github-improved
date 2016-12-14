@@ -10,7 +10,8 @@ const UIStateReducer = (state, {type, value}) => {
       visible: {
         contributorBox : false,
         fileExplorer : false,
-        commitBox : false
+        commitBox : false,
+        tokenRequestForm: false
       },
       loading: {
         contributorBox : true,
@@ -47,6 +48,7 @@ const UIStateReducer = (state, {type, value}) => {
       break;
     case 'SET_TOKEN_VALID':
       state.isAuthenticated = value;
+      state.visible.tokenRequestForm = !state.isAuthenticated;
       break;
   }
 

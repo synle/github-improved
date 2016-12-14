@@ -40,7 +40,7 @@ const TokenRequestForm = React.createClass({
 
 const mapStateToProps = function(state) {
   return {
-      isVisible : _.get( state, 'ui.isAuthenticated' ) !== true
+      isVisible : _.get( state, 'ui.visible.tokenRequestForm' )
   };
 }
 
