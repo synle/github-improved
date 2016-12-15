@@ -49,10 +49,16 @@ const dataUtil = {
 
 
     // is pull request
-    const isPullRequestPage = !!pathName.match(/\/pull\/\d+/);
+    let splitPrNumber = pathName.match(/\/pull\/\d+/);
+    let isPullRequestPage = !!splitPrNumber;
+    let pullRequestNumber;
+    if(isPullRequestPage){
+      // TODO: null check here
+      pullRequestNumber = splitPrNumber[0].split('/')[2];
+    }
 
     return {
-      owner, repo, branch, commit, file, pull, path, isPullRequestPage
+      owner, repo, branch, commit, file, pull, path, isPullRequestPage, pullRequestNumber
     };
   },
   getSupportedLanguages() {

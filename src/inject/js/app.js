@@ -74,6 +74,7 @@ chrome.extension.sendMessage({}, (response) => {
       path: gitInfo.path,
       pull: gitInfo.pull,
       isPullRequestPage: gitInfo.isPullRequestPage,
+      pullRequestNumber: gitInfo.pullRequestNumber,
       commits: null,
       contributors: null,
       trees: null

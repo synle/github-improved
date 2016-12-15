@@ -49,6 +49,7 @@ const AppAction = {
       const path = _.get( state, 'path');
       const commit = _.get( state, 'commit');
       const isPullRequestPage = _.get( state, 'isPullRequestPage');
+      const pullRequestNumber = _.get( state, 'pullRequestNumber');
 
       let hasError = false;
       userInstance.getProfile()
@@ -71,8 +72,8 @@ const AppAction = {
 
             //trigger async dispatch
             [
-              AppAction.fetchCommitList( { path, owner, branch, repo, commit, isPullRequestPage } ),
-              AppAction.fetchContributorList( { path, owner, branch, repo, commit, isPullRequestPage } )
+              AppAction.fetchCommitList( { path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber } ),
+              AppAction.fetchContributorList( { path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber } )
             ].forEach(function(func){
               func(dispatch, getState);
             });
@@ -106,7 +107,7 @@ const AppAction = {
       value: true
     };
   },
-  fetchCommitList: ({path, owner, branch, repo, commit, isPullRequestPage}) => {
+  fetchCommitList: ({path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber}) => {
     return function (dispatch, getState) {
       if(!!owner && !!repo && !!apiInstance){
         const repoInstance = apiInstance.getRepo( owner, repo );
@@ -114,7 +115,7 @@ const AppAction = {
         if(isPullRequestPage){
           //fetch commits based on PR (only applicable when users viewing a PR)
           return AppAction.fetchCommitListByPrDetails(
-            {path, owner, branch, repo, commit}
+            {path, owner, branch, repo, commit, pullRequestNumber}
           )(dispatch, getState);
         } else {
           //fetch commit by sha
@@ -125,7 +126,7 @@ const AppAction = {
       }
     };
   },
-  fetchCommitListByPrDetails: ({path, owner, branch, repo, commit}) => {
+  fetchCommitListByPrDetails: ({path, owner, branch, repo, commit, pullRequestNumber}) => {
     return function (dispatch, getState) {
       dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
       dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
@@ -133,7 +134,41 @@ const AppAction = {
       dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
 
       // TODO: enhance the experience by fetching the commits from the PR itself...
-      // API_INSTANCE.getRepo('relateiq', 'riq').getPullRequest('6965')
+      // const repoInstance = apiInstance.getRepo( owner, repo );
+      // repoInstance.getPullRequest(pullRequestNumber).then(
+      //     resp => {
+      //       console.error('pr details success', pullRequestNumber, resp.data);
+      //     },
+      //     resp => {
+      //       dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+      //       dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
+      //       dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: false});
+      //       dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
+      //     }
+      //   );
+      //
+
+      // var request = new Request(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`, {
+      //     method: 'GET',
+      //     mode: 'cors',
+      //     redirect: 'follow',
+      //     cache: "no-cache",
+      //     credentials: "include",
+      //     headers: new Headers({
+      //       "Accept": "application/json",
+      //       "Access-Control-Allow-Origin": "https://api.github.com, https://github.com"
+      //     })
+      // });
+
+      // fetch(request).then(
+      //     resp => {
+      //       return resp.ok ? resp.json() : {};
+      //     }
+      //   ).then(
+      //     resp => {
+      //       console.error('stuffs', resp)
+      //     }
+      //   )
     }
   },
   fetchCommitListBySha: ({path, owner, branch, repo, commit}) => {
@@ -193,7 +228,6 @@ const AppAction = {
 
         dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
 
-
         var request = new Request(`https://github.com/${owner}/${repo}/tree-list/${commit}`, {
             method: 'GET',
             mode: 'cors',
@@ -218,7 +252,7 @@ const AppAction = {
                 value : resp.paths || []
               })
             }
-          )
+          );
       }
     }
   },
