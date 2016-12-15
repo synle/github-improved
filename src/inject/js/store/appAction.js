@@ -108,55 +108,78 @@ const AppAction = {
 
 
         if(isPullRequestPage){
-          //fetch commits based on PR
-          dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
-          dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
-          dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: false});
-          dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
-
-          // TODO: enhance the experience by fetching the commits from the PR itself...
+          //fetch commits based on PR (only applicable when users viewing a PR)
+          return AppAction.fetchCommitListByPrDetails(
+            {path, owner, branch, repo, commit}
+          )(dispatch, getState);
         } else {
-          //fetch commits based on commit hash
-          const listCommitPayload = {
-            // sha
-            // path
-            // author
-          };
-          //filter out by file name if needed
-          if(!!path){
-            listCommitPayload.path = path;
-          }
-
-          dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
-
-          repoInstance.listCommits( listCommitPayload ).then(
-            resp => {
-              dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
-
-              dispatch({
-                type : 'UPDATE_COMMIT_LIST',
-                value : resp.data
-              })
-
-
-              // trigger fetch tree list using the most recent commit
-              commit = commit || resp.data[0].sha;
-              AppAction.fetchTreeList( { path, owner, branch, repo, commit } )(dispatch, getState);
-            },
-            () => {
-              dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
-
-              dispatch({
-                type : 'UPDATE_COMMIT_LIST',
-                value : []
-              })
-            }
-          );
+          //fetch commit by sha
+          return AppAction.fetchCommitListBySha(
+            {path, owner, branch, repo, commit}
+          )(dispatch, getState);
         }
       }
     };
   },
-  fetchTreeList: ({branch, owner, repo, commit, path}) => {
+  fetchCommitListByPrDetails: ({path, owner, branch, repo, commit}) => {
+    return function (dispatch, getState) {
+      dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+      dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
+      dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: false});
+      dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
+
+      // TODO: enhance the experience by fetching the commits from the PR itself...
+    }
+  },
+  fetchCommitListBySha: ({path, owner, branch, repo, commit}) => {
+    return function (dispatch, getState) {
+      if(!!owner && !!repo && !!apiInstance){
+        const repoInstance = apiInstance.getRepo( owner, repo );
+
+        //fetch commits based on commit hash
+        const listCommitPayload = {
+          // sha
+          // path
+          // author
+        };
+        //filter out by file name if needed
+        if(!!path){
+          listCommitPayload.path = path;
+        }
+
+        dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
+
+        repoInstance.listCommits( listCommitPayload ).then(
+          resp => {
+            dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+
+            dispatch({
+              type : 'UPDATE_COMMIT_LIST',
+              value : resp.data
+            })
+
+
+            // trigger fetch tree list using the most recent commit
+            commit = commit || resp.data[0].sha;
+            AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit } )(dispatch, getState);
+          },
+          () => {
+            dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+
+            dispatch({
+              type : 'UPDATE_COMMIT_LIST',
+              value : []
+            })
+          }
+        );
+      }
+    };
+  },
+  fetchTreeListByPrDetails: ({branch, owner, repo, commit, path}) => {
+    return function (dispatch, getState) {
+    }
+  },
+  fetchTreeListBySha: ({branch, owner, repo, commit, path}) => {
     return function (dispatch, getState) {
       //fetch trees
 
