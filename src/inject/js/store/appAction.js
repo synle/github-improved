@@ -43,6 +43,7 @@ const AppAction = {
       const repo = _.get( state, 'repo');
       const path = _.get( state, 'path');
       const commit = _.get( state, 'commit');
+      const isPullRequestPage = _.get( state, 'isPullRequestPage');
 
       let hasError = false;
       userInstance.getProfile()
@@ -65,8 +66,8 @@ const AppAction = {
 
             //trigger async dispatch
             [
-              AppAction.fetchCommitList( { path, owner, branch, repo, commit } ),
-              AppAction.fetchContributorList( { path, owner, branch, repo, commit } )
+              AppAction.fetchCommitList( { path, owner, branch, repo, commit, isPullRequestPage } ),
+              AppAction.fetchContributorList( { path, owner, branch, repo, commit, isPullRequestPage } )
             ].forEach(function(func){
               func(dispatch, getState);
             });
@@ -100,51 +101,58 @@ const AppAction = {
       value: true
     };
   },
-  fetchCommitList: ({path, owner, branch, repo, commit}) => {
+  fetchCommitList: ({path, owner, branch, repo, commit, isPullRequestPage}) => {
     return function (dispatch, getState) {
-
       if(!!owner && !!repo && !!apiInstance){
         const repoInstance = apiInstance.getRepo( owner, repo );
 
-        //fetch commits based on PR
 
+        if(isPullRequestPage){
+          //fetch commits based on PR
+          dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+          dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
+          dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: false});
+          dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
 
-        //fetch commits based on commit hash
-        const listCommitPayload = {
-          // sha
-          // path
-          // author
-        };
-        //filter out by file name if needed
-        if(!!path){
-          listCommitPayload.path = path;
-        }
-
-        dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
-
-        repoInstance.listCommits( listCommitPayload ).then(
-          resp => {
-            dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
-
-            dispatch({
-              type : 'UPDATE_COMMIT_LIST',
-              value : resp.data
-            })
-
-
-            commit = commit || resp.data[0].sha;
-
-            AppAction.fetchTreeList( { path, owner, branch, repo, commit } )(dispatch, getState);
-          },
-          () => {
-            dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
-
-            dispatch({
-              type : 'UPDATE_COMMIT_LIST',
-              value : []
-            })
+          // TODO: enhance the experience by fetching the commits from the PR itself...
+        } else {
+          //fetch commits based on commit hash
+          const listCommitPayload = {
+            // sha
+            // path
+            // author
+          };
+          //filter out by file name if needed
+          if(!!path){
+            listCommitPayload.path = path;
           }
-        );
+
+          dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
+
+          repoInstance.listCommits( listCommitPayload ).then(
+            resp => {
+              dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+
+              dispatch({
+                type : 'UPDATE_COMMIT_LIST',
+                value : resp.data
+              })
+
+
+              // trigger fetch tree list using the most recent commit
+              commit = commit || resp.data[0].sha;
+              AppAction.fetchTreeList( { path, owner, branch, repo, commit } )(dispatch, getState);
+            },
+            () => {
+              dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+
+              dispatch({
+                type : 'UPDATE_COMMIT_LIST',
+                value : []
+              })
+            }
+          );
+        }
       }
     };
   },
