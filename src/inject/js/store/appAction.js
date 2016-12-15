@@ -22,6 +22,11 @@ const AppAction = {
   init : (state) => {
     // init
     return function (dispatch, getState) {
+      // mainly for testing
+      // TODO: remove me when prod push
+      window.API_INSTANCE = state.apiInstance;
+
+
       dispatch({
         type : 'REFRESH',
         value : state
@@ -106,7 +111,6 @@ const AppAction = {
       if(!!owner && !!repo && !!apiInstance){
         const repoInstance = apiInstance.getRepo( owner, repo );
 
-
         if(isPullRequestPage){
           //fetch commits based on PR (only applicable when users viewing a PR)
           return AppAction.fetchCommitListByPrDetails(
@@ -129,6 +133,7 @@ const AppAction = {
       dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
 
       // TODO: enhance the experience by fetching the commits from the PR itself...
+      // API_INSTANCE.getRepo('relateiq', 'riq').getPullRequest('6965')
     }
   },
   fetchCommitListBySha: ({path, owner, branch, repo, commit}) => {
