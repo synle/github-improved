@@ -48,8 +48,11 @@ const dataUtil = {
     }
 
 
+    // is pull request
+    const isPullRequestPage = !!pathName.match(/\/pull\/\d+/);
+
     return {
-      owner, repo, branch, commit, file, pull, path
+      owner, repo, branch, commit, file, pull, path, isPullRequestPage
     };
   },
   getSupportedLanguages() {

@@ -15,6 +15,7 @@ const RepoReducer = (state, {type, value}) => {
       commit : null,//current commit id
       file : null,
       pull : null,
+      isPullRequestPage: false, // whether or not in pull request mode
       commits : null,//list of relavant commits
       contributors : null,// list of contributors
       trees: null,//tree map

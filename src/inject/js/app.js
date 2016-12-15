@@ -73,6 +73,7 @@ chrome.extension.sendMessage({}, (response) => {
       file: gitInfo.file,
       path: gitInfo.path,
       pull: gitInfo.pull,
+      isPullRequestPage: gitInfo.isPullRequestPage,
       commits: null,
       contributors: null,
       trees: null
@@ -82,13 +83,6 @@ chrome.extension.sendMessage({}, (response) => {
     AppStore.dispatch(
       AppAction.init(newState)
     );
-
-
-    //move the stuff
-    $('#side-bar-pr-toolbox').empty();
-    setTimeout(() => {
-      $('.discussion-sidebar').appendTo('#side-bar-pr-toolbox');
-    }, 2000)
   }
 
   var readyStateCheckInterval = setInterval(function() {
