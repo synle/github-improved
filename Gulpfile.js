@@ -56,7 +56,11 @@ gulp.task('apply-prod-environment', function() {
 });
 
 
-// gulp.task('build', ['styles', 'views', 'js', 'js:vendor']);
+
+// dev build
+gulp.task('build-dev', ['styles', 'views', 'js', 'js:vendor']);
+
+// prod build
 gulp.task('build', ['apply-prod-environment', 'styles', 'views', 'js', 'js:vendor']);
 
 gulp.task('default', ['build', 'watch']);
