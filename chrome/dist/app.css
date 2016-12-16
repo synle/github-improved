@@ -1,4 +1,4 @@
-#side-bar-advanced-tool {
+#side-bar-body {
   border-right: 2px solid #999;
   box-shadow: 2px 0 2px -2px #888;
   position: fixed;
@@ -7,94 +7,67 @@
   top: 0;
   bottom: 0;
   padding: 10px;
-  z-index: 50;
+  z-index: 100;
   overflow-y: auto;
   background-color: white; }
-  #side-bar-advanced-tool button, #side-bar-advanced-tool input, #side-bar-advanced-tool select {
+  #side-bar-body button, #side-bar-body input, #side-bar-body select {
     display: block;
     margin-bottom: 10px;
     width: 100%; }
-  #side-bar-advanced-tool select {
+  #side-bar-body select {
     height: 40px; }
-  #side-bar-advanced-tool .margin-left0 {
+  #side-bar-body .margin-left0 {
     margin-left: 10px; }
-  #side-bar-advanced-tool .margin-right0 {
+  #side-bar-body .margin-right0 {
     margin-right: 10px; }
-  #side-bar-advanced-tool .margin-bottom0 {
+  #side-bar-body .margin-bottom0 {
     margin-bottom: 10px; }
-  #side-bar-advanced-tool .margin-top0 {
+  #side-bar-body .margin-top0 {
     margin-top: 10px; }
-  #side-bar-advanced-tool .margin-side0 {
+  #side-bar-body .margin-side0 {
     margin-left: 10px;
     margin-right: 10px; }
-  #side-bar-advanced-tool .margin-vert0 {
+  #side-bar-body .margin-vert0 {
     margin-top: 10px;
     margin-bottom: 10px; }
-  #side-bar-advanced-tool .padding-left0 {
+  #side-bar-body .padding-left0 {
     padding-left: 10px; }
-  #side-bar-advanced-tool .padding-right0 {
+  #side-bar-body .padding-right0 {
     padding-right: 10px; }
-  #side-bar-advanced-tool .padding-bottom0 {
+  #side-bar-body .padding-bottom0 {
     padding-bottom: 10px; }
-  #side-bar-advanced-tool .padding-top0 {
+  #side-bar-body .padding-top0 {
     padding-top: 10px; }
-  #side-bar-advanced-tool .padding-side0, #side-bar-advanced-tool .panel .panel-heading, #side-bar-advanced-tool .panel .panel-body {
+  #side-bar-body .padding-side0, #side-bar-body .panel .panel-heading, #side-bar-body .panel .panel-body {
     padding-left: 10px;
     padding-right: 10px; }
-  #side-bar-advanced-tool .padding-vert0 {
+  #side-bar-body .padding-vert0 {
     padding-top: 10px;
     padding-bottom: 10px; }
-  #side-bar-advanced-tool .flex-row {
+  #side-bar-body .flex-row {
     display: flex;
     flex-direction: row; }
-  #side-bar-advanced-tool .flex-column {
+  #side-bar-body .flex-column {
     display: flex;
     flex-direction: column; }
-  #side-bar-advanced-tool .flex-grow1 {
+  #side-bar-body .flex-grow1 {
     flex-grow: 1; }
-  #side-bar-advanced-tool .flex-shrink0 {
+  #side-bar-body .flex-shrink0 {
     flex-shrink: 0; }
-  #side-bar-advanced-tool .ta-right {
+  #side-bar-body .ta-right {
     text-align: right; }
-  #side-bar-advanced-tool .ta-center {
+  #side-bar-body .ta-center {
     text-align: center; }
-  #side-bar-advanced-tool .panel.panel-default .panel-heading {
+  #side-bar-body .panel.panel-default .panel-heading {
     background-color: #f5f5f5; }
-  #side-bar-advanced-tool .panel.panel-primary .panel-heading {
+  #side-bar-body .panel.panel-primary .panel-heading {
     background-color: #4078c0;
     color: white; }
-  #side-bar-advanced-tool .panel .panel-heading {
+  #side-bar-body .panel .panel-heading {
     border: 1px solid #ddd; }
-  #side-bar-advanced-tool .panel .panel-body {
+  #side-bar-body .panel .panel-body {
     border: 1px solid #ddd; }
-  #side-bar-advanced-tool border-bottom {
+  #side-bar-body border-bottom {
     border-bottom: 1px solid #ddd; }
-  #side-bar-advanced-tool .tooltipped::after {
-    max-width: 290px !important;
-    word-break: break-word !important; }
-  #side-bar-advanced-tool .discussion-sidebar {
-    float: none !important;
-    width: auto !important; }
-  #side-bar-advanced-tool .select-menu-modal {
-    width: auto !important; }
-
-.container {
-  margin-left: 315px !important;
-  margin-right: 15px !important;
-  width: auto !important; }
-
-#discussion_bucket .discussion-timeline {
-  float: none !important;
-  position: static !important;
-  width: auto !important; }
-
-#discussion_bucket .timeline-comment-avatar {
-  width: 30px !important;
-  height: 30px !important;
-  margin-left: -40px !important; }
-
-#discussion_bucket .timeline-comment-wrapper {
-  padding-left: 40px !important; }
-
-#commits_bucket {
-  margin-left: 0 !important; }
+  #side-bar-body .small-text {
+    font-size: 12px; }

@@ -8,38 +8,42 @@ import sidebarUtil from '@src/util/sidebarUtil';
 //internal
 const DiffBoxOption = React.createClass({
   render() {
-      const urlParams = this.props.urlParams || {};
+      const {urlParams, visible} = this.props;
 
-      let whiteSpaceText, cbWhitespaceChange;
-
-      //diff whitespace
-      if(urlParams.w !== '1'){
-          whiteSpaceText = 'Diff Whitespace OFF';
-          cbWhitespaceChange = sidebarUtil.onGoToDiffWhitespaceOffUrl;
+      if(!visible){
+        return null;
       } else {
-          whiteSpaceText = 'Diff Whitespace ON';
-          cbWhitespaceChange = sidebarUtil.onGoToDiffWhitespaceOnUrl;
-      }
+        let whiteSpaceText, cbWhitespaceChange;
 
-      //diff format
-      let diffFormatText, cbFormatChange;
-      if(urlParams.diff !== 'split'){
-          diffFormatText = 'Split Diff';
-          cbFormatChange = sidebarUtil.onGoToSplitDiffUrl;
-      } else {
-          diffFormatText = 'Unified Diff';
-          cbFormatChange = sidebarUtil.onGoToUnifieDiffUrl;
-      }
+        //diff whitespace
+        if(urlParams.w !== '1'){
+            whiteSpaceText = 'Ignore White Space';
+            cbWhitespaceChange = sidebarUtil.onGoToDiffWhitespaceOffUrl;
+        } else {
+            whiteSpaceText = 'White Space Sensitive';
+            cbWhitespaceChange = sidebarUtil.onGoToDiffWhitespaceOnUrl;
+        }
 
-      if($('.blob-num-addition, .blob-code-deletion').length > 0){
-          return(
-              <div>
-                <button onClick={cbWhitespaceChange} className="btn btn-sm">{whiteSpaceText}</button>
-                <button onClick={cbFormatChange} className="btn btn-sm">{diffFormatText}</button>
-              </div>
-          );
-      } else{
-          return null;
+        //diff format
+        let diffFormatText, cbFormatChange;
+        if(urlParams.diff !== 'split'){
+            diffFormatText = 'Split Diff';
+            cbFormatChange = sidebarUtil.onGoToSplitDiffUrl;
+        } else {
+            diffFormatText = 'Unified Diff';
+            cbFormatChange = sidebarUtil.onGoToUnifieDiffUrl;
+        }
+
+        if($('.blob-num-addition, .blob-code-deletion').length > 0){
+            return(
+                <div className="margin-top0">
+                  <button onClick={cbWhitespaceChange} className="btn btn-sm">{whiteSpaceText}</button>
+                  <button onClick={cbFormatChange} className="btn btn-sm">{diffFormatText}</button>
+                </div>
+            );
+        } else{
+            return null;
+        }
       }
   }
 });
@@ -47,7 +51,8 @@ const DiffBoxOption = React.createClass({
 
 const mapStateToProps = function(state) {
   return {
-    urlParams : _.get( state, 'urlParams', {})
+    visible : _.get(state, 'ui.visible.diffOptionBox'),
+    urlParams : _.get( state, 'repo.urlParams', {})
   };
 }
 

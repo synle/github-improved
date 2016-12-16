@@ -8,54 +8,82 @@ import urlUtil from '@src/util/urlUtil';
 const ContributorBox = React.createClass({
   render: function() {
     let bodyDom;
-    const {treesMap, visible, owner, repo, branch} = this.props;
-    const trees = _.get(treesMap, 'tree', []);
+    const {visible, loading, trees, owner, repo, branch, path} = this.props;
     const treeCount = _.size(trees);
 
-    if(visible.fileExplorer !== true){
-        return null;
+    if(visible !== true){
+      return null;
+    } else if(loading === true){
+      bodyDom = <div>Loading...</div>
+    } else if( treeCount > 0){
+      bodyDom = trees.map( (treePath) => {
+        const fileLink = `https://github.com/${owner}/${repo}/tree/${branch}/${treePath}`
+        const key = `blob-${treePath}`;
+
+        //get the shortname
+        var splits = treePath.split('/');
+        let shortFileName = treePath;
+        if(splits.length > 0){
+          shortFileName = splits.pop();
+        }
+
+        return (
+          <div key={key} className="small-text">
+            <a href={fileLink}>{shortFileName}</a>
+          </div>
+        );
+      });
+    } else {
+      return null;
+      // bodyDom = <div>Not Available...</div>;
     }
-  	else if( treeCount > 0){
-        bodyDom = trees.map( (tree) => {
-            const path = tree.path;
-            const sha = tree.sha;
-            const type = tree.type;
-            const fileLink = `https://github.com/${owner}/${repo}/tree/${branch}/${path}`
-            const key = `blob-${sha}`;
-
-            const typeDom = type === 'tree' ? '> ' : '';
-
-            return (
-                <div key={key}>
-                    <a href={fileLink}>{typeDom}{path}</a>
-                </div>
-            );
-        })
-  	} else {
-  		bodyDom = <div>Not Available...</div>;
-  	}
 
     return (
-        <div className="panel panel-primary">
-            <div className="panel-heading">
-                <h4>File Explorer</h4>
-            </div>
-            <div className="panel-body">
-                {bodyDom}
-            </div>
+      <div className="panel panel-primary">
+        <div className="panel-heading">
+          <h4>File Explorer</h4>
         </div>
+        <div className="panel-body">
+          <div>{bodyDom}</div>
+        </div>
+      </div>
     );
   }
 });
 
 
 const mapStateToProps = function(state) {
+  let path = _.get( state, 'repo.path' ) || '';
+
+  //
+  let targetPathDir = path.split('/');
+  targetPathDir.pop();
+  targetPathDir = targetPathDir.join('/');
+
+  const trees = targetPathDir.length === 0
+    // root
+    ? (_.get(state, 'repo.trees') || []).filter(
+        treePath => treePath.indexOf('/') === -1
+      )
+    // non root path
+    : (_.get(state, 'repo.trees') || []).filter(
+      treePath => {
+        if(path && path.length > 0){
+          return treePath.indexOf(targetPathDir) === 0;
+        }
+
+        return treePath.indexOf('/') === -1;
+      }
+    );
+
   return {
-      treesMap : _.get(state, 'trees', {}),
-      visible : _.get( state, 'visible'),
-      repo : _.get( state, 'repo'),
-      owner : _.get( state, 'owner'),
-      branch: _.get( state, 'branch'),
+    visible : _.get(state, 'ui.visible.fileExplorer'),
+    loading : _.get(state, 'ui.loading.fileExplorer'),
+    trees : _.slice( trees, 0, 40 ),//TODO: use constant for paging
+    repo : _.get( state, 'repo.repo'),
+    owner : _.get( state, 'repo.owner'),
+    branch: _.get( state, 'repo.branch'),
+    path : path
   };
 }
 

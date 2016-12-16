@@ -22,8 +22,8 @@ const CommitBox = React.createClass({
 
 const mapStateToProps = function(state) {
   return {
-    owner : _.get( state, 'owner'),
-    repo : _.get( state, 'repo')
+    owner : _.get( state, 'repo.owner'),
+    repo : _.get( state, 'repo.repo')
   };
 }
 

@@ -1,43 +1,22 @@
 //external
-import { createStore } from 'redux';
+import { combineReducers, createStore, applyMiddleware } from 'redux';
+import createLogger from 'redux-logger';
+import thunk from 'redux-thunk';
+import GitHub from 'github-api';
+
 
 //internal
-import dataUtil from '@src/util/dataUtil';
-import urlUtil from '@src/util/urlUtil';
-import sidebarUtil from '@src/util/sidebarUtil';
-import util from '@src/util/globalUtil';
+import repoReducer from '@src/store/repoReducer';
+import uiStateReducer from '@src/store/uiStateReduder';
+
+//combine the reducer
+const AppReducer = combineReducers({
+    repo : repoReducer,//the repo info
+    ui : uiStateReducer//the ui state
+});
 
 
-//App Store reducer
-const AppReducer = (state, action) => {
-	if(!state){
-		//default state
-		state = {
-			owner : null,
-			repo : null,
-			branch : null,
-			commit : null,//current commit id
-			file : null,
-			pull : null,
-			commits : null,//list of relavant commits
-            contributors : null,// list of contributors
-            trees: null,//tree map
-            urlParams: {},
-            visible: {
-                contributor : false,
-                fileExplorer : false,
-                commit : false
-            }
-		}
-	}
+const logger = createLogger();
+const AppStore = createStore( AppReducer, applyMiddleware(thunk, logger) );
 
-    switch(action.type){
-        case 'REFRESH':
-            state = action.value;
-            break;
-    }
-
-    return state;
-}
-
-export default AppReducer;
+export default AppStore;

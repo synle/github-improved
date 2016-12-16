@@ -20,7 +20,6 @@ const TokenRequestForm = React.createClass({
           }
       }
 
-
       return (
           <div className="panel panel-primary">
               <div className="panel-heading">
@@ -28,6 +27,7 @@ const TokenRequestForm = React.createClass({
               </div>
               <div className="panel-body">
                 <div>For better experience of the extension (relavant commits, contributors, etc.), we need to access to your api token.</div>
+                <div><a href="https://github.com/settings/tokens">Generate New Personal Token Here</a></div>
                 <button onClick={onPromptTokenRequest} className="btn btn-sm margin-top0">
                     Update API Token
                 </button>
@@ -40,7 +40,7 @@ const TokenRequestForm = React.createClass({
 
 const mapStateToProps = function(state) {
   return {
-      isVisible : _.size( state.apiToken ) === 0
+      isVisible : _.get( state, 'ui.visible.tokenRequestForm' )
   };
 }
 
