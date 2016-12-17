@@ -23,24 +23,23 @@ const SearchForm = React.createClass({
           const domHeader = 'Search';
 
           const domBody = (
-            <div className="panel-body padding-top0">
-              <form id="side-bar-form-search"
-                onSubmit={sidebarUtil.onSearchRepo}>
-                <input className="form-control" placeholder="Keyword" name="keyword" />
-                <select className="form-select" name="type">
-                  <option value="file">File Content</option>
-                  <option value="path">Path Name</option>
-                  <option value="file,path">File and Content</option>
-                </select>
-                <input className="form-control" placeholder="Language" name="language" list="search-language" />
-                <button className="btn btn-sm btn-primary" type="submit">
-                  Search
-                </button>
-                <datalist id="search-language">
-                  {supportedLangOptions}
-                </datalist>
-              </form>
-            </div>
+            <form id="side-bar-form-search"
+              className="margin-top0"
+              onSubmit={sidebarUtil.onSearchRepo}>
+              <input className="form-control" placeholder="Keyword" name="keyword" />
+              <select className="form-select" name="type">
+                <option value="file">File Content</option>
+                <option value="path">Path Name</option>
+                <option value="file,path">File and Content</option>
+              </select>
+              <input className="form-control" placeholder="Language" name="language" list="search-language" />
+              <button className="btn btn-sm btn-primary" type="submit">
+                Search
+              </button>
+              <datalist id="search-language">
+                {supportedLangOptions}
+              </datalist>
+            </form>
           );
 
           return (
