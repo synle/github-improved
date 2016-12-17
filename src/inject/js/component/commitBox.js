@@ -6,6 +6,7 @@ import _ from 'lodash';
 //internal
 import urlUtil from '@src/util/urlUtil';
 import Pagination from '@src/component/pagination';
+import Panel from '@src/component/panel';
 
 const PAGE_SIZE_COMMIT_LIST = 15;
 
@@ -13,14 +14,14 @@ class CommitBox extends Component{
   render() {
     const { visible, loading, commits, owner, repo } = this.props;
     const commitCount = _.size(commits);
-    let bodyDom;
+    let domBody;
 
     if(visible !== true){
       return null;
     } else if(loading === true){
-      bodyDom = <div>Loading...</div>
+      domBody = <div>Loading...</div>
     } else if(!!owner && !!repo && commitCount > 0){
-      bodyDom = commits.map((repoCommit, idx) => {
+      domBody = commits.map((repoCommit, idx) => {
         const author = repoCommit.author;
         const commit = repoCommit.commit;
         const sha = repoCommit.sha;
@@ -48,20 +49,17 @@ class CommitBox extends Component{
       });
 
       //wrap it in the paging
-      bodyDom = <Pagination domList={bodyDom} pageSize={PAGE_SIZE_COMMIT_LIST}></Pagination>
+      domBody = <Pagination domList={domBody} pageSize={PAGE_SIZE_COMMIT_LIST}></Pagination>
     } else {
-      bodyDom = <div>Not Available Here</div>
+      domBody = <div>Not Available Here</div>
     }
 
+    const domHeader = 'Commits';
+
     return (
-      <div className="panel panel-primary">
-        <div className="panel-heading">
-          <h4>Commits</h4>
-        </div>
-        <div className="panel-body">
-          {bodyDom}
-        </div>
-      </div>
+      <Panel domHeader={domHeader}
+        domBody={domBody}
+        isExpanded={true} />
     );
     }
 }
