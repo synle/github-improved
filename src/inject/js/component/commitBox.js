@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 //internal
 import urlUtil from '@src/util/urlUtil';
-
+import Pagination from '@src/component/pagination';
 
 const PAGE_SIZE_COMMIT_LIST = 15;
 

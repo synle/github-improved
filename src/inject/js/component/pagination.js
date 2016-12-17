@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE_DEFAULT = 10;
 
 // pagination
 // <Pagination domList={...} pageSize={...} />
@@ -10,7 +10,7 @@ const Pagination = React.createClass({
   getInitialState() {
     return {
       isPagingEnabled: true,
-      pageSize: this.props.pageSize || PAGE_SIZE
+      pageSize: this.props.pageSize || PAGE_SIZE_DEFAULT
     };
   },
   render: function() {
@@ -26,14 +26,14 @@ const Pagination = React.createClass({
         pagingDom = (
           <div>
             <button className="btn btn-sm btn-default"
-              onClick={e => this.onTogglePagingEnable(false)}>Show More...</button>
+              onClick={e => this.onTogglePagingEnable(false)}>More...</button>
           </div>
         );
       } else {
         pagingDom = (
           <div>
             <button className="btn btn-sm btn-default"
-              onClick={e => this.onTogglePagingEnable(true)}>Show Less...</button>
+              onClick={e => this.onTogglePagingEnable(true)}>Less...</button>
           </div>
         );
       }
