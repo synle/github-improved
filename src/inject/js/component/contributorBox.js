@@ -4,9 +4,9 @@ import _ from 'lodash';
 
 //internal
 import urlUtil from '@src/util/urlUtil';
+import Pagination from '@src/component/pagination';
 
-
-const PAGE_SIZE = 10;
+const PAGE_SIZE_CONTRIBUTOR_LIST = 5;
 
 const ContributorBox = React.createClass({
   getInitialState() {
@@ -15,7 +15,7 @@ const ContributorBox = React.createClass({
     };
   },
   render: function() {
-    let bodyDom, pagingDom;
+    let bodyDom;
     const { visible, loading, contributors } = this.props;
     const contributorCount = _.size(contributors);
 
@@ -25,31 +25,7 @@ const ContributorBox = React.createClass({
     } else if(loading === true){
       bodyDom = <div>Loading...</div>
     } else if( contributorCount > 0){
-      //whether or not to show paging.
-      let contributorsToShow = contributors;
-      if(contributorCount >= PAGE_SIZE){
-        if(this.state.showPaging){
-          // will show all if showPaging is not set...
-          contributorsToShow = contributors;
-          pagingDom = (
-            <div>
-              <button className="btn btn-sm btn-default"
-                onClick={e => this.onToggleShowPaging(false)}>Show Less...</button>
-            </div>
-          );
-        } else {
-          // cap it at page size
-          contributorsToShow = _.slice(contributors, 0, PAGE_SIZE);
-          pagingDom = (
-            <div>
-              <button className="btn btn-sm btn-default"
-                onClick={e => this.onToggleShowPaging(true)}>Show More...</button>
-            </div>
-          );
-        }
-      }
-
-      bodyDom = contributorsToShow.map((contributor) => {
+      bodyDom = contributors.map((contributor) => {
         const author = contributor.author;
         const totalContributions = contributor.total;
         const commitByAuthorUrl = urlUtil.getCommitByAuthorUrl( author.login );
@@ -69,16 +45,14 @@ const ContributorBox = React.createClass({
             </div>
           </div>
         );
-      })
+      });
+
+
+      //wrap it in the paging
+      bodyDom = <Pagination domList={bodyDom} pageSize={PAGE_SIZE_CONTRIBUTOR_LIST}></Pagination>
     } else {
       bodyDom = <div>Not Available...</div>;
     }
-
-    // TODO: remove me
-    // const contributorCountDom = contributorCount > 0
-    //   ? <span>({contributorCount})</span>
-    //   : null;
-
 
     return (
       <div className="panel panel-primary">
@@ -87,7 +61,6 @@ const ContributorBox = React.createClass({
         </div>
         <div className="panel-body">
           {bodyDom}
-          {pagingDom}
         </div>
       </div>
     );

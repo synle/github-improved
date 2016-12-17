@@ -6,6 +6,9 @@ import _ from 'lodash';
 //internal
 import urlUtil from '@src/util/urlUtil';
 
+
+const PAGE_SIZE_COMMIT_LIST = 15;
+
 class CommitBox extends Component{
   render() {
     const { visible, loading, commits, owner, repo } = this.props;
@@ -43,17 +46,12 @@ class CommitBox extends Component{
           </div>
         );
       });
+
+      //wrap it in the paging
+      bodyDom = <Pagination domList={bodyDom} pageSize={PAGE_SIZE_COMMIT_LIST}></Pagination>
     } else {
       bodyDom = <div>Not Available Here</div>
     }
-
-
-    // TODO: remove me
-    // commit count
-    // const commitCountDom = commitCount > 0
-    //   ? <span>({commitCount})</span>
-    //   : null;
-
 
     return (
       <div className="panel panel-primary">
