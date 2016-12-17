@@ -5,6 +5,7 @@ import _ from 'lodash';
 //internal
 import urlUtil from '@src/util/urlUtil';
 import Pagination from '@src/component/pagination';
+import Panel from '@src/component/panel';
 
 const PAGE_SIZE_CONTRIBUTOR_LIST = 5;
 
@@ -15,7 +16,7 @@ const ContributorBox = React.createClass({
     };
   },
   render: function() {
-    let bodyDom;
+    let domBody;
     const { visible, loading, contributors } = this.props;
     const contributorCount = _.size(contributors);
 
@@ -23,9 +24,9 @@ const ContributorBox = React.createClass({
       //shouldn't show here
       return null;
     } else if(loading === true){
-      bodyDom = <div>Loading...</div>
+      domBody = <div>Loading...</div>
     } else if( contributorCount > 0){
-      bodyDom = contributors.map((contributor) => {
+      domBody = contributors.map((contributor) => {
         const author = contributor.author;
         const totalContributions = contributor.total;
         const commitByAuthorUrl = urlUtil.getCommitByAuthorUrl( author.login );
@@ -49,20 +50,18 @@ const ContributorBox = React.createClass({
 
 
       //wrap it in the paging
-      bodyDom = <Pagination domList={bodyDom} pageSize={PAGE_SIZE_CONTRIBUTOR_LIST}></Pagination>
+      domBody = <Pagination domList={domBody} pageSize={PAGE_SIZE_CONTRIBUTOR_LIST}></Pagination>
     } else {
-      bodyDom = <div>Not Available...</div>;
+      domBody = <div>Not Available...</div>;
     }
 
+
+    const domHeader = 'Contributors';
+
     return (
-      <div className="panel panel-primary">
-        <div className="panel-heading">
-          <h4>Contributors</h4>
-        </div>
-        <div className="panel-body">
-          {bodyDom}
-        </div>
-      </div>
+      <Panel domHeader={domHeader}
+        domBody={domBody}
+        isExpanded={false} />
     );
   },
   onToggleShowPaging: function(showPagingFlag){

@@ -4,19 +4,20 @@ import _ from 'lodash';
 
 //internal
 import urlUtil from '@src/util/urlUtil';
+import Panel from '@src/component/panel';
 
 const ContributorBox = React.createClass({
   render: function() {
-    let bodyDom;
+    let domBody;
     const {visible, loading, trees, owner, repo, branch, path} = this.props;
     const treeCount = _.size(trees);
 
     if(visible !== true){
       return null;
     } else if(loading === true){
-      bodyDom = <div>Loading...</div>
+      domBody = <div>Loading...</div>
     } else if( treeCount > 0){
-      bodyDom = trees.map( (treePath) => {
+      domBody = trees.map( (treePath) => {
         const fileLink = `https://github.com/${owner}/${repo}/tree/${branch}/${treePath}`
         const key = `blob-${treePath}`;
 
@@ -35,18 +36,15 @@ const ContributorBox = React.createClass({
       });
     } else {
       return null;
-      // bodyDom = <div>Not Available...</div>;
     }
 
+    const domHeader = 'File Explorer';
+
     return (
-      <div className="panel panel-primary">
-        <div className="panel-heading">
-          <h4>File Explorer</h4>
-        </div>
-        <div className="panel-body">
-          <div>{bodyDom}</div>
-        </div>
-      </div>
+      <Panel domHeader={domHeader}
+        domBody={domBody}
+        isExpanded={true}
+        />
     );
   }
 });

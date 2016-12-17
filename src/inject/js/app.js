@@ -54,11 +54,6 @@ chrome.extension.sendMessage({}, (response) => {
       </Provider>,
       document.querySelector('#side-bar-body')
     );
-
-    //event
-    $(document).on('click', '.panel-heading', function(){
-     $(this).closest('.panel').find('.panel-body').toggle();
-    });
   }
 
   function _refreshState(){
