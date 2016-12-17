@@ -48,7 +48,7 @@ const dataUtil = {
     }
 
 
-    // is pull request
+    // is pull request details
     let splitPrNumber = pathName.match(/\/pull\/\d+/);
     let isPullRequestPage = !!splitPrNumber;
     let pullRequestNumber;
@@ -57,8 +57,24 @@ const dataUtil = {
       pullRequestNumber = splitPrNumber[0].split('/')[2];
     }
 
+
+    let splitCompareBranch = pathName.match(/\/compare\/\w+/);
+    let isCompareMode = !!splitCompareBranch;
+    if(isCompareMode){
+      isPullRequestPage = true;
+    }
+
     return {
-      owner, repo, branch, commit, file, pull, path, isPullRequestPage, pullRequestNumber
+      owner,
+      repo,
+      branch,
+      commit,
+      file,
+      pull,
+      path,
+      isPullRequestPage,
+      pullRequestNumber,
+      isCompareMode
     };
   },
   getSupportedLanguages() {
