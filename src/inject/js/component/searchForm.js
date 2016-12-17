@@ -9,16 +9,51 @@ import dataUtil from '@src/util/dataUtil';
 import sidebarUtil from '@src/util/sidebarUtil';
 import Panel from '@src/component/panel';
 
+
+const BLACK_LIST_FILE_NAMES = [
+  '.gitignore'
+].reduce(
+  (res, f) => {
+    res[f] = 1;
+    return res;
+  },
+  {}
+);
+
 //internal
 const SearchForm = React.createClass({
   render() {
-      const { owner, repo, visible } = this.props;
+      const { owner, repo, visible, trees } = this.props;
 
       if(visible && (!!owner && !!repo)){
           //auto complete
-          const supportedLangOptions = dataUtil.getSupportedLanguages().map( (language) => {
-              return (<option key={language} value={language}>{language}</option>);
-          });
+          const supportedLangOptions = dataUtil.getSupportedLanguages().map(
+            language => <option key={language} value={language}>{language}</option>
+          );
+
+          const fileNames = trees.reduce(
+            (res, tree) => {
+              const splits = tree.split('/')
+                .map(t => t.toLowerCase())
+                .forEach(t => {
+                  res[t] = 1;
+                });
+
+              const lastSegment = _.last(splits);
+              if(!BLACK_LIST_FILE_NAMES[lastSegment]){
+                res[lastSegment] = 1;
+              }
+
+              return res;
+            },
+            {}//initial value
+          );
+
+          const matchedFileName = Object.keys(fileNames);
+
+          const fileNamesOptions = _.slice(matchedFileName, 0, 50).map(
+            fileName => <option key={fileName} value={fileName}>{fileName}</option>
+          );
 
           const domHeader = 'Search';
 
@@ -26,7 +61,7 @@ const SearchForm = React.createClass({
             <form id="side-bar-form-search"
               className="margin-top0"
               onSubmit={sidebarUtil.onSearchRepo}>
-              <input className="form-control" placeholder="Keyword" name="keyword" />
+              <input className="form-control" placeholder="Keyword" name="keyword" list="search-file-name" />
               <select className="form-select" name="type">
                 <option value="file">File Content</option>
                 <option value="path">Path Name</option>
@@ -38,6 +73,9 @@ const SearchForm = React.createClass({
               </button>
               <datalist id="search-language">
                 {supportedLangOptions}
+              </datalist>
+              <datalist id="search-file-name">
+                {fileNamesOptions}
               </datalist>
             </form>
           );
@@ -58,6 +96,7 @@ const SearchForm = React.createClass({
 const mapStateToProps = function(state) {
   return {
       visible: _.get( state, 'ui.visible.searchBox'),
+      trees : _.get(state, 'repo.trees') || [],
       owner : _.get( state, 'repo.owner'),
       repo : _.get( state, 'repo.repo')
   };
