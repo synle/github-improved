@@ -41,6 +41,7 @@ const dataUtil = {
     var file = _.trim($('.file-navigation .breadcrumb').text());
     var path = !!file ? file.substr( file.indexOf('/') + 1 ) : null ||
       '';
+    path = _.trimEnd(path, '/');
 
     var pull;
     if(pathName.indexOf('/pull/') >= 0 && pathName.indexOf('/files') >= 0){
