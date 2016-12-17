@@ -5,6 +5,9 @@ import _ from 'lodash';
 
 //internal
 import urlUtil from '@src/util/urlUtil';
+import Pagination from '@src/component/pagination';
+
+const PAGE_SIZE_COMMIT_LIST = 15;
 
 class CommitBox extends Component{
   render() {
@@ -43,19 +46,17 @@ class CommitBox extends Component{
           </div>
         );
       });
+
+      //wrap it in the paging
+      bodyDom = <Pagination domList={bodyDom} pageSize={PAGE_SIZE_COMMIT_LIST}></Pagination>
     } else {
       bodyDom = <div>Not Available Here</div>
     }
 
-    const commitCountDom = commitCount > 0
-      ? <span>({commitCount})</span>
-      : null;
-
-
     return (
       <div className="panel panel-primary">
         <div className="panel-heading">
-          <h4>Commits {commitCountDom}</h4>
+          <h4>Commits</h4>
         </div>
         <div className="panel-body">
           {bodyDom}

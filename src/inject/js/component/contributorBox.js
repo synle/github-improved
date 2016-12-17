@@ -4,9 +4,16 @@ import _ from 'lodash';
 
 //internal
 import urlUtil from '@src/util/urlUtil';
+import Pagination from '@src/component/pagination';
 
+const PAGE_SIZE_CONTRIBUTOR_LIST = 5;
 
 const ContributorBox = React.createClass({
+  getInitialState() {
+    return {
+      showPaging: false
+    };
+  },
   render: function() {
     let bodyDom;
     const { visible, loading, contributors } = this.props;
@@ -38,35 +45,41 @@ const ContributorBox = React.createClass({
             </div>
           </div>
         );
-      })
+      });
+
+
+      //wrap it in the paging
+      bodyDom = <Pagination domList={bodyDom} pageSize={PAGE_SIZE_CONTRIBUTOR_LIST}></Pagination>
     } else {
       bodyDom = <div>Not Available...</div>;
     }
 
-    const contributorCountDom = contributorCount > 0
-      ? <span>({contributorCount})</span>
-      : null;
-
-
     return (
       <div className="panel panel-primary">
         <div className="panel-heading">
-          <h4>Contributors {contributorCountDom}</h4>
+          <h4>Contributors</h4>
         </div>
         <div className="panel-body">
           {bodyDom}
         </div>
       </div>
     );
+  },
+  onToggleShowPaging: function(showPagingFlag){
+    this.setState({
+      showPaging: showPagingFlag
+    });
   }
 });
 
 
 const mapStateToProps = function(state) {
+  const contributorsList = _.reverse( _.get(state, 'repo.contributors') || [] );
+
   return {
     visible : _.get(state, 'ui.visible.contributorBox'),
     loading : _.get(state, 'ui.loading.contributorBox'),
-    contributors : _.slice( _.reverse( _.get(state, 'repo.contributors') ), 0, 10) // Cap the page size at 10
+    contributors : contributorsList
   };
 }
 
