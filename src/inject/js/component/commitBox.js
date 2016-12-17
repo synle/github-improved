@@ -47,15 +47,18 @@ class CommitBox extends Component{
       bodyDom = <div>Not Available Here</div>
     }
 
-    const commitCountDom = commitCount > 0
-      ? <span>({commitCount})</span>
-      : null;
+
+    // TODO: remove me
+    // commit count
+    // const commitCountDom = commitCount > 0
+    //   ? <span>({commitCount})</span>
+    //   : null;
 
 
     return (
       <div className="panel panel-primary">
         <div className="panel-heading">
-          <h4>Commits {commitCountDom}</h4>
+          <h4>Commits</h4>
         </div>
         <div className="panel-body">
           {bodyDom}

@@ -7,15 +7,16 @@ import sidebarUtil from '@src/util/sidebarUtil';
 
 const CommitBox = React.createClass({
   render: function() {
-      if(!!this.props.owner && !!this.props.repo){
-          return (
-            <button onClick={sidebarUtil.onGoToGetSearchUrl} className="btn btn-sm">
-                Quick File Search
-            </button>
-          );
-      }
+    const {owner, repo} = this.props;
+    if(owner && repo){
+        return (
+          <button onClick={sidebarUtil.onGoToGetSearchUrl} className="btn btn-sm">
+              Quick File Search
+          </button>
+        );
+    }
 
-      return null;
+    return null;
   }
 });
 
