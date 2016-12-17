@@ -58,13 +58,14 @@ const mapStateToProps = function(state) {
   targetPathDir.pop();
   targetPathDir = targetPathDir.join('/');
 
+  const initalTrees = _.get(state, 'repo.trees') || [];
   const trees = targetPathDir.length === 0
     // root
-    ? (_.get(state, 'repo.trees') || []).filter(
+    ? initalTrees.filter(
         treePath => treePath.indexOf('/') === -1
       )
     // non root path
-    : (_.get(state, 'repo.trees') || []).filter(
+    : initalTrees.filter(
       treePath => {
         if(path && path.length > 0){
           return treePath.indexOf(targetPathDir) === 0;
@@ -77,7 +78,7 @@ const mapStateToProps = function(state) {
   return {
     visible : _.get(state, 'ui.visible.fileExplorer'),
     loading : _.get(state, 'ui.loading.fileExplorer'),
-    trees : _.slice( trees, 0, 40 ),//TODO: use constant for paging
+    trees : trees,
     repo : _.get( state, 'repo.repo'),
     owner : _.get( state, 'repo.owner'),
     branch: _.get( state, 'repo.branch'),
