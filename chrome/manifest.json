@@ -1,6 +1,6 @@
 {
   "name": "Github Improved",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "manifest_version": 2,
   "description": "Advanced github tool",
   "homepage_url": "https://github.com/synle/github-improved",
@@ -25,8 +25,8 @@
         "https://github.com/*"
       ],
       "js": [
-      	"dist/vendor.js",
-		"dist/app.js"
+        "dist/vendor.js",
+        "dist/app.js"
       ]
     }
   ]
