@@ -54,6 +54,36 @@ chrome.extension.sendMessage({}, (response) => {
       </Provider>,
       document.querySelector('#side-bar-body')
     );
+
+
+    //handling resize
+    (function(containerDom){
+      containerDom.classList.add('resizable');
+      var resizer = document.createElement('div');
+      resizer.className = 'resizer';
+      containerDom.appendChild(resizer);
+      resizer.addEventListener('mousedown', initDrag, false);
+
+      var startX, startY, startWidth, startHeight;
+
+      function initDrag(e) {
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = parseInt(document.defaultView.getComputedStyle(containerDom).width, 10);
+        startHeight = parseInt(document.defaultView.getComputedStyle(containerDom).height, 10);
+        document.documentElement.addEventListener('mousemove', doDrag, false);
+        document.documentElement.addEventListener('mouseup', stopDrag, false);
+      }
+
+      function doDrag(e) {
+        containerDom.style.width = (startWidth + e.clientX - startX) + 'px';
+      }
+
+      function stopDrag(e) {
+        document.documentElement.removeEventListener('mousemove', doDrag, false);
+        document.documentElement.removeEventListener('mouseup', stopDrag, false);
+      }
+    })(document.querySelector('#side-bar-body'));
   }
 
   function _refreshState(){
