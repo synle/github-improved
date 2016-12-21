@@ -19,7 +19,7 @@ body{
   left:0;
   top:0;
   bottom:0;
-  padding:10px 0px 10px 10px;
+  padding: $padding-offset / 2;
   z-index:$z-index;
   overflow-y:auto;
   background-color: white;
