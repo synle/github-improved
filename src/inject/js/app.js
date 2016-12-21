@@ -147,13 +147,10 @@ chrome.extension.sendMessage({}, (response) => {
       _init();
       _refreshState();//trigger the first state change
 
-      const pageChangeObserver = new window.MutationObserver(() => {
+      $(document).on('pjax:end', () => {
+        console.error('aaaaa======');
         _refreshState();
       })
-      pageChangeObserver.observe( document.body, {
-        attributes: true,
-        attributeFilter: ['class']
-      });
     }
   }, 10);
 });
