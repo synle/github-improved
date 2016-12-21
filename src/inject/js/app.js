@@ -76,7 +76,7 @@ chrome.extension.sendMessage({}, (response) => {
       }
 
       function doDrag(e) {
-        containerDom.style.width = (startWidth + e.clientX - startX) + 'px';
+        containerDom.style.width = Math.min((startWidth + e.clientX - startX), 450) + 'px';
       }
 
       function stopDrag(e) {

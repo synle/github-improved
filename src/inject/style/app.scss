@@ -2,8 +2,15 @@ $width : 300px;
 $margin-offset: 10px;
 $padding-offset: 10px;
 
-.container-lg{
+// override existing page style
+.container-lg, .header, .page-content, .container{
   margin-left: $width + $margin-offset !important;
+}
+
+.header{
+  .container{
+    margin-left: $margin-offset !important;
+  }
 }
 
 #side-bar-body{

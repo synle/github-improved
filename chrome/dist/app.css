@@ -1,3 +1,9 @@
+.container-lg, .header, .page-content, .container {
+  margin-left: 310px !important; }
+
+.header .container {
+  margin-left: 10px !important; }
+
 #side-bar-body {
   position: fixed;
   width: 300px;
