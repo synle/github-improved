@@ -147,17 +147,13 @@ chrome.extension.sendMessage({}, (response) => {
       _init();
       _refreshState();//trigger the first state change
 
-      //adapted from octotree for changes in the dom
-      //reload the state
-      const pjaxContainer = $('#js-repo-pjax-container, .context-loader-container, [data-pjax-container]')[0];
-      if (!!pjaxContainer){
-        const pageChangeObserver = new window.MutationObserver(() => {
-          _refreshState();
-        })
-        pageChangeObserver.observe(pjaxContainer, {
-          childList: true
-        });
-      }
+      const pageChangeObserver = new window.MutationObserver(() => {
+        _refreshState();
+      })
+      pageChangeObserver.observe( document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
     }
   }, 10);
 });
