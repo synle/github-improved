@@ -74,6 +74,15 @@ chrome.extension.sendMessage({}, (response) => {
 
       var startX, startY, startWidth, startHeight;
 
+      function doDrag(e) {
+        e.stopPropagation && e.stopPropagation();
+        e.preventDefault && e.preventDefault();
+
+        var newWidth = getNewWidth(e);
+        doResize(newWidth);
+        dataUtil.setPersistedProp('side-bar-width', newWidth);
+      }
+
       function initDrag(e) {
         startX = e.clientX;
         startY = e.clientY;
@@ -81,17 +90,15 @@ chrome.extension.sendMessage({}, (response) => {
         startHeight = parseInt(document.defaultView.getComputedStyle(containerDom).height, 10);
         document.documentElement.addEventListener('mousemove', doDrag, false);
         document.documentElement.addEventListener('mouseup', stopDrag, false);
-      }
 
-      function doDrag(e) {
-        var newWidth = getNewWidth(e);
-        doResize(newWidth);
-        dataUtil.setPersistedProp('side-bar-width', newWidth);
+        resizer.classList.add('resizing');
       }
 
       function stopDrag(e) {
         document.documentElement.removeEventListener('mousemove', doDrag, false);
         document.documentElement.removeEventListener('mouseup', stopDrag, false);
+
+        resizer.classList.remove('resizing');
       }
 
 
@@ -103,8 +110,8 @@ chrome.extension.sendMessage({}, (response) => {
       }
 
       function getNewWidth(e){
-        var newWidth = Math.min((startWidth + e.clientX - startX), 450);
-        newWidth = Math.max(300, newWidth);
+        var newWidth = Math.min((startWidth + e.clientX - startX), 500);
+        newWidth = Math.max(200, newWidth);
 
         return newWidth + 'px';
       }
