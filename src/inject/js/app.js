@@ -74,14 +74,11 @@ chrome.extension.sendMessage({}, (response) => {
 
       var startX, startY, startWidth, startHeight;
 
-      var doDrag = _.debounce(
-        function (e) {
-          var newWidth = getNewWidth(e);
-          doResize(newWidth);
-          dataUtil.setPersistedProp('side-bar-width', newWidth);
-        },
-        50
-      );
+      function doDrag(e) {
+        var newWidth = getNewWidth(e);
+        doResize(newWidth);
+        dataUtil.setPersistedProp('side-bar-width', newWidth);
+      }
 
       function initDrag(e) {
         startX = e.clientX;
