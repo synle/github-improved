@@ -96,14 +96,9 @@ chrome.extension.sendMessage({}, (response) => {
 
 
       function doResize(newWidth){
-        containerDom.style.width =  newWidth;
-
-        //move the resizer
-        resizer.style.left = newWidth;
-
-        //adjust the offset for container
-        $('.container-lg, .page-content, .container').css({
-          'margin-left' :  `${newWidth} !important`
+        // update the side bar width
+        $('body').css({
+          '--side-bar-width': `${newWidth} !important`
         });
       }
 
@@ -148,7 +143,6 @@ chrome.extension.sendMessage({}, (response) => {
       _refreshState();//trigger the first state change
 
       $(document).on('pjax:end', () => {
-        console.error('aaaaa======');
         _refreshState();
       })
     }
