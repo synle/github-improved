@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import _ from 'lodash';
 
 //reducer
 import AppStore from '@src/store/appStore.js';
@@ -33,7 +34,7 @@ chrome.extension.sendMessage({}, (response) => {
     //empty if needed
     $('#side-bar-body').remove();
 
-    sideBarContainer = $('<div id="side-bar-body" />')
+    sideBarContainer = $('<div id="side-bar-body" class="noselect" />')
       .appendTo('body');
 
 
@@ -58,11 +59,12 @@ chrome.extension.sendMessage({}, (response) => {
 
     //handling resize
     (function(containerDom){
-      containerDom.classList.add('resizable');
       var resizer = document.createElement('div');
       resizer.className = 'resizer';
-      containerDom.appendChild(resizer);
       resizer.addEventListener('mousedown', initDrag, false);
+
+      containerDom.classList.add('resizable');
+      containerDom.appendChild(resizer);
 
       var startX, startY, startWidth, startHeight;
 
@@ -76,12 +78,25 @@ chrome.extension.sendMessage({}, (response) => {
       }
 
       function doDrag(e) {
-        containerDom.style.width = Math.min((startWidth + e.clientX - startX), 450) + 'px';
+        var newWidth = getNewWidth(e);
+        containerDom.style.width =  newWidth;
+
+        //adjust the offset for container
+        $('.container-lg, .page-content, .container').css({
+          'margin-left' :  `${newWidth} !important`
+        });
       }
 
       function stopDrag(e) {
         document.documentElement.removeEventListener('mousemove', doDrag, false);
         document.documentElement.removeEventListener('mouseup', stopDrag, false);
+      }
+
+      function getNewWidth(e){
+        var newWidth = Math.min((startWidth + e.clientX - startX), 450);
+        newWidth = Math.max(300, newWidth);
+
+        return newWidth + 'px';
       }
     })(document.querySelector('#side-bar-body'));
   }
@@ -119,7 +134,7 @@ chrome.extension.sendMessage({}, (response) => {
 
       //adapted from octotree for changes in the dom
       //reload the state
-      const pjaxContainer = $('#js-repo-pjax-container, .context-loader-container, [data-pjax-container]')[0];
+      const pjaxContainer = document.querySelectorAll('#js-repo-pjax-container, .context-loader-container, [data-pjax-container]')[0];
       if (!!pjaxContainer){
         const pageChangeObserver = new window.MutationObserver(() => {
           _refreshState();
