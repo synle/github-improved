@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import _ from 'lodash';
 
 //reducer
 import AppStore from '@src/store/appStore.js';
@@ -33,7 +34,7 @@ chrome.extension.sendMessage({}, (response) => {
     //empty if needed
     $('#side-bar-body').remove();
 
-    sideBarContainer = $('<div id="side-bar-body" />')
+    sideBarContainer = $('<div id="side-bar-body" class="noselect" />')
       .appendTo('body');
 
 
@@ -54,6 +55,60 @@ chrome.extension.sendMessage({}, (response) => {
       </Provider>,
       document.querySelector('#side-bar-body')
     );
+
+
+    //handling resize
+    (function(containerDom){
+      // init
+      var resizer = document.createElement('div');
+      resizer.className = 'resizer';
+      resizer.addEventListener('mousedown', initDrag, false);
+
+      containerDom.classList.add('resizable');
+      containerDom.parentNode.appendChild(resizer);
+
+
+      var sideBarWidth = dataUtil.getPersistedProp('side-bar-width') || '300px';
+      doResize(sideBarWidth);
+      //end init
+
+      var startX, startY, startWidth, startHeight;
+
+      function initDrag(e) {
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = parseInt(document.defaultView.getComputedStyle(containerDom).width, 10);
+        startHeight = parseInt(document.defaultView.getComputedStyle(containerDom).height, 10);
+        document.documentElement.addEventListener('mousemove', doDrag, false);
+        document.documentElement.addEventListener('mouseup', stopDrag, false);
+      }
+
+      function doDrag(e) {
+        var newWidth = getNewWidth(e);
+        doResize(newWidth);
+        dataUtil.setPersistedProp('side-bar-width', newWidth);
+      }
+
+      function stopDrag(e) {
+        document.documentElement.removeEventListener('mousemove', doDrag, false);
+        document.documentElement.removeEventListener('mouseup', stopDrag, false);
+      }
+
+
+      function doResize(newWidth){
+        // update the side bar width
+        $('body').css({
+          '--side-bar-width': `${newWidth} !important`
+        });
+      }
+
+      function getNewWidth(e){
+        var newWidth = Math.min((startWidth + e.clientX - startX), 450);
+        newWidth = Math.max(300, newWidth);
+
+        return newWidth + 'px';
+      }
+    })(document.querySelector('#side-bar-body'));
   }
 
   function _refreshState(){
@@ -87,17 +142,9 @@ chrome.extension.sendMessage({}, (response) => {
       _init();
       _refreshState();//trigger the first state change
 
-      //adapted from octotree for changes in the dom
-      //reload the state
-      const pjaxContainer = $('#js-repo-pjax-container, .context-loader-container, [data-pjax-container]')[0];
-      if (!!pjaxContainer){
-        const pageChangeObserver = new window.MutationObserver(() => {
-          _refreshState();
-        })
-        pageChangeObserver.observe(pjaxContainer, {
-          childList: true
-        });
-      }
+      $(document).on('pjax:end', () => {
+        _refreshState();
+      })
     }
   }, 10);
 });

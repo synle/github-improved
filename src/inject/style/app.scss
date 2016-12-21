@@ -1,17 +1,26 @@
 $width : 300px;
 $margin-offset: 10px;
 $padding-offset: 10px;
+$z-index: 100;
+
+body{
+  --side-bar-width: $width !important;
+}
+
+// override existing page style
+.container-lg, .page-content, .container{
+  margin-left: var(--side-bar-width) !important;
+  padding-left: $padding-offset !important;
+}
 
 #side-bar-body{
-  border-right:2px solid #999;
-  box-shadow: 2px 0 2px -2px #888;
   position: fixed;
-  width: $width;
+  width: var(--side-bar-width);
   left:0;
   top:0;
   bottom:0;
-  padding:10px;
-  z-index:100;
+  padding:10px 0px 10px 10px;
+  z-index:$z-index;
   overflow-y:auto;
   background-color: white;
 
@@ -106,6 +115,17 @@ $padding-offset: 10px;
     text-align: center;
   }
 
+  //non-selectable
+  .noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Chrome/Safari/Opera */
+       -khtml-user-select: none; /* Konqueror */
+         -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    not supported by any browser */
+  }
+
   //panel craps
   .panel{
     &.panel-default .panel-heading{
@@ -134,5 +154,22 @@ $padding-offset: 10px;
 
   .small-text{
     font-size: 12px;
+  }
+}
+
+// mainly for resize
+.resizable { position: relative; }
+.resizer {
+  width: 5px;
+  border-right:5px solid #999;
+  height: 100%;
+  position: fixed;
+  left: var(--side-bar-width);
+  top: 0;
+  z-index: $z-index + 1;
+  cursor: move;
+
+  &:hover{
+    border-color: red;
   }
 }
