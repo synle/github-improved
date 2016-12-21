@@ -4,7 +4,10 @@ import _ from 'lodash';
 
 //internal
 import urlUtil from '@src/util/urlUtil';
+import Pagination from '@src/component/pagination';
 import Panel from '@src/component/panel';
+
+const PAGE_SIZE_FILE_EXPLORER = 15;
 
 const ContributorBox = React.createClass({
   render: function() {
@@ -34,6 +37,9 @@ const ContributorBox = React.createClass({
           </div>
         );
       });
+
+      //wrap it in the paging
+      domBody = <Pagination domList={domBody} pageSize={PAGE_SIZE_FILE_EXPLORER}></Pagination>
     } else {
       return null;
     }
