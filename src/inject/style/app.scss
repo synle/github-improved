@@ -11,6 +11,19 @@ body{
 .container-lg, .page-content, .container{
   margin-left: var(--side-bar-width) !important;
   padding-left: $padding-offset !important;
+
+  .container-lg, .page-content, .container{
+    margin:auto !important;
+  }
+}
+
+.experiment-repo-nav .capped-cards .capped-card{
+  width: 50% !important;
+  margin: 0 !important;
+
+  svg{
+    width: 100% !important;
+  }
 }
 
 #side-bar-body{
@@ -19,7 +32,7 @@ body{
   left:0;
   top:0;
   bottom:0;
-  padding:10px 0px 10px 10px;
+  padding: $padding-offset / 2;
   z-index:$z-index;
   overflow-y:auto;
   background-color: white;
@@ -169,7 +182,7 @@ body{
   z-index: $z-index + 1;
   cursor: move;
 
-  &:hover{
+  &:hover, &.resizing{
     border-color: red;
   }
 }
