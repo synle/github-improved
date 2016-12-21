@@ -59,12 +59,18 @@ chrome.extension.sendMessage({}, (response) => {
 
     //handling resize
     (function(containerDom){
+      // init
       var resizer = document.createElement('div');
       resizer.className = 'resizer';
       resizer.addEventListener('mousedown', initDrag, false);
 
       containerDom.classList.add('resizable');
       containerDom.parentNode.appendChild(resizer);
+
+
+      var sideBarWidth = dataUtil.getPersistedProp('side-bar-width') || '300px';
+      doResize(sideBarWidth);
+      //end init
 
       var startX, startY, startWidth, startHeight;
 
@@ -79,6 +85,17 @@ chrome.extension.sendMessage({}, (response) => {
 
       function doDrag(e) {
         var newWidth = getNewWidth(e);
+        doResize(newWidth);
+        dataUtil.setPersistedProp('side-bar-width', newWidth);
+      }
+
+      function stopDrag(e) {
+        document.documentElement.removeEventListener('mousemove', doDrag, false);
+        document.documentElement.removeEventListener('mouseup', stopDrag, false);
+      }
+
+
+      function doResize(newWidth){
         containerDom.style.width =  newWidth;
 
         //move the resizer
@@ -88,11 +105,6 @@ chrome.extension.sendMessage({}, (response) => {
         $('.container-lg, .page-content, .container').css({
           'margin-left' :  `${newWidth} !important`
         });
-      }
-
-      function stopDrag(e) {
-        document.documentElement.removeEventListener('mousemove', doDrag, false);
-        document.documentElement.removeEventListener('mouseup', stopDrag, false);
       }
 
       function getNewWidth(e){
@@ -137,7 +149,7 @@ chrome.extension.sendMessage({}, (response) => {
 
       //adapted from octotree for changes in the dom
       //reload the state
-      const pjaxContainer = document.querySelectorAll('#js-repo-pjax-container, .context-loader-container, [data-pjax-container]')[0];
+      const pjaxContainer = $('#js-repo-pjax-container, .context-loader-container, [data-pjax-container]')[0];
       if (!!pjaxContainer){
         const pageChangeObserver = new window.MutationObserver(() => {
           _refreshState();
