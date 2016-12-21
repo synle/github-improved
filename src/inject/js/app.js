@@ -74,6 +74,12 @@ chrome.extension.sendMessage({}, (response) => {
 
       var startX, startY, startWidth, startHeight;
 
+      function doDrag(e) {
+        var newWidth = getNewWidth(e);
+        doResize(newWidth);
+        dataUtil.setPersistedProp('side-bar-width', newWidth);
+      }
+
       function initDrag(e) {
         startX = e.clientX;
         startY = e.clientY;
@@ -81,12 +87,6 @@ chrome.extension.sendMessage({}, (response) => {
         startHeight = parseInt(document.defaultView.getComputedStyle(containerDom).height, 10);
         document.documentElement.addEventListener('mousemove', doDrag, false);
         document.documentElement.addEventListener('mouseup', stopDrag, false);
-      }
-
-      function doDrag(e) {
-        var newWidth = getNewWidth(e);
-        doResize(newWidth);
-        dataUtil.setPersistedProp('side-bar-width', newWidth);
       }
 
       function stopDrag(e) {
