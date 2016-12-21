@@ -2,6 +2,10 @@ $width : 300px;
 $margin-offset: 10px;
 $padding-offset: 10px;
 
+.container-lg{
+  margin-left: $width + $margin-offset !important;
+}
+
 #side-bar-body{
   position: fixed;
   width: $width;
