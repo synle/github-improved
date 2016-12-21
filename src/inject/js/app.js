@@ -64,7 +64,7 @@ chrome.extension.sendMessage({}, (response) => {
       resizer.addEventListener('mousedown', initDrag, false);
 
       containerDom.classList.add('resizable');
-      containerDom.appendChild(resizer);
+      containerDom.parentNode.appendChild(resizer);
 
       var startX, startY, startWidth, startHeight;
 
@@ -80,6 +80,9 @@ chrome.extension.sendMessage({}, (response) => {
       function doDrag(e) {
         var newWidth = getNewWidth(e);
         containerDom.style.width =  newWidth;
+
+        //move the resizer
+        resizer.style.left = newWidth;
 
         //adjust the offset for container
         $('.container-lg, .page-content, .container').css({

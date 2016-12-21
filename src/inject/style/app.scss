@@ -157,14 +157,13 @@ $z-index: 100;
 .resizable { position: relative; }
 .resizer {
   width: 5px;
+  border-right:5px solid #999;
   height: 100%;
-  position: absolute;
-  right: 0;
+  position: fixed;
+  left: $width;
   top: 0;
   z-index: $z-index + 1;
   cursor: move;
-  border-right:4px solid #999;
-  box-shadow: 2px 0 2px -2px #888;
 
   &:hover{
     border-color: red;
