@@ -5,6 +5,12 @@ body {
   margin-left: var(--side-bar-width) !important;
   padding-left: 10px !important; }
 
+.experiment-repo-nav .capped-cards .capped-card {
+  width: 50% !important;
+  margin: 0 !important; }
+  .experiment-repo-nav .capped-cards .capped-card svg {
+    width: 100% !important; }
+
 #side-bar-body {
   position: fixed;
   width: var(--side-bar-width);
