@@ -57,9 +57,9 @@ const SearchForm = React.createClass({
                 onChange={e => this.onChangeKeyword(e.target.value)}
                 value={keyword} />
               <select className="form-select" name="type">
+                <option value="file,path">File and Content</option>
                 <option value="file">File Content</option>
                 <option value="path">Path Name</option>
-                <option value="file,path">File and Content</option>
               </select>
               <input className="form-control" placeholder="Language" name="language" list="search-language" />
               <button className="btn btn-sm btn-primary" type="submit">
