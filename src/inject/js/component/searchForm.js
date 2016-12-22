@@ -22,8 +22,14 @@ const BLACK_LIST_FILE_NAMES = [
 
 //internal
 const SearchForm = React.createClass({
+  getInitialState() {
+    return {
+      keyword: ''
+    };
+  },
   render() {
       const { owner, repo, visible, trees } = this.props;
+      const { keyword } = this.state;
 
       if(visible && (!!owner && !!repo)){
           //auto complete
@@ -61,7 +67,12 @@ const SearchForm = React.createClass({
             <form id="side-bar-form-search"
               className="margin-top0"
               onSubmit={sidebarUtil.onSearchRepo}>
-              <input className="form-control" placeholder="Keyword" name="keyword" list="search-file-name" />
+              <input className="form-control"
+                placeholder="Keyword"
+                name="keyword"
+                list="search-file-name"
+                onChange={this.onChangeKeyword}
+                value={keyword} />
               <select className="form-select" name="type">
                 <option value="file">File Content</option>
                 <option value="path">Path Name</option>
@@ -89,6 +100,12 @@ const SearchForm = React.createClass({
       }
 
       return null;
+  },
+  onChangeKeyword(e){
+    const newKeyword = e.target.value;
+    this.setState({
+      keyword: newKeyword
+    });
   }
 });
 
