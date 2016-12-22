@@ -87,11 +87,11 @@ const SearchForm = React.createClass({
   onChangeKeyword(keyword){
     const matchingSearchTimer = setTimeout(
       () => {
+        const curKeyword = (this.state.keyword || '').toLowerCase();
         const { fileNames } = this.props;
-
-        const matchedSearches = keyword
+        const matchedSearches = curKeyword
           ? fileNames.filter(
-            (fName) => fName.indexOf(keyword) >= 0
+            (fName) => fName.toLowerCase().indexOf(curKeyword) >= 0
           )
           : _.slice(fileNames, 0, MAX_SEARCH_MATCHES)
 
@@ -120,16 +120,9 @@ const mapStateToProps = function(state) {
   const fileNames = trees.reduce(
     (res, tree) => {
       const splits = tree.split('/')
-        .map(t => t.toLowerCase())
-        .forEach(t => {
-          res[t] = 1;
-        });
-
-      //remove the last ending .extension
-      // const lastSegment = (_.last(splits) || '').replace(/\.\w+/, '');
-      // if(lastSegment && !BLACK_LIST_FILE_NAMES[lastSegment]){
-      //   res[lastSegment] = 1;
-      // }
+        .filter(fn => !!fn)
+        .map(fn => fn.replace(/\.\w+/, ''))
+        .forEach(fn => {res[fn] = 1});
 
       return res;
     },
