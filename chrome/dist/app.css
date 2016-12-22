@@ -4,6 +4,8 @@ body {
 .container-lg, .page-content, .container {
   margin-left: var(--side-bar-width) !important;
   padding-left: 10px !important; }
+  .container-lg .container-lg, .container-lg .page-content, .container-lg .container, .page-content .container-lg, .page-content .page-content, .page-content .container, .container .container-lg, .container .page-content, .container .container {
+    margin: auto !important; }
 
 .experiment-repo-nav .capped-cards .capped-card {
   width: 50% !important;
