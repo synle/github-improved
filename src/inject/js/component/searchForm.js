@@ -28,7 +28,7 @@ const SearchForm = React.createClass({
     };
   },
   render() {
-      const { owner, repo, visible, trees } = this.props;
+      const { owner, repo, visible, trees, fileNames } = this.props;
       const { keyword } = this.state;
 
       if(visible && (!!owner && !!repo)){
@@ -37,25 +37,7 @@ const SearchForm = React.createClass({
             language => <option key={language} value={language}>{language}</option>
           );
 
-          const fileNames = trees.reduce(
-            (res, tree) => {
-              const splits = tree.split('/')
-                .map(t => t.toLowerCase())
-                .forEach(t => {
-                  res[t] = 1;
-                });
-
-              const lastSegment = _.last(splits);
-              if(!BLACK_LIST_FILE_NAMES[lastSegment]){
-                res[lastSegment] = 1;
-              }
-
-              return res;
-            },
-            {}//initial value
-          );
-
-          const matchedFileName = Object.keys(fileNames);
+          const matchedFileName = fileNames.filter((fName) => fName.indexOf(keyword) >= 0);
 
           const fileNamesOptions = _.slice(matchedFileName, 0, 50).map(
             fileName => <option key={fileName} value={fileName}>{fileName}</option>
@@ -111,9 +93,29 @@ const SearchForm = React.createClass({
 
 
 const mapStateToProps = function(state) {
+  const trees = _.get(state, 'repo.trees') || [];
+  const fileNames = trees.reduce(
+    (res, tree) => {
+      const splits = tree.split('/')
+        .map(t => t.toLowerCase())
+        .forEach(t => {
+          res[t] = 1;
+        });
+
+      const lastSegment = _.last(splits);
+      if(!BLACK_LIST_FILE_NAMES[lastSegment]){
+        res[lastSegment] = 1;
+      }
+
+      return res;
+    },
+    {}//initial value
+  );
+
   return {
       visible: _.get( state, 'ui.visible.searchBox'),
-      trees : _.get(state, 'repo.trees') || [],
+      trees : trees,
+      fileNames: fileNames,
       owner : _.get( state, 'repo.owner'),
       repo : _.get( state, 'repo.repo')
   };
