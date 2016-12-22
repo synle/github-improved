@@ -13,6 +13,15 @@ body{
   padding-left: $padding-offset !important;
 }
 
+.experiment-repo-nav .capped-cards .capped-card{
+  width: 50% !important;
+  margin: 0 !important;
+
+  svg{
+    width: 100% !important;
+  }
+}
+
 #side-bar-body{
   position: fixed;
   width: var(--side-bar-width);
