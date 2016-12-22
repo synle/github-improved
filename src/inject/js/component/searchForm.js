@@ -20,26 +20,27 @@ const BLACK_LIST_FILE_NAMES = [
   {}
 );
 
+var MAX_SEARCH_MATCHES = 15;
+
 //internal
 const SearchForm = React.createClass({
   getInitialState() {
     return {
-      keyword: ''
+      keyword: '',
+      matchedSearches: [],
+      matchingSearchTimer: false,
+      supportedLangOptions : dataUtil.getSupportedLanguages().map(
+        language => <option key={language} value={language}>{language}</option>
+      )
     };
   },
   render() {
       const { owner, repo, visible, trees, fileNames } = this.props;
-      const { keyword } = this.state;
+      const { keyword, matchedSearches, supportedLangOptions } = this.state;
 
       if(visible && (!!owner && !!repo)){
           //auto complete
-          const supportedLangOptions = dataUtil.getSupportedLanguages().map(
-            language => <option key={language} value={language}>{language}</option>
-          );
-
-          const matchedFileName = fileNames.filter((fName) => fName.indexOf(keyword) >= 0);
-
-          const fileNamesOptions = _.slice(matchedFileName, 0, 50).map(
+          const fileNamesOptions = _.slice(matchedSearches, 0, MAX_SEARCH_MATCHES).map(
             fileName => <option key={fileName} value={fileName}>{fileName}</option>
           );
 
@@ -83,12 +84,34 @@ const SearchForm = React.createClass({
 
       return null;
   },
-  onChangeKeyword: _.debounce(
-    function(keyword){
-      this.setState({ keyword });
-    },
-    300
-  )
+  onChangeKeyword(keyword){
+    const matchingSearchTimer = setTimeout(
+      () => {
+        const { fileNames } = this.props;
+
+        const matchedSearches = keyword
+          ? fileNames.filter(
+            (fName) => fName.indexOf(keyword) >= 0
+          )
+          : _.slice(fileNames, 0, MAX_SEARCH_MATCHES)
+
+        this.setState({
+          matchedSearches,
+          matchingSearchTimer: null
+        });
+      },
+      200
+    );
+
+    if(this.state.matchingSearchTimer){
+      clearTimeout(this.state.matchingSearchTimer);
+    }
+
+    this.setState({
+      matchingSearchTimer,
+      keyword
+    })
+  }
 });
 
 
@@ -99,11 +122,14 @@ const mapStateToProps = function(state) {
       const splits = tree.split('/')
         .map(t => t.toLowerCase())
         .forEach(t => {
-          res[t] = 1;
+          if(t.indexOf('.') === -1){
+            res[t] = 1;
+          }
         });
 
-      const lastSegment = _.last(splits);
-      if(!BLACK_LIST_FILE_NAMES[lastSegment]){
+      //remove the last ending .extension
+      const lastSegment = (_.last(splits) || '').replace(/\.\w+/, '');
+      if(lastSegment && !BLACK_LIST_FILE_NAMES[lastSegment]){
         res[lastSegment] = 1;
       }
 
