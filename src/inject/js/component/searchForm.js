@@ -122,16 +122,14 @@ const mapStateToProps = function(state) {
       const splits = tree.split('/')
         .map(t => t.toLowerCase())
         .forEach(t => {
-          if(t.indexOf('.') === -1){
-            res[t] = 1;
-          }
+          res[t] = 1;
         });
 
       //remove the last ending .extension
-      const lastSegment = (_.last(splits) || '').replace(/\.\w+/, '');
-      if(lastSegment && !BLACK_LIST_FILE_NAMES[lastSegment]){
-        res[lastSegment] = 1;
-      }
+      // const lastSegment = (_.last(splits) || '').replace(/\.\w+/, '');
+      // if(lastSegment && !BLACK_LIST_FILE_NAMES[lastSegment]){
+      //   res[lastSegment] = 1;
+      // }
 
       return res;
     },
