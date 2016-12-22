@@ -24,14 +24,14 @@ const Pagination = React.createClass({
         domToShow = _.slice(domToShow, 0, this.state.pageSize);
 
         pagingDom = (
-          <div>
+          <div className="margin-top0">
             <button className="btn btn-sm btn-default"
               onClick={e => this.onTogglePagingEnable(false)}>More...</button>
           </div>
         );
       } else {
         pagingDom = (
-          <div>
+          <div className="margin-top0">
             <button className="btn btn-sm btn-default"
               onClick={e => this.onTogglePagingEnable(true)}>Less...</button>
           </div>

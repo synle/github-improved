@@ -21,7 +21,6 @@ import CommitBox from '@src/component/commitBox';
 import ContributorBox from '@src/component/contributorBox';
 import DiffOptionBox from '@src/component/diffOptionBox';
 import PrNavigation from '@src/component/prNavigation';
-import BtnQuickSearchFile from '@src/component/btnQuickSearchFile';
 import SearchForm from '@src/component/searchForm';
 import FileExplorer from '@src/component/fileExplorer';
 import TokenRequestForm from '@src/component/tokenRequestForm';
@@ -43,7 +42,6 @@ chrome.extension.sendMessage({}, (response) => {
       <Provider store={AppStore}>
         <div>
           <PageHeader></PageHeader>
-          <BtnQuickSearchFile></BtnQuickSearchFile>
           <SearchForm></SearchForm>
           <DiffOptionBox></DiffOptionBox>
           <PrNavigation></PrNavigation>

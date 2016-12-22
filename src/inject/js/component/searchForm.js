@@ -20,38 +20,27 @@ const BLACK_LIST_FILE_NAMES = [
   {}
 );
 
+var MAX_SEARCH_MATCHES = 15;
+
 //internal
 const SearchForm = React.createClass({
+  getInitialState() {
+    return {
+      keyword: '',
+      matchedSearches: [],
+      matchingSearchTimer: false,
+      supportedLangOptions : dataUtil.getSupportedLanguages().map(
+        language => <option key={language} value={language}>{language}</option>
+      )
+    };
+  },
   render() {
-      const { owner, repo, visible, trees } = this.props;
+      const { owner, repo, visible, trees, fileNames } = this.props;
+      const { keyword, matchedSearches, supportedLangOptions } = this.state;
 
       if(visible && (!!owner && !!repo)){
           //auto complete
-          const supportedLangOptions = dataUtil.getSupportedLanguages().map(
-            language => <option key={language} value={language}>{language}</option>
-          );
-
-          const fileNames = trees.reduce(
-            (res, tree) => {
-              const splits = tree.split('/')
-                .map(t => t.toLowerCase())
-                .forEach(t => {
-                  res[t] = 1;
-                });
-
-              const lastSegment = _.last(splits);
-              if(!BLACK_LIST_FILE_NAMES[lastSegment]){
-                res[lastSegment] = 1;
-              }
-
-              return res;
-            },
-            {}//initial value
-          );
-
-          const matchedFileName = Object.keys(fileNames);
-
-          const fileNamesOptions = _.slice(matchedFileName, 0, 50).map(
+          const fileNamesOptions = _.slice(matchedSearches, 0, MAX_SEARCH_MATCHES).map(
             fileName => <option key={fileName} value={fileName}>{fileName}</option>
           );
 
@@ -61,11 +50,16 @@ const SearchForm = React.createClass({
             <form id="side-bar-form-search"
               className="margin-top0"
               onSubmit={sidebarUtil.onSearchRepo}>
-              <input className="form-control" placeholder="Keyword" name="keyword" list="search-file-name" />
+              <input className="form-control"
+                placeholder="Keyword"
+                name="keyword"
+                list="search-file-name"
+                onChange={e => this.onChangeKeyword(e.target.value)}
+                value={keyword} />
               <select className="form-select" name="type">
+                <option value="file,path">File and Content</option>
                 <option value="file">File Content</option>
                 <option value="path">Path Name</option>
-                <option value="file,path">File and Content</option>
               </select>
               <input className="form-control" placeholder="Language" name="language" list="search-language" />
               <button className="btn btn-sm btn-primary" type="submit">
@@ -89,14 +83,56 @@ const SearchForm = React.createClass({
       }
 
       return null;
+  },
+  onChangeKeyword(keyword){
+    const matchingSearchTimer = setTimeout(
+      () => {
+        const curKeyword = (this.state.keyword || '').toLowerCase();
+        const { fileNames } = this.props;
+        const matchedSearches = curKeyword
+          ? fileNames.filter(
+            (fName) => fName.toLowerCase().indexOf(curKeyword) >= 0
+          )
+          : _.slice(fileNames, 0, MAX_SEARCH_MATCHES)
+
+        this.setState({
+          matchedSearches,
+          matchingSearchTimer: null
+        });
+      },
+      200
+    );
+
+    if(this.state.matchingSearchTimer){
+      clearTimeout(this.state.matchingSearchTimer);
+    }
+
+    this.setState({
+      matchingSearchTimer,
+      keyword
+    })
   }
 });
 
 
 const mapStateToProps = function(state) {
+  const trees = _.get(state, 'repo.trees') || [];
+  const fileNames = trees.reduce(
+    (res, tree) => {
+      const splits = tree.split('/')
+        .filter(fn => !!fn)
+        .map(fn => fn.replace(/\.\w+/, ''))
+        .forEach(fn => {res[fn] = 1});
+
+      return res;
+    },
+    {}//initial value
+  );
+
   return {
       visible: _.get( state, 'ui.visible.searchBox'),
-      trees : _.get(state, 'repo.trees') || [],
+      trees : trees,
+      fileNames: Object.keys(fileNames),
       owner : _.get( state, 'repo.owner'),
       repo : _.get( state, 'repo.repo')
   };
