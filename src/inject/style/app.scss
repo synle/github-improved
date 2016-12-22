@@ -11,6 +11,19 @@ body{
 .container-lg, .page-content, .container{
   margin-left: var(--side-bar-width) !important;
   padding-left: $padding-offset !important;
+
+  .container-lg, .page-content, .container{
+    margin:auto !important;
+  }
+}
+
+.experiment-repo-nav .capped-cards .capped-card{
+  width: 50% !important;
+  margin: 0 !important;
+
+  svg{
+    width: 100% !important;
+  }
 }
 
 #side-bar-body{
