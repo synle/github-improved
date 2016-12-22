@@ -53,7 +53,7 @@ const SearchForm = React.createClass({
                 placeholder="Keyword"
                 name="keyword"
                 list="search-file-name"
-                onChange={this.onChangeKeyword}
+                onChange={e => this.onChangeKeyword(e.target.value)}
                 value={keyword} />
               <select className="form-select" name="type">
                 <option value="file">File Content</option>
@@ -83,12 +83,12 @@ const SearchForm = React.createClass({
 
       return null;
   },
-  onChangeKeyword(e){
-    const newKeyword = e.target.value;
-    this.setState({
-      keyword: newKeyword
-    });
-  }
+  onChangeKeyword: _.debounce(
+    function(keyword){
+      this.setState({ keyword });
+    },
+    300
+  )
 });
 
 
@@ -115,7 +115,7 @@ const mapStateToProps = function(state) {
   return {
       visible: _.get( state, 'ui.visible.searchBox'),
       trees : trees,
-      fileNames: fileNames,
+      fileNames: Object.keys(fileNames),
       owner : _.get( state, 'repo.owner'),
       repo : _.get( state, 'repo.repo')
   };
