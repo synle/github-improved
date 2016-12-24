@@ -27,7 +27,7 @@ import TokenRequestForm from '@src/component/tokenRequestForm';
 import PageHeader from '@src/component/pageHeader';
 
 chrome.extension.sendMessage({}, (response) => {
-  var sideBarContainer;
+  let sideBarContainer;
 
   function _init(){
     //empty if needed
@@ -58,34 +58,25 @@ chrome.extension.sendMessage({}, (response) => {
     //handling resize
     (function(containerDom){
       // init
-      var resizer = document.createElement('div');
+      let startX, startWidth, sideBarWidth = dataUtil.getPersistedProp('side-bar-width') || '300px';
+      const resizer = document.createElement('div');
       resizer.className = 'resizer';
       resizer.addEventListener('mousedown', initDrag, false);
 
       containerDom.classList.add('resizable');
       containerDom.parentNode.appendChild(resizer);
 
-
-      var sideBarWidth = dataUtil.getPersistedProp('side-bar-width') || '300px';
       doResize(sideBarWidth);
       //end init
-
-      var startX, startY, startWidth, startHeight;
 
       function doDrag(e) {
         e.stopPropagation && e.stopPropagation();
         e.preventDefault && e.preventDefault();
-
-        var newWidth = getNewWidth(e);
-        doResize(newWidth);
-        dataUtil.setPersistedProp('side-bar-width', newWidth);
       }
 
       function initDrag(e) {
         startX = e.clientX;
-        startY = e.clientY;
         startWidth = parseInt(document.defaultView.getComputedStyle(containerDom).width, 10);
-        startHeight = parseInt(document.defaultView.getComputedStyle(containerDom).height, 10);
         document.documentElement.addEventListener('mousemove', doDrag, false);
         document.documentElement.addEventListener('mouseup', stopDrag, false);
 
@@ -96,24 +87,31 @@ chrome.extension.sendMessage({}, (response) => {
         document.documentElement.removeEventListener('mousemove', doDrag, false);
         document.documentElement.removeEventListener('mouseup', stopDrag, false);
 
+        // doing the resize
+        sideBarWidth = getNewWidth(e);
+        doResize(sideBarWidth);
+        dataUtil.setPersistedProp('side-bar-width', sideBarWidth);
+
+        // remove the resizing class
         resizer.classList.remove('resizing');
       }
 
 
       function doResize(newWidth){
         // update the side bar width
-        $('body').css({
-          '--side-bar-width': `${newWidth} !important`
-        });
+        $('body').css('--side-bar-width', `${newWidth} !important`);
       }
 
       function getNewWidth(e){
-        var newWidth = Math.min((startWidth + e.clientX - startX), 500);
+        // limit the max width to 500
+        let newWidth = Math.min((startWidth + e.clientX - startX), 500);
+
+        // limit the min width to 200
         newWidth = Math.max(200, newWidth);
 
         return newWidth + 'px';
       }
-    })(document.querySelector('#side-bar-body'));
+    })(sideBarContainer[0]);
   }
 
   function _refreshState(){
