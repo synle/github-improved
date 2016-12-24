@@ -14,11 +14,20 @@ var JS_CONFIG  = [ 'src/inject/js/app.js' ];
 var BUNDLED_JS_NAME = 'app.js';
 var JS_VENDOR_FILES = ['node_modules/zepto/dist/zepto.min.js'];
 //config for transformation
-var ALIASIFY_CONFIG =  {
+var ALIASIFY_PROD_CONFIG =  {
 	"replacements": {
-      "@src/(\\w+)": "./src/inject/js/$1"
+      "@src/(\\w+)": "./src/inject/js/$1",
+      "app_environment": "./src/env.prod.js"
     }
 };
+
+var ALIASIFY_DEV_CONFIG =  {
+    "replacements": {
+      "@src/(\\w+)": "./src/inject/js/$1",
+      "app_environment": "./src/env.dev.js"
+    }
+};
+
 var BABELIFY_CONFIG = { presets: [ "es2015", "react" ] };
 
 
@@ -29,7 +38,8 @@ gulp.task('styles', simpleGulpBuilder.compileStyles( STYLES_CONFIG, DEST_PATH, B
 gulp.task('views',  simpleGulpBuilder.copyFile( VIEWS_PAGE_CONFIG, DEST_PATH ));
 
 //js
-gulp.task('js', simpleGulpBuilder.compileJs( JS_CONFIG, DEST_PATH, BUNDLED_JS_NAME, BABELIFY_CONFIG, ALIASIFY_CONFIG ));
+gulp.task('js-dev', simpleGulpBuilder.compileJs( JS_CONFIG, DEST_PATH, BUNDLED_JS_NAME, BABELIFY_CONFIG, ALIASIFY_DEV_CONFIG ));
+gulp.task('js-prod', simpleGulpBuilder.compileJs( JS_CONFIG, DEST_PATH, BUNDLED_JS_NAME, BABELIFY_CONFIG, ALIASIFY_PROD_CONFIG ));
 gulp.task('js:vendor', simpleGulpBuilder.concatFiles( JS_VENDOR_FILES, DEST_PATH, 'vendor.js' ));
 
 //Watch task
@@ -47,20 +57,21 @@ gulp.task('watch:style',function() {
 gulp.task('watch:js',function() {
     return gulp.watch(
         ['src/inject/js/**/*']
-        , ['js']
+        , ['js-dev']
     );
 });
 
+
+
 gulp.task('apply-prod-environment', function() {
+    // this task is mainly used to remove react development wrar
     process.env.NODE_ENV = 'production';
 });
 
 
 
-// dev build
-gulp.task('build-dev', ['styles', 'views', 'js', 'js:vendor']);
+// build
+gulp.task('build-dev', ['apply-prod-environment', 'styles', 'views', 'js-dev', 'js:vendor']);
+gulp.task('build-prod', ['apply-prod-environment', 'styles', 'views', 'js-prod', 'js:vendor']);
 
-// prod build
-gulp.task('build', ['apply-prod-environment', 'styles', 'views', 'js', 'js:vendor']);
-
-gulp.task('default', ['build', 'watch']);
+gulp.task('default', ['build-dev', 'watch']);
