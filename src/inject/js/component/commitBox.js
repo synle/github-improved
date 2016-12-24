@@ -26,9 +26,9 @@ class CommitBox extends Component{
 
         return(
           <div key={sha} className="side-bar-commit-logs small-text border-bottom">
-            <strong title="commitAuthorName">{commitAuthorShortName}</strong>
+            <strong title={commitAuthorName}>{commitAuthorShortName}</strong>
             <a href={commitUrl}
-              className="ml0"
+              className="margin-left0"
               title={commit.message}
               data-sha={sha}>
               {displayCommitMsg}
