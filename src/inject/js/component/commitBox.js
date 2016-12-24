@@ -12,7 +12,7 @@ const PAGE_SIZE_COMMIT_LIST = 15;
 
 class CommitBox extends Component{
   render() {
-    const { visible, loading, commits, owner, repo } = this.props;
+    const { visible, loading, commits, owner, repo, displayCommitMsg } = this.props;
     const commitCount = _.size(commits);
     let domBody;
 
@@ -26,10 +26,6 @@ class CommitBox extends Component{
         const commit = repoCommit.commit;
         const sha = repoCommit.sha;
         const commitUrl = urlUtil.getCommitUrlBySha(repoCommit.sha);
-        const shortCommitMessage = _.truncate( commit.message, {
-          length: 70,
-          omission : '...'
-        });
         const domId = `commit-sha-${repoCommit.sha}`;
 
         const commitDate = _.get( commit, 'author.date');
@@ -41,7 +37,7 @@ class CommitBox extends Component{
             className="flex-grow1"
             title={commit.message}
             data-sha={sha}>
-              {shortCommitMessage}
+              {displayCommitMsg}
             </a>
             <strong>{commitAuthorName}</strong>
           </div>

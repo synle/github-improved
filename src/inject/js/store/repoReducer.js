@@ -1,3 +1,6 @@
+//lib
+import _ from 'lodash';
+
 //internal
 import dataUtil from '@src/util/dataUtil';
 
@@ -30,6 +33,15 @@ const RepoReducer = (state, {type, value}) => {
 
     case 'UPDATE_COMMIT_LIST':
       state.commits = value;
+
+      // compose the display commit message (friendly for ui)
+      state.commits = state.commits.map( commit => {
+        commit.displayCommitMsg = _.truncate( commit.message, {
+          length: 140,
+          omission : '...'
+        })
+        return commit;
+      });
       break;
 
     case 'UPDATE_TREE_LIST':
