@@ -46,7 +46,11 @@ const RepoReducer = (state, {type, value}) => {
         );
 
         //commit url
-        repoCommit.commitUrl = urlUtil.getCommitUrlBySha(`repoCommit`.sha);
+        repoCommit.commitUrl = urlUtil.getCommitUrlBySha(repoCommit.sha);
+
+        //commit authors
+        repoCommit.commitDate = _.get( repoCommit, 'commit.author.date');
+        repoCommit.commitAuthorName = _.get( repoCommit, 'commit.author.name');
 
         return repoCommit;
       });

@@ -22,14 +22,10 @@ class CommitBox extends Component{
       domBody = <div>Loading...</div>
     } else if(!!owner && !!repo && commitCount > 0){
       domBody = commits.map((repoCommit, idx) => {
-        const {author, commit, commitUrl, sha, displayCommitMsg} = repoCommit;
-        const domId = `commit-sha-${repoCommit.sha}`;
-
-        const commitDate = _.get( commit, 'author.date');
-        const commitAuthorName = _.get( commit, 'author.name');
+        const {author, commit, commitUrl, sha, displayCommitMsg, commitAuthorName, commitDate} = repoCommit;
 
         return(
-          <div key={domId} className="side-bar-commit-logs small-text flex-column border-bottom">
+          <div key={sha} className="side-bar-commit-logs small-text flex-column border-bottom">
             <a href={commitUrl}
             className="flex-grow1"
             title={commit.message}
