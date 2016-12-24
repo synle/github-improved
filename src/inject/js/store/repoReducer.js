@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 //internal
 import dataUtil from '@src/util/dataUtil';
-
+import urlUtil from '@src/util/urlUtil';
 
 
 //App Store reducer
@@ -34,13 +34,21 @@ const RepoReducer = (state, {type, value}) => {
     case 'UPDATE_COMMIT_LIST':
       state.commits = value;
 
-      // compose the display commit message (friendly for ui)
-      state.commits = state.commits.map( commit => {
-        commit.displayCommitMsg = _.truncate( commit.message, {
-          length: 140,
-          omission : '...'
-        })
-        return commit;
+      // ui transformation
+      state.commits = state.commits.map( repoCommit => {
+        // the display commit message (friendly for ui)
+        repoCommit.displayCommitMsg = _.truncate(
+          _.get(repoCommit, 'commit.message', ''),
+          {
+            length: 140,
+            omission : '...'
+          }
+        );
+
+        //commit url
+        repoCommit.commitUrl = urlUtil.getCommitUrlBySha(`repoCommit`.sha);
+
+        return repoCommit;
       });
       break;
 

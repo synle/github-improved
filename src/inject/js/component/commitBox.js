@@ -12,7 +12,7 @@ const PAGE_SIZE_COMMIT_LIST = 15;
 
 class CommitBox extends Component{
   render() {
-    const { visible, loading, commits, owner, repo, displayCommitMsg } = this.props;
+    const { visible, loading, commits, owner, repo } = this.props;
     const commitCount = _.size(commits);
     let domBody;
 
@@ -22,10 +22,7 @@ class CommitBox extends Component{
       domBody = <div>Loading...</div>
     } else if(!!owner && !!repo && commitCount > 0){
       domBody = commits.map((repoCommit, idx) => {
-        const author = repoCommit.author;
-        const commit = repoCommit.commit;
-        const sha = repoCommit.sha;
-        const commitUrl = urlUtil.getCommitUrlBySha(repoCommit.sha);
+        const {author, commit, commitUrl, sha, displayCommitMsg} = repoCommit;
         const domId = `commit-sha-${repoCommit.sha}`;
 
         const commitDate = _.get( commit, 'author.date');
