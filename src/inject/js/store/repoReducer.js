@@ -1,6 +1,9 @@
+//lib
+import _ from 'lodash';
+
 //internal
 import dataUtil from '@src/util/dataUtil';
-
+import urlUtil from '@src/util/urlUtil';
 
 
 //App Store reducer
@@ -30,6 +33,30 @@ const RepoReducer = (state, {type, value}) => {
 
     case 'UPDATE_COMMIT_LIST':
       state.commits = value;
+
+      // ui transformation
+      state.commits = state.commits.map( repoCommit => {
+        // the display commit message (friendly for ui)
+        repoCommit.displayCommitMsg = _.truncate(
+          _.get(repoCommit, 'commit.message', ''),
+          {
+            length: 140,
+            omission : '...'
+          }
+        );
+
+        //commit url
+        repoCommit.commitUrl = urlUtil.getCommitUrlBySha(repoCommit.sha);
+
+        //commit authors
+        repoCommit.commitDate = _.get( repoCommit, 'commit.author.date');
+        repoCommit.commitAuthorName = _.get( repoCommit, 'commit.author.name', '');
+        repoCommit.commitAuthorShortName = repoCommit.commitAuthorName.split(' ')
+          .map(s => s[0])
+          .join('').toUpperCase();
+
+        return repoCommit;
+      });
       break;
 
     case 'UPDATE_TREE_LIST':
