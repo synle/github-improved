@@ -50,7 +50,10 @@ const RepoReducer = (state, {type, value}) => {
 
         //commit authors
         repoCommit.commitDate = _.get( repoCommit, 'commit.author.date');
-        repoCommit.commitAuthorName = _.get( repoCommit, 'commit.author.name');
+        repoCommit.commitAuthorName = _.get( repoCommit, 'commit.author.name', '');
+        repoCommit.commitAuthorShortName = repoCommit.commitAuthorName.split(' ')
+          .map(s => s[0])
+          .join('').toUpperCase();
 
         return repoCommit;
       });
