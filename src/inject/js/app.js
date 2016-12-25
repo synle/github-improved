@@ -40,15 +40,17 @@ chrome.extension.sendMessage({}, (response) => {
     //render the app
     ReactDOM.render(
       <Provider store={AppStore}>
-        <PageHeader></PageHeader>
-        <div id="side-bar-body-content">
-          <SearchForm></SearchForm>
-          <DiffOptionBox></DiffOptionBox>
-          <PrNavigation></PrNavigation>
-          <FileExplorer></FileExplorer>
-          <ContributorBox></ContributorBox>
-          <CommitBox></CommitBox>
-          <TokenRequestForm></TokenRequestForm>
+        <div>
+          <PageHeader></PageHeader>
+          <div id="side-bar-body-content">
+            <SearchForm></SearchForm>
+            <DiffOptionBox></DiffOptionBox>
+            <PrNavigation></PrNavigation>
+            <FileExplorer></FileExplorer>
+            <ContributorBox></ContributorBox>
+            <CommitBox></CommitBox>
+            <TokenRequestForm></TokenRequestForm>
+          </div>
         </div>
       </Provider>,
       document.querySelector('#side-bar-body')

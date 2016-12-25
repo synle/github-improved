@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 
 const PageHeader = React.createClass({
   render() {
+    const expandStateLabel = '<<' || '>>';
+
     return (
       <h3 id="side-bar-title" className="flex-row">
         <span className="flex-grow1">Github Improved</span>
-        <span className="flex-shrink0" onClick={this.onToggleSideBarVisibility}>+/-</span>
+        <span className="btn flex-shrink0" onClick={this.onToggleSideBarVisibility}>{expandStateLabel}</span>
       </h3>
     );
   },

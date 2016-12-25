@@ -11,7 +11,7 @@ const Panel = React.createClass({
       isExpanded: this.props.isExpanded || false
     };
   },
-  render: function() {
+  render() {
     let {domHeader, domBody} = this.props;
     const {isExpanded} = this.state;
 

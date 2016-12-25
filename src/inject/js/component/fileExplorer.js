@@ -10,7 +10,7 @@ import Panel from '@src/component/panel';
 const PAGE_SIZE_FILE_EXPLORER = 15;
 
 const ContributorBox = React.createClass({
-  render: function() {
+  render() {
     let domBody;
     const {visible, loading, trees, owner, repo, branch, path} = this.props;
     const treeCount = _.size(trees);
