@@ -40,8 +40,8 @@ chrome.extension.sendMessage({}, (response) => {
     //render the app
     ReactDOM.render(
       <Provider store={AppStore}>
-        <div>
-          <PageHeader></PageHeader>
+        <PageHeader></PageHeader>
+        <div id="side-bar-body-content">
           <SearchForm></SearchForm>
           <DiffOptionBox></DiffOptionBox>
           <PrNavigation></PrNavigation>
