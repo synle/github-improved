@@ -39,7 +39,6 @@ body{
 
   & button, & input, & select{
     display:block;
-    margin-bottom:10px;
     width: 100%;
   }
 
@@ -101,6 +100,13 @@ body{
     padding-bottom: $padding-offset;
   }
 
+  .padding0{
+    padding-left: $padding-offset;
+    padding-right: $padding-offset;
+    padding-top: $padding-offset;
+    padding-bottom: $padding-offset;
+  }
+
   //flex
   .flex-row{
     display:flex;
@@ -157,7 +163,6 @@ body{
 
     .panel-body{
       border: 1px solid #ddd;
-      @extend .padding-side0;
     }
   }
 

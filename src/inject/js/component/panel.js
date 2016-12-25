@@ -17,6 +17,12 @@ const Panel = React.createClass({
 
     if(!isExpanded){
       domBody = null;
+    } else {
+      domBody = (
+        <div className="panel-body padding0">
+          {domBody}
+        </div>
+      );
     }
 
     return(
@@ -24,9 +30,7 @@ const Panel = React.createClass({
         <div className="panel-heading" onClick={e => this.onToggleIsExpanded()}>
           <h4>{domHeader}</h4>
         </div>
-        <div className="panel-body">
-          {domBody}
-        </div>
+        {domBody}
       </div>
     );
   },
