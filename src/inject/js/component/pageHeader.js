@@ -8,12 +8,15 @@ const PageHeader = React.createClass({
     return (
       <h3 id="side-bar-title" className="flex-row">
         <span className="flex-grow1">Github Improved</span>
-        <span className="btn flex-shrink0" onClick={this.onToggleSideBarVisibility}>{expandStateLabel}</span>
+        <span className="btn flex-shrink0"
+          onClick={this.onToggleSideBarVisibility}>
+            {expandStateLabel}
+          </span>
       </h3>
     );
   },
-  onToggleIsExpanded(e){
-    $('#side-bar-body-content').toggle();
+  onToggleSideBarVisibility(e) {
+    $('#side-bar-body-content').toggleClass('side-bar-body');
   }
 });
 

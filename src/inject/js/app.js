@@ -42,15 +42,13 @@ chrome.extension.sendMessage({}, (response) => {
       <Provider store={AppStore}>
         <div>
           <PageHeader></PageHeader>
-          <div id="side-bar-body-content">
-            <SearchForm></SearchForm>
-            <DiffOptionBox></DiffOptionBox>
-            <PrNavigation></PrNavigation>
-            <FileExplorer></FileExplorer>
-            <ContributorBox></ContributorBox>
-            <CommitBox></CommitBox>
-            <TokenRequestForm></TokenRequestForm>
-          </div>
+          <SearchForm></SearchForm>
+          <DiffOptionBox></DiffOptionBox>
+          <PrNavigation></PrNavigation>
+          <FileExplorer></FileExplorer>
+          <ContributorBox></ContributorBox>
+          <CommitBox></CommitBox>
+          <TokenRequestForm></TokenRequestForm>
         </div>
       </Provider>,
       document.querySelector('#side-bar-body')
