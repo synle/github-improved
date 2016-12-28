@@ -42,13 +42,15 @@ chrome.extension.sendMessage({}, (response) => {
       <Provider store={AppStore}>
         <div>
           <PageHeader></PageHeader>
-          <SearchForm></SearchForm>
-          <DiffOptionBox></DiffOptionBox>
-          <PrNavigation></PrNavigation>
-          <FileExplorer></FileExplorer>
-          <ContributorBox></ContributorBox>
-          <CommitBox></CommitBox>
-          <TokenRequestForm></TokenRequestForm>
+          <div id="side-bar-body-content">
+            <SearchForm></SearchForm>
+            <DiffOptionBox></DiffOptionBox>
+            <PrNavigation></PrNavigation>
+            <FileExplorer></FileExplorer>
+            <ContributorBox></ContributorBox>
+            <CommitBox></CommitBox>
+            <TokenRequestForm></TokenRequestForm>
+          </div>
         </div>
       </Provider>,
       document.querySelector('#side-bar-body')
@@ -64,7 +66,7 @@ chrome.extension.sendMessage({}, (response) => {
       resizer.addEventListener('mousedown', initDrag, false);
 
       containerDom.classList.add('resizable');
-      containerDom.parentNode.appendChild(resizer);
+      containerDom.appendChild(resizer);
 
       doResize(sideBarWidth);
       //end init
