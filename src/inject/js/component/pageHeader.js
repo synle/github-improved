@@ -1,10 +1,19 @@
+//external
 import React from 'react';
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux';
 
+//internal
+import AppAction from '@src/store/appAction';
+
 const PageHeader = React.createClass({
-  render: function() {
+  render() {
     return (
-      <h3 id="side-bar-title ta-center">Github Improved</h3>
+      <h3 id="side-bar-title" className="flex-row">
+        <span className="side-bar-title-text flex-grow1">Github Improved</span>
+        <span className="side-bar-toggle btn flex-shrink0"
+          onClick={this.props.onToggleSideBarVisibility}></span>
+      </h3>
     );
   }
 });
@@ -14,4 +23,8 @@ const mapStateToProps = function(state) {
   return {};
 }
 
-export default connect(mapStateToProps)(PageHeader);
+const mapDispatchToProps = function(dispatch) {
+  return { onToggleSideBarVisibility: bindActionCreators(AppAction.toggleSideBarVisibility, dispatch) }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PageHeader);

@@ -37,9 +37,27 @@ body{
   overflow-y:auto;
   background-color: white;
 
+  &.collapsed-side-bar{
+    height:50px;
+    width:auto;
+    border:2px solid #999;
+
+    #side-bar-body-content, .resizer, .side-bar-title-text{
+      display:none;
+    }
+
+    .side-bar-toggle::before {
+      content: ">>";
+    }
+  }
+
+  //toggle
+  .side-bar-toggle::before {
+    content: "<<";
+  }
+
   & button, & input, & select{
     display:block;
-    margin-bottom:10px;
     width: 100%;
   }
 
@@ -101,6 +119,13 @@ body{
     padding-bottom: $padding-offset;
   }
 
+  .padding0{
+    padding-left: $padding-offset;
+    padding-right: $padding-offset;
+    padding-top: $padding-offset;
+    padding-bottom: $padding-offset;
+  }
+
   //flex
   .flex-row{
     display:flex;
@@ -157,7 +182,6 @@ body{
 
     .panel-body{
       border: 1px solid #ddd;
-      @extend .padding-side0;
     }
   }
 

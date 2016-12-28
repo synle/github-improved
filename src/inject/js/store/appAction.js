@@ -26,11 +26,15 @@ const AppAction = {
       // TODO: remove me when prod push
       window.API_INSTANCE = state.apiInstance;
 
-
+      //refersh state
       dispatch({
         type : 'REFRESH',
         value : state
       });
+
+      // side bar expand state
+      const isSideBarExpanded = (dataUtil.getPersistedProp('side-bar-expand') || 'true') === 'true';
+      AppAction.setSideBarVisibility(isSideBarExpanded)(dispatch, getState);
 
       //trigger refresh
       AppAction.refresh()(dispatch, getState);
@@ -259,7 +263,6 @@ const AppAction = {
   fetchContributorList: ({owner, repo}) => {
     return function(dispatch, getState){
       //fetch contributors
-
       if(!!owner && !!repo && !!apiInstance){
         const repoInstance = apiInstance.getRepo( owner, repo );
         dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: true});
@@ -281,10 +284,26 @@ const AppAction = {
         );
       }
     }
+  },
+  toggleSideBarVisibility: () => {
+    return function(dispatch, getState){
+      dispatch({
+        type: 'SET_SIDE_BAR_VISIBILITY',
+        value: !getState().ui.isSideBarExpanded
+      });
+    };
+  },
+  setSideBarVisibility: (value) => {
+    return function(dispatch, getState){
+      dispatch({
+        type: 'SET_SIDE_BAR_VISIBILITY',
+        value // isSideBarExpanded
+      });
+    };
   }
 }
 
-
+// private
 function _shouldShowContributorBox(){
   if($('.repohead-details-container').length === 0){
     return false;

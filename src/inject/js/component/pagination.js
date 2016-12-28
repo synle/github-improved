@@ -13,7 +13,7 @@ const Pagination = React.createClass({
       pageSize: this.props.pageSize || PAGE_SIZE_DEFAULT
     };
   },
-  render: function() {
+  render() {
     let domToShow = this.props.domList || [];
     let pagingDom;
 

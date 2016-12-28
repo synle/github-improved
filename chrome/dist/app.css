@@ -23,9 +23,18 @@ body {
   z-index: 100;
   overflow-y: auto;
   background-color: white; }
+  #side-bar-body.collapsed-side-bar {
+    height: 50px;
+    width: auto;
+    border: 2px solid #999; }
+    #side-bar-body.collapsed-side-bar #side-bar-body-content, #side-bar-body.collapsed-side-bar .resizer, #side-bar-body.collapsed-side-bar .side-bar-title-text {
+      display: none; }
+    #side-bar-body.collapsed-side-bar .side-bar-toggle::before {
+      content: ">>"; }
+  #side-bar-body .side-bar-toggle::before {
+    content: "<<"; }
   #side-bar-body button, #side-bar-body input, #side-bar-body select {
     display: block;
-    margin-bottom: 10px;
     width: 100%; }
   #side-bar-body select {
     height: 40px; }
@@ -51,10 +60,15 @@ body {
     padding-bottom: 10px; }
   #side-bar-body .padding-top0 {
     padding-top: 10px; }
-  #side-bar-body .padding-side0, #side-bar-body .panel .panel-heading, #side-bar-body .panel .panel-body {
+  #side-bar-body .padding-side0, #side-bar-body .panel .panel-heading {
     padding-left: 10px;
     padding-right: 10px; }
   #side-bar-body .padding-vert0 {
+    padding-top: 10px;
+    padding-bottom: 10px; }
+  #side-bar-body .padding0 {
+    padding-left: 10px;
+    padding-right: 10px;
     padding-top: 10px;
     padding-bottom: 10px; }
   #side-bar-body .flex-row {

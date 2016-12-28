@@ -15,7 +15,7 @@ const ContributorBox = React.createClass({
       showPaging: false
     };
   },
-  render: function() {
+  render() {
     let domBody;
     const { visible, loading, contributors } = this.props;
     const contributorCount = _.size(contributors);

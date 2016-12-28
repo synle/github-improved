@@ -1,29 +1,32 @@
-//external
+// external
 import GitHub from 'github-api';
 
-//App Store reducer
-const UIStateReducer = (state, {type, value}) => {
-  if(!state){
-    //default state
-    state = {
-      isAuthenticated: false,
-      visible: {
-        contributorBox : false,
-        fileExplorer : false,
-        commitBox : false,
-        tokenRequestForm: false,
-        searchBox: false,
-        prNavBox: false,
-        diffOptionBox: false
-      },
-      loading: {
-        contributorBox : true,
-        fileExplorer : true,
-        commitBox : true
-      }
-    };
-  }
+// internal
+import dataUtil from '@src/util/dataUtil';
 
+
+// default state
+const DEFAULT_STATE = {
+  isAuthenticated: false,
+  isSideBarExpanded: true,
+  visible: {
+    contributorBox : false,
+    fileExplorer : false,
+    commitBox : false,
+    tokenRequestForm: false,
+    searchBox: false,
+    prNavBox: false,
+    diffOptionBox: false
+  },
+  loading: {
+    contributorBox : true,
+    fileExplorer : true,
+    commitBox : true
+  }
+};
+
+// App Store reducer
+const UIStateReducer = (state = DEFAULT_STATE, {type, value}) => {
   switch(type){
     case 'SET_TOKEN_VALID':
       state.isAuthenticated = value;
@@ -57,6 +60,18 @@ const UIStateReducer = (state, {type, value}) => {
       break;
     case 'SET_LOADING_COMMIT_BOX':
       state.loading.commitBox = value;
+      break;
+    case 'SET_SIDE_BAR_VISIBILITY':
+      state.isSideBarExpanded = value;
+
+      // persist it...
+      dataUtil.setPersistedProp('side-bar-expand', state.isSideBarExpanded)
+
+      // toggle sidebar
+      document.querySelector('#side-bar-body').classList.toggle(
+        'collapsed-side-bar',
+        !state.isSideBarExpanded
+      );
       break;
   }
 

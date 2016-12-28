@@ -38,7 +38,7 @@ const DiffBoxOption = React.createClass({
             return(
                 <div className="margin-top0">
                   <button onClick={cbWhitespaceChange} className="btn btn-sm">{whiteSpaceText}</button>
-                  <button onClick={cbFormatChange} className="btn btn-sm">{diffFormatText}</button>
+                  <button onClick={cbFormatChange} className="btn btn-sm margin-top0">{diffFormatText}</button>
                 </div>
             );
         } else{

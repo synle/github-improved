@@ -15,8 +15,8 @@ const PRNavigation = React.createClass({
         const domBody = (
           <div>
             <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">PR created by you</button>
-            <button onClick={sidebarUtil.onGoToAssignedPRUrl} className="btn btn-sm">PR assigned to you</button>
-            <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">PR mentioning you</button>
+            <button onClick={sidebarUtil.onGoToAssignedPRUrl} className="btn btn-sm margin-top0">PR assigned to you</button>
+            <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm margin-top0">PR mentioning you</button>
           </div>
         );
         return (
