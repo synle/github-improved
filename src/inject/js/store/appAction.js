@@ -26,11 +26,15 @@ const AppAction = {
       // TODO: remove me when prod push
       window.API_INSTANCE = state.apiInstance;
 
-
+      //refersh state
       dispatch({
         type : 'REFRESH',
         value : state
       });
+
+      // side bar expand state
+      const isSideBarExpanded = (dataUtil.getPersistedProp('side-bar-expand') || 'true') === 'true';
+      AppAction.setSideBarVisibility(isSideBarExpanded)(dispatch, getState);
 
       //trigger refresh
       AppAction.refresh()(dispatch, getState);
@@ -284,9 +288,18 @@ const AppAction = {
   toggleSideBarVisibility: () => {
     return function(dispatch, getState){
       dispatch({
-        type: 'TOGGLE_SIDE_BAR_VISIBILITY'
-      })
-    }
+        type: 'SET_SIDE_BAR_VISIBILITY',
+        value: !getState().ui.isSideBarExpanded
+      });
+    };
+  },
+  setSideBarVisibility: (value) => {
+    return function(dispatch, getState){
+      dispatch({
+        type: 'SET_SIDE_BAR_VISIBILITY',
+        value // isSideBarExpanded
+      });
+    };
   }
 }
 

@@ -5,27 +5,24 @@ import _ from 'lodash';
 import dataUtil from '@src/util/dataUtil';
 import urlUtil from '@src/util/urlUtil';
 
+//default state
+const DEFAULT_STATE = {
+  owner : null,
+  path: null,
+  repo : null,
+  branch : null,
+  commit : null,//current commit id
+  file : null,
+  pull : null,
+  isPullRequestPage: false, // whether or not in pull request mode
+  commits : null,//list of relavant commits
+  contributors : null,// list of contributors
+  trees: null,//tree map
+  urlParams: {}
+};
 
 //App Store reducer
-const RepoReducer = (state, {type, value}) => {
-  if(!state){
-    //default state
-    state = {
-      owner : null,
-      path: null,
-      repo : null,
-      branch : null,
-      commit : null,//current commit id
-      file : null,
-      pull : null,
-      isPullRequestPage: false, // whether or not in pull request mode
-      commits : null,//list of relavant commits
-      contributors : null,// list of contributors
-      trees: null,//tree map
-      urlParams: {}
-    };
-  }
-
+const RepoReducer = (state = DEFAULT_STATE, {type, value}) => {
   switch(type){
     case 'REFRESH':
       state = value;
