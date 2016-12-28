@@ -8,7 +8,7 @@ import _ from 'lodash';
 import AppStore from '@src/store/appStore.js';
 
 //action
-import AppAction from '@src/store/appAction.js';
+import AppAction from '@src/store/appAction';
 
 //internal
 import dataUtil from '@src/util/dataUtil';

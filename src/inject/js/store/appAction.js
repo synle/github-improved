@@ -259,7 +259,6 @@ const AppAction = {
   fetchContributorList: ({owner, repo}) => {
     return function(dispatch, getState){
       //fetch contributors
-
       if(!!owner && !!repo && !!apiInstance){
         const repoInstance = apiInstance.getRepo( owner, repo );
         dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: true});
@@ -281,10 +280,17 @@ const AppAction = {
         );
       }
     }
+  },
+  toggleSideBarVisibility: () => {
+    return function(dispatch, getState){
+      dispatch({
+        type: 'TOGGLE_SIDE_BAR_VISIBILITY'
+      })
+    }
   }
 }
 
-
+// private
 function _shouldShowContributorBox(){
   if($('.repohead-details-container').length === 0){
     return false;
