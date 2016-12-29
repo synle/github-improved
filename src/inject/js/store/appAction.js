@@ -8,14 +8,19 @@ import GitHub from 'github-api';
 
 //internal
 import dataUtil from '@src/util/dataUtil';
+import restUtil from '@src/util/restUtil';
 
 
 let apiToken = dataUtil.getPersistedProp('api-token');
 let apiInstance;
 if(apiToken){
+  // instances...
   apiInstance = new GitHub({
     token: apiToken
-  })
+  });
+
+  // new rest api
+  restUtil.setAuthToken(apiToken);
 }
 
 const AppAction = {
@@ -139,42 +144,11 @@ const AppAction = {
       dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: false});
       dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
 
-      // TODO: enhance the experience by fetching the commits from the PR itself...
-      // const repoInstance = apiInstance.getRepo( owner, repo );
-      // repoInstance.getPullRequest(pullRequestNumber).then(
-      //     resp => {
-      //       console.error('pr details success', pullRequestNumber, resp.data);
-      //     },
-      //     resp => {
-      //       dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
-      //       dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
-      //       dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: false});
-      //       dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
-      //     }
-      //   );
-      //
-
-      // var request = new Request(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`, {
-      //     method: 'GET',
-      //     mode: 'cors',
-      //     redirect: 'follow',
-      //     cache: "no-cache",
-      //     credentials: "include",
-      //     headers: new Headers({
-      //       "Accept": "application/json",
-      //       "Access-Control-Allow-Origin": "https://api.github.com, https://github.com"
-      //     })
-      // });
-
-      // fetch(request).then(
-      //     resp => {
-      //       return resp.ok ? resp.json() : {};
-      //     }
-      //   ).then(
-      //     resp => {
-      //       console.error('stuffs', resp)
-      //     }
-      //   )
+      restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`)
+        .then(
+          resp => console.log('>>SC', resp),
+          resp => console.error('>>ER', resp)
+        );
     }
   },
   fetchCommitListBySha: ({path, owner, branch, repo, commit}) => {
@@ -221,7 +195,7 @@ const AppAction = {
       }
     };
   },
-  fetchTreeListByPrDetails: ({branch, owner, repo, commit, path}) => {
+  fetchTreeListByPrDetails: ({branch, owner, repo, commit, path, pullRequestNumber}) => {
     return function (dispatch, getState) {
     }
   },
