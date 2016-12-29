@@ -22,10 +22,6 @@ const AppAction = {
   init : (state) => {
     // init
     return function (dispatch, getState) {
-      // mainly for testing
-      // TODO: remove me when prod push
-      window.API_INSTANCE = state.apiInstance;
-
       //refersh state
       dispatch({
         type : 'REFRESH',
@@ -43,6 +39,12 @@ const AppAction = {
   refresh : () => {
     // init
     return function (dispatch, getState) {
+      if(!apiInstance){
+        //api instance is not available, then return
+        dispatch({ type: 'SET_TOKEN_VALID', value: false});
+        return;
+      }
+
       const userInstance = apiInstance.getUser();
 
       const state = _.get(getState(), 'repo');
