@@ -42,7 +42,7 @@ chrome.extension.sendMessage({}, (response) => {
       <Provider store={AppStore}>
         <div>
           <PageHeader></PageHeader>
-          <div id="side-bar-body-content">
+          <div id="side-bar-body-content" className="margin-top0">
             <SearchForm></SearchForm>
             <DiffOptionBox></DiffOptionBox>
             <PrNavigation></PrNavigation>
