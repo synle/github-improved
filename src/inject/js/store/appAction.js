@@ -141,13 +141,32 @@ const AppAction = {
     return function (dispatch, getState) {
       dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
       dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
-      dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: false});
+      // dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: false});
       dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
 
       restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`)
         .then(
-          resp => console.log('>>SC', resp),
-          resp => console.error('>>ER', resp)
+          resp => {
+            dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+
+            dispatch({
+              type : 'UPDATE_COMMIT_LIST',
+              value : resp
+            })
+
+            // TODO: figure this out
+            // trigger fetch tree list using the most recent commit
+            // commit = commit || resp.data[0].sha;
+            // AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit } )(dispatch, getState);
+          },
+          () => {
+            dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+
+            dispatch({
+              type : 'UPDATE_COMMIT_LIST',
+              value : []
+            })
+          }
         );
     }
   },
