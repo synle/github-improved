@@ -10,6 +10,8 @@
     "128": "icons/icon128.png"
   },
   "permissions": [
+    "*://*/*",
+    "*://*.github.com/*"
   ],
   "background": {
     "scripts": ["background-page/background.js"]

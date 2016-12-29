@@ -1,30 +1,49 @@
 console.log('background page simple');
 
-//                              /repos/:owner/:repo/pulls/:number
-var owner= 'relateiq';
-var repo = 'riq';
-var pullRequestNumber = '6946';
-var auth_token = '...';
+function makeRequest(url, data){
+  //                              /repos/:owner/:repo/pulls/:number
+  var owner= 'relateiq';
+  var repo = 'riq';
+  var pullRequestNumber = '6946';
+  var auth_token = '...';
 
-var request = new Request(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`, {
-  method: 'GET',
-  mode: 'cors',
-  redirect: 'follow',
-  cache: "no-cache",
-  credentials: "include",
-  headers: new Headers({
-    "Accept": "application/json",
-    "Authorization": "token ${auth_token}",
-    "Access-Control-Allow-Origin": "https://api.github.com, https://github.com"
-  })
-});
+  var url;
+  url = `https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`;
+  // url = `https://api.github.com/users/octocat/orgs`;
+  // url = `https://api.github.com`;
+  // url = `https://api.github.com/user?access_token=${auth_token}`
+  // url = `https://api.github.com/users/synle`;
 
-fetch(request).then(
-  resp => {
-    return resp.ok ? resp.json() : {};
-  }
-).then(
-  resp => {
-    console.error('stuffs', resp)
-  }
-)
+  var request = new Request(url, {
+    method: 'GET',
+    mode: 'cors',
+    redirect: 'follow',
+    cache: "no-cache",
+    credentials: "include",
+    headers: new Headers({
+      'Accept': 'application/vnd.github.v3+json',
+      'Authorization': `token ${auth_token}`
+    })
+  });
+
+  return new Promise((resolve, reject) => {
+    let successCall = false;
+    fetch(request).then(
+      resp => {
+        successCall = resp.ok;
+        return resp.json();
+      }
+    ).then(
+      respObject => {
+        successCall ? resolve(respObject)
+          : reject(respObject);
+      }
+    )
+  });
+}
+
+
+makeRequest().then(
+  resp => console.log('SUCCESS', resp),
+  resp => console.error('ERROR', resp)
+);
