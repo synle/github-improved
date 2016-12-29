@@ -42,7 +42,7 @@ chrome.extension.sendMessage({}, (response) => {
       <Provider store={AppStore}>
         <div>
           <PageHeader></PageHeader>
-          <div id="side-bar-body-content">
+          <div id="side-bar-body-content" className="margin-top0">
             <SearchForm></SearchForm>
             <DiffOptionBox></DiffOptionBox>
             <PrNavigation></PrNavigation>
@@ -108,8 +108,8 @@ chrome.extension.sendMessage({}, (response) => {
         // limit the max width to 500
         let newWidth = Math.min((startWidth + e.clientX - startX), 500);
 
-        // limit the min width to 200
-        newWidth = Math.max(200, newWidth);
+        // limit the min width to 240
+        newWidth = Math.max(240, newWidth);
 
         return newWidth + 'px';
       }

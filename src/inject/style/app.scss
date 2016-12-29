@@ -42,8 +42,13 @@ body{
     width:auto;
     border:2px solid #999;
 
-    #side-bar-body-content, .resizer, .side-bar-title-text{
+    #side-bar-body-content, .resizer{
       display:none;
+    }
+
+    .side-bar-title-text{
+      display:block;
+      @extend .margin-right0;
     }
 
     .side-bar-toggle::before {
@@ -143,6 +148,10 @@ body{
 
   .flex-shrink0{
     flex-shrink: 0;
+  }
+
+  .align-self-center{
+    align-self: center;
   }
 
   .ta-right{

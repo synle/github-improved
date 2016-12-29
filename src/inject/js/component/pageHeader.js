@@ -1,6 +1,6 @@
 //external
 import React from 'react';
-import { bindActionCreators } from 'redux'
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 //internal
@@ -10,8 +10,8 @@ const PageHeader = React.createClass({
   render() {
     return (
       <h3 id="side-bar-title" className="flex-row">
-        <span className="side-bar-title-text flex-grow1">Github Improved</span>
-        <span className="side-bar-toggle btn flex-shrink0"
+        <span className="side-bar-title-text flex-grow1 align-self-center">Github Improved</span>
+        <span className="side-bar-toggle btn flex-shrink0 align-self-center"
           onClick={this.props.onToggleSideBarVisibility}></span>
       </h3>
     );

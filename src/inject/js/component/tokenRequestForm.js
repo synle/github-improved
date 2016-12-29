@@ -1,9 +1,14 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
 //internal
+import AppAction from '@src/store/appAction';
 import dataUtil from '@src/util/dataUtil';
+
+//internal components
+import Panel from '@src/component/panel';
 
 const TokenRequestForm = React.createClass({
   render() {
@@ -11,29 +16,31 @@ const TokenRequestForm = React.createClass({
           return null;
       }
 
-      const onPromptTokenRequest = () => {
-          const apiToken = _.trim( prompt('Enter your API Token below', '') );
-
-          if (_.size(apiToken) > 0){
-              dataUtil.setPersistedProp('api-token', apiToken);
-              location.reload();
-          }
-      }
+      const domHeader = 'Settings';
+      const domBody = (
+        <div>
+          <div>For better experience of the extension (relavant commits, contributors, etc.), we need to access to your api token.</div>
+          <div><a href="https://github.com/settings/tokens">Generate New Personal Token Here</a></div>
+          <button onClick={this.onPromptTokenRequest} className="btn btn-sm margin-top0">
+              Update API Token
+          </button>
+        </div>
+      );
 
       return (
-          <div className="panel panel-primary">
-              <div className="panel-heading">
-                  <h4>Settings</h4>
-              </div>
-              <div className="panel-body">
-                <div>For better experience of the extension (relavant commits, contributors, etc.), we need to access to your api token.</div>
-                <div><a href="https://github.com/settings/tokens">Generate New Personal Token Here</a></div>
-                <button onClick={onPromptTokenRequest} className="btn btn-sm margin-top0">
-                    Update API Token
-                </button>
-              </div>
-          </div>
+        <Panel domHeader={domHeader}
+          domBody={domBody}
+          isExpanded={true}
+          />
       );
+  },
+  onPromptTokenRequest(){
+    const apiToken = _.trim( prompt('Enter your API Token below') ) || '';
+
+    if (_.size(apiToken) > 0){
+        dataUtil.setPersistedProp('api-token', apiToken);
+        location.reload();
+    }
   }
 });
 
@@ -44,4 +51,11 @@ const mapStateToProps = function(state) {
   };
 }
 
-export default connect(mapStateToProps)(TokenRequestForm);
+
+const mapDispatchToProps = function(dispatch) {
+  return {
+   // onReInitApp: bindActionCreators(AppAction.init, dispatch)
+ };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TokenRequestForm);
