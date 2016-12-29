@@ -11,6 +11,9 @@
   },
   "permissions": [
   ],
+  "background": {
+    "scripts": ["background-page/background.js"]
+  },
   "content_scripts": [
     {
       "matches": [
