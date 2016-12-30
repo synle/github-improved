@@ -133,7 +133,7 @@ const dataUtil = {
     }
     return Promise.reject();
   },
-  fetchTreeListBySha(owner, repo, commit){
+  fetchTreeList(owner, repo, commit){
     return owner && repo && commit
       ? restUtil.get(
         `https://github.com/${owner}/${repo}/tree-list/${commit}`,
@@ -144,7 +144,18 @@ const dataUtil = {
       )
       : Promise.reject();
   },
-  fetchTreeListByPrDetails(owner, repo, pullRequestNumber){
+  fetchExplorerFileListBySha(owner, repo, commit){
+    return owner && repo && commit
+      ? restUtil.get(
+        `https://github.com/${owner}/${repo}/tree-list/${commit}`,
+        null,//data
+        {//config
+          'Accept': 'application/json'
+        }
+      )
+      : Promise.reject();
+  },
+  fetchExplorerFileListByPrDetails(owner, repo, pullRequestNumber){
     return owner && repo && pullRequestNumber
       ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/files`)
       : Promise.reject();

@@ -101,16 +101,49 @@ const AppAction = {
       value: true
     };
   },
+  fetchTreeList: ({branch, owner, repo, commit, path, isPullRequestPage}) => {
+    return function (dispatch, getState) {
+      let newTreeInBranchList = [];
+
+      dataUtil.fetchTreeList(owner, repo, commit)
+        .then(
+          resp => newTreeInBranchList = _.get(resp, 'paths') || []
+        )
+        .catch(
+          () => newTreeInBranchList = []
+        )
+        .then(
+          () => {
+            dispatch({
+              type : 'UPDATE_TREE_LIST',
+              value : newTreeInBranchList
+            });
+          }
+        )
+    }
+  },
   fetchCommitList: ({path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber}) => {
     return function (dispatch, getState) {
       if(isPullRequestPage){
+        // pr mode
+        // fetch tree list
+        AppAction.fetchTreeList(
+          {path, owner, branch, repo, commit, isPullRequestPage}
+        )(dispatch, getState);
+
         //fetch commits based on PR (only applicable when users viewing a PR)
-        return AppAction.fetchCommitListByPrDetails(
+        AppAction.fetchCommitListByPrDetails(
           {path, owner, branch, repo, commit, pullRequestNumber}
         )(dispatch, getState);
       } else {
-        //fetch commit by sha
-        return AppAction.fetchCommitListBySha(
+        // non pr mode
+        // fetch tree list
+        AppAction.fetchTreeList(
+          {path, owner, branch, repo, commit, isPullRequestPage}
+        )(dispatch, getState);
+
+        //fetch commit by sha in non pr mode
+        AppAction.fetchCommitListBySha(
           {path, owner, branch, repo, commit, isPullRequestPage}
         )(dispatch, getState);
       }
@@ -128,7 +161,7 @@ const AppAction = {
             newCommitInPrList = resp;
 
             // trigger fetch tree list using the current pr
-            AppAction.fetchTreeListByPrDetails({owner, repo, pullRequestNumber})(dispatch, getState);
+            AppAction.fetchExplorerFileListByPrDetails({owner, repo, pullRequestNumber})(dispatch, getState);
           }
         ).catch(
           () => newCommitInPrList = []
@@ -157,7 +190,7 @@ const AppAction = {
 
             // trigger fetch tree list using the most recent commit
             commit = commit || _.get(resp, '0.sha');
-            AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit, isPullRequestPage } )(dispatch, getState);
+            AppAction.fetchExplorerFileListBySha( { path, owner, branch, repo, commit, isPullRequestPage } )(dispatch, getState);
           }
         )
         .catch(
@@ -176,13 +209,13 @@ const AppAction = {
         );
     };
   },
-  fetchTreeListByPrDetails: ({branch, owner, repo, commit, path, pullRequestNumber}) => {
+  fetchExplorerFileListByPrDetails: ({branch, owner, repo, commit, path, pullRequestNumber}) => {
     return function (dispatch, getState) {
       dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
 
       let newTreeInPrList = [];
 
-      dataUtil.fetchTreeListByPrDetails(owner, repo, pullRequestNumber)
+      dataUtil.fetchExplorerFileListByPrDetails(owner, repo, pullRequestNumber)
         .then(
           resp => newTreeInPrList = resp || []
         )
@@ -204,60 +237,47 @@ const AppAction = {
         );
     }
   },
-  fetchTreeListBySha: ({branch, owner, repo, commit, path, isPullRequestPage}) => {
+  fetchExplorerFileListBySha: ({branch, owner, repo, commit, path, isPullRequestPage}) => {
     return function (dispatch, getState) {
       dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
 
-      let newTreeInBranchList = [];
+      let newFileExplorerInBranchList = [];
 
-      dataUtil.fetchTreeListBySha(owner, repo, commit)
+      dataUtil.fetchExplorerFileListBySha(owner, repo, commit)
         .then(
-          resp => newTreeInBranchList = _.get(resp, 'paths') || []
+          resp => newFileExplorerInBranchList = _.get(resp, 'paths') || []
         )
         .catch(
-          () => newTreeInBranchList = []
+          () => newFileExplorerInBranchList = []
         )
         .then(
           () => {
-            //finally
-            dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
-
-            dispatch({
-              type : 'UPDATE_TREE_LIST',
-              value : newTreeInBranchList
-            });
-
-
             // grab the files that makes sense...
-            let newFileExplorerInBranchList = newTreeInBranchList;
-            if(!isPullRequestPage){
-              // non pr mode
-              // we need to filter based on file path...
-
-              let targetPathDir = path.split('/');
-              if(targetPathDir.length > 1){
-                targetPathDir.pop();
-              }
-              targetPathDir = targetPathDir.join('/');
-
-              newFileExplorerInBranchList = targetPathDir.length === 0
-                // root
-                ? newFileExplorerInBranchList.filter(
-                    filename => filename.indexOf('/') === -1
-                  )
-                // non root path
-                : newFileExplorerInBranchList.filter(
-                  filename => {
-                    if(path && path.length > 0){
-                      // start with target path and not having any slash after that
-                      return filename.indexOf(targetPathDir) === 0
-                        && filename.lastIndexOf('/') <= targetPathDir.length;
-                    }
-
-                    return filename.indexOf('/') === -1;
-                  }
-                );
+            // non pr mode
+            // we need to filter based on file path...
+            let targetPathDir = path.split('/');
+            if(targetPathDir.length > 1){
+              targetPathDir.pop();
             }
+            targetPathDir = targetPathDir.join('/');
+
+            newFileExplorerInBranchList = targetPathDir.length === 0
+              // root
+              ? newFileExplorerInBranchList.filter(
+                  filename => filename.indexOf('/') === -1
+                )
+              // non root path
+              : newFileExplorerInBranchList.filter(
+                filename => {
+                  if(path && path.length > 0){
+                    // start with target path and not having any slash after that
+                    return filename.indexOf(targetPathDir) === 0
+                      && filename.lastIndexOf('/') <= targetPathDir.length;
+                  }
+
+                  return filename.indexOf('/') === -1;
+                }
+              );
 
             dispatch({
               type : 'UPDATE_EXPLORER_FILE_LIST',
