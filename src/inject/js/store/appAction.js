@@ -157,7 +157,7 @@ const AppAction = {
 
             // trigger fetch tree list using the most recent commit
             commit = commit || _.get(resp, '0.sha');
-            AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit } )(dispatch, getState);
+            AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit, isPullRequestPage } )(dispatch, getState);
           }
         )
         .catch(
@@ -204,7 +204,7 @@ const AppAction = {
         );
     }
   },
-  fetchTreeListBySha: ({branch, owner, repo, commit, path}) => {
+  fetchTreeListBySha: ({branch, owner, repo, commit, path, isPullRequestPage}) => {
     return function (dispatch, getState) {
       dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
 
@@ -228,9 +228,42 @@ const AppAction = {
             });
 
 
+            // grab the files that makes sense...
+            let newFileExplorerInBranchList = newTreeInBranchList;
+            if(!isPullRequestPage){
+              // non pr mode
+              // we need to filter based on file path...
+
+              let targetPathDir = path.split('/');
+              if(targetPathDir.length > 1){
+                targetPathDir.pop();
+              }
+              targetPathDir = targetPathDir.join('/');
+
+              trees = targetPathDir.length === 0
+                // root
+                ? trees.filter(
+                    treePath => treePath.filename.indexOf('/') === -1
+                  )
+                // non root path
+                : trees.filter(
+                  treePath => {
+                    const filename = treePath.filename;
+
+                    if(path && path.length > 0){
+                      // start with target path and not having any slash after that
+                      return filename.indexOf(targetPathDir) === 0
+                        && filename.lastIndexOf('/') <= targetPathDir.length;
+                    }
+
+                    return filename.indexOf('/') === -1;
+                  }
+                );
+            }
+
             dispatch({
               type : 'UPDATE_EXPLORER_FILE_LIST',
-              value : newTreeInBranchList.map(
+              value : newFileExplorerInBranchList.map(
                 f => {
                   const blob_url = `https://github.com/${owner}/${repo}/tree/${branch}/${f}`;
                   return {
