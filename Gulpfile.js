@@ -56,8 +56,8 @@ gulp.task('views',  simpleGulpBuilder.copyFile( VIEW_PAGE_CONFIG, DEST_PATH ));
 //js
 gulp.task('js-app-dev', simpleGulpBuilder.compileJs( JS_INJECTED_SRC, DEST_PATH, 'app.js', BABELIFY_CONFIG, ALIASIFY_DEV_CONFIG ));
 gulp.task('js-app-prod', simpleGulpBuilder.compileJs( JS_INJECTED_SRC, DEST_PATH, 'app.js', BABELIFY_CONFIG, ALIASIFY_PROD_CONFIG ));
-gulp.task('js-bg-dev', simpleGulpBuilder.compileJs( JS_INJECTED_SRC, DEST_PATH, 'background.js', BABELIFY_CONFIG, ALIASIFY_DEV_CONFIG ));
-gulp.task('js-bg-prod', simpleGulpBuilder.compileJs( JS_INJECTED_SRC, DEST_PATH, 'background.js', BABELIFY_CONFIG, ALIASIFY_PROD_CONFIG ));
+gulp.task('js-bg-dev', simpleGulpBuilder.compileJs( JS_BACKGROUND_SRC, DEST_PATH, 'background.js', BABELIFY_CONFIG, ALIASIFY_DEV_CONFIG ));
+gulp.task('js-bg-prod', simpleGulpBuilder.compileJs( JS_BACKGROUND_SRC, DEST_PATH, 'background.js', BABELIFY_CONFIG, ALIASIFY_PROD_CONFIG ));
 gulp.task('js-vendor', simpleGulpBuilder.concatFiles( JS_VENDOR_FILES, DEST_PATH, 'vendor.js' ));
 
 //Watch task (mainly used for dev...)

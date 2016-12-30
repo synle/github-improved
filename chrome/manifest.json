@@ -14,7 +14,7 @@
     "*://*.github.com/*"
   ],
   "background": {
-    "scripts": ["background-page/background.js"]
+    "scripts": ["dist/background.js"]
   },
   "content_scripts": [
     {
