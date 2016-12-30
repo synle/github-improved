@@ -112,16 +112,20 @@ const dataUtil = {
   },
   // github api...
   fetchCommitListByPrDetails(owner, repo, pullRequestNumber){
-    return restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`);
+    return owner && repo && pullRequestNumber
+      ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`)
+      : Promise.reject();
   },
   fetchTreeListBySha(owner, repo, commit){
-    return restUtil.get(
-      `https://github.com/${owner}/${repo}/tree-list/${commit}`,
-      null,//data
-      {//config
-        'Accept': 'application/json'
-      }
-    );
+    return owner && repo && commit
+      ? restUtil.get(
+        `https://github.com/${owner}/${repo}/tree-list/${commit}`,
+        null,//data
+        {//config
+          'Accept': 'application/json'
+        }
+      )
+      : Promise.reject();
   }
 }
 
