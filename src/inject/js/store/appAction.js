@@ -34,7 +34,7 @@ const AppAction = {
       });
 
       // side bar expand state
-      const isSideBarExpanded = (dataUtil.getPersistedProp('side-bar-expand') || 'true') === 'true';
+      const isSideBarExpanded = !!dataUtil.getPersistedProp('side-bar-expand');
       AppAction.setSideBarVisibility(isSideBarExpanded)(dispatch, getState);
 
       //trigger refresh

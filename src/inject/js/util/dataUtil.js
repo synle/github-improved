@@ -90,7 +90,15 @@ const dataUtil = {
     ]
   },
   getPersistedProp(key){
-    return localStorage[`github-improved.${key}`]
+    var ret = localStorage[`github-improved.${key}`];
+    switch(ret){
+      case 'true':
+        return true;
+      case 'false':
+        return false;
+      default:
+        return ret;
+    }
   },
   setPersistedProp(key, value){
     localStorage[`github-improved.${key}`] = value;
