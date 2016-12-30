@@ -144,7 +144,7 @@ const AppAction = {
       // dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: false});
       dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
 
-      restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`)
+      dataUtil.fetchCommitListByPrDetails(owner, pulls, pullRequestNumber)
         .then(
           resp => {
             dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
@@ -227,29 +227,27 @@ const AppAction = {
 
         dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
 
-        var request = new Request(`https://github.com/${owner}/${repo}/tree-list/${commit}`, {
-            method: 'GET',
-            mode: 'cors',
-            redirect: 'follow',
-            cache: "no-cache",
-            credentials: "include",
-            headers: new Headers({
-              "Accept": "application/json"
-            })
-        });
 
-        fetch(request).then(
+        dataUtil.fetchTreeListBySha(owner, repo, commit)
+          .then(
             resp => {
-              return resp.ok ? resp.json() : {};
-            }
-          ).then(
-            resp => {
-              dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
-
               dispatch({
                 type : 'UPDATE_TREE_LIST',
-                value : resp.paths || []
+                value : _.get(resp, 'paths') || []
               })
+            }
+          )
+          .catch(
+            resp => {
+              dispatch({
+                type : 'UPDATE_TREE_LIST',
+                value : []
+              })
+            })
+          .then(
+            () => {
+              //finally
+              dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
             }
           );
       }

@@ -1,3 +1,6 @@
+import _ from 'lodash';
+
+//
 let auth_token;
 
 const RestUtil = {
@@ -15,10 +18,15 @@ function _makeRequest(method, url, data, config){
     redirect: 'follow',
     cache: "no-cache",
     credentials: "include",
-    headers: new Headers({
-      'Accept': 'application/vnd.github.v3+json',
-      'Authorization': `token ${auth_token}`
-    })
+    headers: new Headers(
+      _.merge(
+        {
+          'Accept': 'application/vnd.github.v3+json',
+          'Authorization': `token ${auth_token}`
+        },
+        config || {}
+      )
+    )
   });
 
   return new Promise((resolve, reject) => {

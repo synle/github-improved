@@ -1,5 +1,8 @@
 import _ from 'lodash';
 
+// internal
+import restUtil from '@src/util/restUtil';
+
 const dataUtil = {
   getUrlSplits() {
     const pathName = location.pathname;
@@ -106,6 +109,19 @@ const dataUtil = {
   },
   clearPersistedProp(key){
     localStorage[`github-improved.${key}`] = null;
+  },
+  // github api...
+  fetchCommitListByPrDetails(owner, repo, pullRequestNumber){
+    return restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`);
+  },
+  fetchTreeListBySha(owner, repo, commit){
+    return restUtil.get(
+      `https://github.com/${owner}/${repo}/tree-list/${commit}`,
+      null,//data
+      {//config
+        'Accept': 'application/json'
+      }
+    );
   }
 }
 
