@@ -122,30 +122,31 @@ const AppAction = {
     return function (dispatch, getState) {
       dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
       dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
-      // dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: false});
       dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
 
+
+      let newCommitInPrList = [];
       dataUtil.fetchCommitListByPrDetails(owner, repo, pullRequestNumber)
         .then(
           resp => {
-            dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
-
-            dispatch({
-              type : 'UPDATE_COMMIT_LIST',
-              value : resp
-            })
+            newCommitInPrList = resp;
 
             // TODO: figure this out
             // trigger fetch tree list using the most recent commit
             // commit = commit || resp.data[0].sha;
             // AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit } )(dispatch, getState);
-          },
+          }
+        ).catch(
+          () => {
+            newCommitInPrList = [];
+          }
+        ).then(
           () => {
             dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
 
             dispatch({
               type : 'UPDATE_COMMIT_LIST',
-              value : []
+              value : newCommitInPrList
             })
           }
         );
@@ -156,31 +157,32 @@ const AppAction = {
       if(!!owner && !!repo && !!apiToken){
         dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
 
+        let newCommitInBranchList = [];
+
         dataUtil.fetchCommitListBySha(owner, repo, path)
           .then(
             resp => {
-              dispatch({
-                type : 'UPDATE_COMMIT_LIST',
-                value : resp
-              })
+              newCommitInBranchList = resp;
 
               // trigger fetch tree list using the most recent commit
-              commit = commit || resp[0].sha;
+              commit = _.get(resp, '0.sha') || commit;
               AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit } )(dispatch, getState);
             }
           )
           .catch(
             () => {
-              dispatch({
-                type : 'UPDATE_COMMIT_LIST',
-                value : []
-              })
+              newCommitInBranchList = [];
             }
           )
           .then(
             //finally
             () => {
               dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+
+              dispatch({
+                type : 'UPDATE_COMMIT_LIST',
+                value : newCommitInBranchList
+              })
             }
           );
       }
@@ -197,26 +199,27 @@ const AppAction = {
       if(!!owner && !!repo && !!apiToken){
         dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
 
+        let newTreeInBranchList = [];
+
         dataUtil.fetchTreeListBySha(owner, repo, commit)
           .then(
             resp => {
-              dispatch({
-                type : 'UPDATE_TREE_LIST',
-                value : _.get(resp, 'paths') || []
-              })
+              newTreeInBranchList = _.get(resp, 'paths') || []
             }
           )
           .catch(
             resp => {
-              dispatch({
-                type : 'UPDATE_TREE_LIST',
-                value : []
-              })
+              newTreeInBranchList = [];
             })
           .then(
             () => {
               //finally
               dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
+
+              dispatch({
+                type : 'UPDATE_TREE_LIST',
+                value : newTreeInBranchList
+              })
             }
           );
       }
@@ -228,26 +231,28 @@ const AppAction = {
       if(!!owner && !!repo && !!apiToken){
         dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: true});
 
+        let newContributorList = [];
+
         dataUtil.fetchContributorList(owner, repo)
           .then(
             resp => {
-              dispatch({
-                type : 'UPDATE_CONTRIBUTOR_LIST',
-                value : resp
-              })
+              newContributorList = resp;
             }
           )
           .catch(
             () => {
-              dispatch({
-                type : 'UPDATE_CONTRIBUTOR_LIST',
-                value : []
-              })
+              newContributorList = [];
             }
           )
           .then(
             () => {
+              //finally
               dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: false});
+
+              dispatch({
+                type : 'UPDATE_CONTRIBUTOR_LIST',
+                value : newContributorList
+              })
             }
           )
       }
