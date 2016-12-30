@@ -75,7 +75,9 @@ const mapStateToProps = function(state) {
     : initalTrees.filter(
       treePath => {
         if(path && path.length > 0){
-          return treePath.indexOf(targetPathDir) === 0;
+          // start with target path and not having any slash after that
+          return treePath.indexOf(targetPathDir) === 0
+            && treePath.lastIndexOf('/') <= targetPathDir.length;
         }
 
         return treePath.indexOf('/') === -1;
