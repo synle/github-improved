@@ -111,7 +111,7 @@ const AppAction = {
       } else {
         //fetch commit by sha
         return AppAction.fetchCommitListBySha(
-          {path, owner, branch, repo, commit}
+          {path, owner, branch, repo, commit, isPullRequestPage}
         )(dispatch, getState);
       }
     };
@@ -144,7 +144,7 @@ const AppAction = {
         );
     }
   },
-  fetchCommitListBySha: ({path, owner, branch, repo, commit}) => {
+  fetchCommitListBySha: ({path, owner, branch, repo, commit, isPullRequestPage}) => {
     return function (dispatch, getState) {
       dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
 
@@ -240,16 +240,14 @@ const AppAction = {
               }
               targetPathDir = targetPathDir.join('/');
 
-              trees = targetPathDir.length === 0
+              newFileExplorerInBranchList = targetPathDir.length === 0
                 // root
-                ? trees.filter(
-                    treePath => treePath.filename.indexOf('/') === -1
+                ? newFileExplorerInBranchList.filter(
+                    filename => filename.indexOf('/') === -1
                   )
                 // non root path
-                : trees.filter(
-                  treePath => {
-                    const filename = treePath.filename;
-
+                : newFileExplorerInBranchList.filter(
+                  filename => {
                     if(path && path.length > 0){
                       // start with target path and not having any slash after that
                       return filename.indexOf(targetPathDir) === 0
@@ -264,10 +262,10 @@ const AppAction = {
             dispatch({
               type : 'UPDATE_EXPLORER_FILE_LIST',
               value : newFileExplorerInBranchList.map(
-                f => {
-                  const blob_url = `https://github.com/${owner}/${repo}/tree/${branch}/${f}`;
+                filename => {
+                  const blob_url = `https://github.com/${owner}/${repo}/tree/${branch}/${filename}`;
                   return {
-                    filename: f,
+                    filename,
                     blob_url
                   }
                 }

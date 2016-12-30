@@ -32,7 +32,9 @@ const ContributorBox = React.createClass({
 
         return (
             <div key={key} className="small-text">
-              <a href={blob_url}>{shortFileName}</a>
+              <a href={blob_url}
+                className="tooltipped tooltipped-ne"
+                aria-label={filename}>{shortFileName}</a>
             </div>
           );
       });
