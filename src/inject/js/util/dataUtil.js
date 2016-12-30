@@ -120,7 +120,7 @@ const dataUtil = {
         .join(''),
       0,
       2
-    );
+    ).join('');
 
     if(ret.length === 1){
       ret = longString.substr(0,2);
