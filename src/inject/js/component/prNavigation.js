@@ -21,7 +21,7 @@ const PRNavigation = React.createClass({
 
             return (
               <div key={domKey} className="small-text border-bottom">
-                <a href={pr.url}>{pr.title}</a>
+                <a href={pr.html_url}>{pr.title}</a>
               </div>
             );
           }
