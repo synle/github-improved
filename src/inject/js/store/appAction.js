@@ -131,15 +131,10 @@ const AppAction = {
           resp => {
             newCommitInPrList = resp;
 
-            // TODO: figure this out
-            // trigger fetch tree list using the most recent commit
-            // commit = commit || resp.data[0].sha;
-            // AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit } )(dispatch, getState);
+            // TODO: figure this out how to get the list of tree list here...
           }
         ).catch(
-          () => {
-            newCommitInPrList = [];
-          }
+          () => newCommitInPrList = []
         ).then(
           () => {
             dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
@@ -170,9 +165,7 @@ const AppAction = {
             }
           )
           .catch(
-            () => {
-              newCommitInBranchList = [];
-            }
+            () => newCommitInBranchList = []
           )
           .then(
             //finally
@@ -203,14 +196,11 @@ const AppAction = {
 
         dataUtil.fetchTreeListBySha(owner, repo, commit)
           .then(
-            resp => {
-              newTreeInBranchList = _.get(resp, 'paths') || []
-            }
+            resp => newTreeInBranchList = _.get(resp, 'paths') || []
           )
           .catch(
-            resp => {
-              newTreeInBranchList = [];
-            })
+            () => newTreeInBranchList = []
+          )
           .then(
             () => {
               //finally
@@ -235,14 +225,10 @@ const AppAction = {
 
         dataUtil.fetchContributorList(owner, repo)
           .then(
-            resp => {
-              newContributorList = resp;
-            }
+            resp => newContributorList = resp
           )
           .catch(
-            () => {
-              newContributorList = [];
-            }
+            () => newContributorList = []
           )
           .then(
             () => {
