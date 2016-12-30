@@ -80,6 +80,8 @@ const AppAction = {
 
             // set token valid
             dispatch({ type: 'SET_TOKEN_VALID', value: false});
+
+            console.error(arguments)
           }
         );
     };
@@ -110,7 +112,10 @@ const AppAction = {
           resp => newTreeInBranchList = _.get(resp, 'paths') || []
         )
         .catch(
-          () => newTreeInBranchList = []
+          () => {
+            newTreeInBranchList = [];
+            console.error(arguments)
+          }
         )
         .then(
           () => {
@@ -164,7 +169,10 @@ const AppAction = {
             AppAction.fetchExplorerFileListByPrDetails({owner, repo, pullRequestNumber})(dispatch, getState);
           }
         ).catch(
-          () => newCommitInPrList = []
+          () => {
+            newCommitInPrList = [];
+            console.error(arguments)
+          }
         ).then(
           () => {
             dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
@@ -194,7 +202,10 @@ const AppAction = {
           }
         )
         .catch(
-          () => newCommitInBranchList = []
+          () => {
+            newCommitInBranchList = [];
+            console.error(arguments);
+          }
         )
         .then(
           //finally
@@ -220,7 +231,10 @@ const AppAction = {
           resp => newTreeInPrList = resp || []
         )
         .catch(
-          () => newTreeInPrList = []
+          () => {
+            newTreeInPrList = [];
+            console.error(arguments);
+          }
         )
         .then(
           () => {
@@ -248,10 +262,15 @@ const AppAction = {
           resp => newFileExplorerInBranchList = _.get(resp, 'paths') || []
         )
         .catch(
-          () => newFileExplorerInBranchList = []
+          () => {
+            newFileExplorerInBranchList = [];
+            console.error(arguments);
+          }
         )
         .then(
           () => {
+            dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
+
             // grab the files that makes sense...
             // non pr mode
             // we need to filter based on file path...
@@ -307,7 +326,10 @@ const AppAction = {
           resp => newContributorList = resp
         )
         .catch(
-          () => newContributorList = []
+          () => {
+            newContributorList = [];
+            console.error(arguments);
+          }
         )
         .then(
           () => {
