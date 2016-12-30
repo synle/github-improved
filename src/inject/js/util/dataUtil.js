@@ -111,10 +111,23 @@ const dataUtil = {
     localStorage[`github-improved.${key}`] = null;
   },
   // github api...
+  fetchContributorList(owner, repo){
+    return owner && repo
+      ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/stats/contributors`)
+      : Promise.reject();
+  },
   fetchCommitListByPrDetails(owner, repo, pullRequestNumber){
     return owner && repo && pullRequestNumber
       ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`)
       : Promise.reject();
+  },
+  fetchCommitListBySha(owner, repo, path){
+    if(owner && repo){
+      return path
+        ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/commits?path=${path}`)
+        : restUtil.get(`https://api.github.com/repos/${owner}/${repo}/commits`);
+    }
+    return Promise.reject();
   },
   fetchTreeListBySha(owner, repo, commit){
     return owner && repo && commit

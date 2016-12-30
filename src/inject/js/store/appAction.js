@@ -173,44 +173,35 @@ const AppAction = {
   fetchCommitListBySha: ({path, owner, branch, repo, commit}) => {
     return function (dispatch, getState) {
       if(!!owner && !!repo && !!apiInstance){
-        const repoInstance = apiInstance.getRepo( owner, repo );
-
-        //fetch commits based on commit hash
-        const listCommitPayload = {
-          // sha
-          // path
-          // author
-        };
-        //filter out by file name if needed
-        if(!!path){
-          listCommitPayload.path = path;
-        }
-
         dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
 
-        repoInstance.listCommits( listCommitPayload ).then(
-          resp => {
-            dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+        dataUtil.fetchCommitListBySha(owner, repo, path)
+          .then(
+            resp => {
+              dispatch({
+                type : 'UPDATE_COMMIT_LIST',
+                value : resp
+              })
 
-            dispatch({
-              type : 'UPDATE_COMMIT_LIST',
-              value : resp.data
-            })
-
-
-            // trigger fetch tree list using the most recent commit
-            commit = commit || resp.data[0].sha;
-            AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit } )(dispatch, getState);
-          },
-          () => {
-            dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
-
-            dispatch({
-              type : 'UPDATE_COMMIT_LIST',
-              value : []
-            })
-          }
-        );
+              // trigger fetch tree list using the most recent commit
+              commit = commit || resp[0].sha;
+              AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit } )(dispatch, getState);
+            }
+          )
+          .catch(
+            () => {
+              dispatch({
+                type : 'UPDATE_COMMIT_LIST',
+                value : []
+              })
+            }
+          )
+          .then(
+            //finally
+            () => {
+              dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+            }
+          );
       }
     };
   },
@@ -257,24 +248,30 @@ const AppAction = {
     return function(dispatch, getState){
       //fetch contributors
       if(!!owner && !!repo && !!apiInstance){
-        const repoInstance = apiInstance.getRepo( owner, repo );
         dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: true});
-        repoInstance.getContributors().then(
-          resp => {
-            dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: false});
-            dispatch({
-              type : 'UPDATE_CONTRIBUTOR_LIST',
-              value : resp.data
-            })
-          },
-          () => {
-            dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: false});
-            dispatch({
-              type : 'UPDATE_CONTRIBUTOR_LIST',
-              value : []
-            })
-          }
-        );
+
+        dataUtil.fetchContributorList(owner, repo)
+          .then(
+            resp => {
+              dispatch({
+                type : 'UPDATE_CONTRIBUTOR_LIST',
+                value : resp
+              })
+            }
+          )
+          .catch(
+            () => {
+              dispatch({
+                type : 'UPDATE_CONTRIBUTOR_LIST',
+                value : []
+              })
+            }
+          )
+          .then(
+            () => {
+              dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: false});
+            }
+          )
       }
     }
   },
