@@ -118,20 +118,17 @@ const AppAction = {
   },
   fetchCommitListByPrDetails: ({path, owner, branch, repo, commit, pullRequestNumber}) => {
     return function (dispatch, getState) {
-      dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
-      dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
-      dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
-
+      dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
 
       let newCommitInPrList = [];
+
       dataUtil.fetchCommitListByPrDetails(owner, repo, pullRequestNumber)
         .then(
           resp => {
             newCommitInPrList = resp;
 
             // trigger fetch tree list using the current pr
-            // TODO: figure out how to fetch tree list here...
-            AppAction.fetchTreeListByPrDetails(owner, repo, pullRequestNumber)(dispatch, getState);
+            AppAction.fetchTreeListByPrDetails({owner, repo, pullRequestNumber})(dispatch, getState);
           }
         ).catch(
           () => newCommitInPrList = []
@@ -181,8 +178,31 @@ const AppAction = {
   },
   fetchTreeListByPrDetails: ({branch, owner, repo, commit, path, pullRequestNumber}) => {
     return function (dispatch, getState) {
-      //TODO: implemented fetch tree list by pr details...
-      // TODO: figure this out how to get the list of tree list here...
+      dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
+
+      let newTreeInPrList = [];
+
+      dataUtil.fetchTreeListByPrDetails(owner, repo, pullRequestNumber)
+        .then(
+          resp => newTreeInPrList = (resp || [])
+            .map(
+              f => f.filename
+            )
+        )
+        .catch(
+          () => newTreeInPrList = []
+        )
+        .then(
+          () => {
+            //finally
+            dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
+
+            dispatch({
+              type : 'UPDATE_TREE_LIST',
+              value : newTreeInPrList
+            })
+          }
+        );
     }
   },
   fetchTreeListBySha: ({branch, owner, repo, commit, path}) => {

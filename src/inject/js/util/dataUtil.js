@@ -143,6 +143,11 @@ const dataUtil = {
         }
       )
       : Promise.reject();
+  },
+  fetchTreeListByPrDetails(owner, repo, pullRequestNumber){
+    return owner && repo && pullRequestNumber
+      ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/files`)
+      : Promise.reject();
   }
 }
 

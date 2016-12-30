@@ -57,32 +57,38 @@ const ContributorBox = React.createClass({
 
 
 const mapStateToProps = function(state) {
-  let path = _.get( state, 'repo.path' ) || '';
+  const isPullRequestPage = _.get( state, 'repo.isPullRequestPage' ) || false;
+  let trees = _.get(state, 'repo.trees') || [];
 
-  let targetPathDir = path.split('/');
-  if(targetPathDir.length > 1){
-    targetPathDir.pop();
-  }
-  targetPathDir = targetPathDir.join('/');
+  if(!isPullRequestPage){
+    // non pr mode
+    // we need to filter based on file path...
+    let path = _.get( state, 'repo.path' ) || '';
 
-  const initalTrees = _.get(state, 'repo.trees') || [];
-  const trees = targetPathDir.length === 0
-    // root
-    ? initalTrees.filter(
-        treePath => treePath.indexOf('/') === -1
-      )
-    // non root path
-    : initalTrees.filter(
-      treePath => {
-        if(path && path.length > 0){
-          // start with target path and not having any slash after that
-          return treePath.indexOf(targetPathDir) === 0
-            && treePath.lastIndexOf('/') <= targetPathDir.length;
+    let targetPathDir = path.split('/');
+    if(targetPathDir.length > 1){
+      targetPathDir.pop();
+    }
+    targetPathDir = targetPathDir.join('/');
+
+    trees = targetPathDir.length === 0
+      // root
+      ? trees.filter(
+          treePath => treePath.indexOf('/') === -1
+        )
+      // non root path
+      : trees.filter(
+        treePath => {
+          if(path && path.length > 0){
+            // start with target path and not having any slash after that
+            return treePath.indexOf(targetPathDir) === 0
+              && treePath.lastIndexOf('/') <= targetPathDir.length;
+          }
+
+          return treePath.indexOf('/') === -1;
         }
-
-        return treePath.indexOf('/') === -1;
-      }
-    );
+      );
+  }
 
   return {
     visible : _.get(state, 'ui.visible.fileExplorer'),
