@@ -12,30 +12,31 @@ const PAGE_SIZE_FILE_EXPLORER = 15;
 const ContributorBox = React.createClass({
   render() {
     let domBody;
-    const {visible, loading, trees, owner, repo, branch, path} = this.props;
-    const treeCount = _.size(trees);
+    const {visible, loading, explorerFiles} = this.props;
 
     if(visible !== true){
       return null;
     } else if(loading === true){
       domBody = <div>Loading...</div>
-    } else if( treeCount > 0){
-      domBody = trees.map( (treePath) => {
-        const fileLink = `https://github.com/${owner}/${repo}/tree/${branch}/${treePath}`
-        const key = `blob-${treePath}`;
+    } else if( _.size(explorerFiles) > 0){
+      domBody = explorerFiles.map( (explorerFile) => {
+        const { filename, blob_url } = explorerFile;
+        const key = `blob-${filename}`;
 
         //get the shortname
-        var splits = treePath.split('/');
-        let shortFileName = treePath;
+        var splits = filename.split('/');
+        let shortFileName = filename;
         if(splits.length > 0){
           shortFileName = splits.pop();
         }
 
         return (
-          <div key={key} className="small-text">
-            <a href={fileLink}>{shortFileName}</a>
-          </div>
-        );
+            <div key={key} className="small-text">
+              <a href={blob_url}
+                className="tooltipped tooltipped-ne"
+                aria-label={filename}>{shortFileName}</a>
+            </div>
+          );
       });
 
       //wrap it in the paging
@@ -57,41 +58,10 @@ const ContributorBox = React.createClass({
 
 
 const mapStateToProps = function(state) {
-  let path = _.get( state, 'repo.path' ) || '';
-
-  let targetPathDir = path.split('/');
-  if(targetPathDir.length > 1){
-    targetPathDir.pop();
-  }
-  targetPathDir = targetPathDir.join('/');
-
-  const initalTrees = _.get(state, 'repo.trees') || [];
-  const trees = targetPathDir.length === 0
-    // root
-    ? initalTrees.filter(
-        treePath => treePath.indexOf('/') === -1
-      )
-    // non root path
-    : initalTrees.filter(
-      treePath => {
-        if(path && path.length > 0){
-          // start with target path and not having any slash after that
-          return treePath.indexOf(targetPathDir) === 0
-            && treePath.lastIndexOf('/') <= targetPathDir.length;
-        }
-
-        return treePath.indexOf('/') === -1;
-      }
-    );
-
   return {
     visible : _.get(state, 'ui.visible.fileExplorer'),
     loading : _.get(state, 'ui.loading.fileExplorer'),
-    trees : trees,
-    repo : _.get( state, 'repo.repo'),
-    owner : _.get( state, 'repo.owner'),
-    branch: _.get( state, 'repo.branch'),
-    path : path
+    explorerFiles: _.get(state, 'repo.explorerFiles') || []
   };
 }
 

@@ -49,19 +49,19 @@ const SearchForm = React.createClass({
           const domBody = (
             <form id="side-bar-form-search"
               onSubmit={sidebarUtil.onSearchRepo}>
-              <input className="form-control"
+              <input className="form-control fill-width display-block"
                 placeholder="Keyword"
                 name="keyword"
                 list="search-file-name"
                 onChange={e => this.onChangeKeyword(e.target.value)}
                 value={keyword} />
-              <select className="form-select margin-top0" name="type">
+              <select className="form-select margin-top0 fill-width display-block" name="type">
                 <option value="file,path">File and Content</option>
                 <option value="file">File Content</option>
                 <option value="path">Path Name</option>
               </select>
-              <input className="form-control margin-top0" placeholder="Language" name="language" list="search-language" />
-              <button className="btn btn-sm btn-primary margin-top0" type="submit">
+              <input className="form-control margin-top0 fill-width display-block" placeholder="Language" name="language" list="search-language" />
+              <button className="btn btn-sm btn-primary margin-top0 fill-width display-block" type="submit">
                 Search
               </button>
               <datalist id="search-language">

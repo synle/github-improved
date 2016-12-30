@@ -61,11 +61,6 @@ body{
     content: "<<";
   }
 
-  & button, & input, & select{
-    display:block;
-    width: 100%;
-  }
-
   & select{
     height:40px;
   }
@@ -131,6 +126,14 @@ body{
     padding-bottom: $padding-offset;
   }
 
+  .fill-width{
+    width: 100%;
+  }
+
+  .display-block{
+    display:block;
+  }
+
   //flex
   .flex-row{
     display:flex;
@@ -152,6 +155,10 @@ body{
 
   .align-self-center{
     align-self: center;
+  }
+
+  .justify-content-space-between{
+    justify-content: space-between;
   }
 
   .ta-right{

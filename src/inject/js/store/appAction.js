@@ -67,7 +67,9 @@ const AppAction = {
             //trigger async dispatch
             [
               AppAction.fetchCommitList( { path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber } ),
-              AppAction.fetchContributorList( { path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber } )
+              AppAction.fetchContributorList( { path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber } ),
+              AppAction.fetchTreeList( { path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber } ),
+              AppAction.fetchPullRequests( { path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber } )
             ].forEach(function(func){
               func(dispatch, getState);
             });
@@ -80,6 +82,8 @@ const AppAction = {
 
             // set token valid
             dispatch({ type: 'SET_TOKEN_VALID', value: false});
+
+            console.error(arguments)
           }
         );
     };
@@ -101,40 +105,90 @@ const AppAction = {
       value: true
     };
   },
+  fetchTreeList: ({branch, owner, repo, commit, path, isPullRequestPage}) => {
+    return function (dispatch, getState) {
+      let newTreeInBranchList = [];
+
+      dataUtil.fetchTreeList(owner, repo, commit)
+        .then(
+          resp => newTreeInBranchList = _.get(resp, 'paths') || []
+        )
+        .catch(
+          () => {
+            newTreeInBranchList = [];
+            console.error(arguments)
+          }
+        )
+        .then(
+          () => {
+            dispatch({
+              type : 'UPDATE_TREE_LIST',
+              value : newTreeInBranchList
+            });
+          }
+        )
+    }
+  },
+  fetchPullRequests: ({branch, owner, repo, commit, path, isPullRequestPage}) => {
+    return function (dispatch, getState) {
+      let newPullRequestList = [];
+
+      dataUtil.fetchPullRequests(owner, repo, commit)
+        .then(
+          resp => newPullRequestList = resp
+        )
+        .catch(
+          () => {
+            newPullRequestList = [];
+            console.error(arguments)
+          }
+        )
+        .then(
+          () => {
+            dispatch({
+              type : 'UPDATE_PULL_REQUEST_LIST',
+              value : newPullRequestList
+            });
+          }
+        )
+    }
+  },
   fetchCommitList: ({path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber}) => {
     return function (dispatch, getState) {
       if(isPullRequestPage){
+        // pr mode
         //fetch commits based on PR (only applicable when users viewing a PR)
-        return AppAction.fetchCommitListByPrDetails(
+        AppAction.fetchCommitListByPrDetails(
           {path, owner, branch, repo, commit, pullRequestNumber}
         )(dispatch, getState);
       } else {
-        //fetch commit by sha
-        return AppAction.fetchCommitListBySha(
-          {path, owner, branch, repo, commit}
+        // non pr mode
+        //fetch commit by sha in non pr mode
+        AppAction.fetchCommitListBySha(
+          {path, owner, branch, repo, commit, isPullRequestPage}
         )(dispatch, getState);
       }
     };
   },
   fetchCommitListByPrDetails: ({path, owner, branch, repo, commit, pullRequestNumber}) => {
     return function (dispatch, getState) {
-      dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
-      dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
-      dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
-
+      dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
 
       let newCommitInPrList = [];
+
       dataUtil.fetchCommitListByPrDetails(owner, repo, pullRequestNumber)
         .then(
           resp => {
             newCommitInPrList = resp;
 
             // trigger fetch tree list using the current pr
-            // TODO: figure out how to fetch tree list here...
-            AppAction.fetchTreeListByPrDetails(owner, repo, pullRequestNumber)(dispatch, getState);
+            AppAction.fetchExplorerFileListByPrDetails({owner, repo, pullRequestNumber})(dispatch, getState);
           }
         ).catch(
-          () => newCommitInPrList = []
+          () => {
+            newCommitInPrList = [];
+            console.error(arguments)
+          }
         ).then(
           () => {
             dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
@@ -147,7 +201,7 @@ const AppAction = {
         );
     }
   },
-  fetchCommitListBySha: ({path, owner, branch, repo, commit}) => {
+  fetchCommitListBySha: ({path, owner, branch, repo, commit, isPullRequestPage}) => {
     return function (dispatch, getState) {
       dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
 
@@ -160,11 +214,14 @@ const AppAction = {
 
             // trigger fetch tree list using the most recent commit
             commit = commit || _.get(resp, '0.sha');
-            AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit } )(dispatch, getState);
+            AppAction.fetchExplorerFileListBySha( { path, owner, branch, repo, commit, isPullRequestPage } )(dispatch, getState);
           }
         )
         .catch(
-          () => newCommitInBranchList = []
+          () => {
+            newCommitInBranchList = [];
+            console.error(arguments);
+          }
         )
         .then(
           //finally
@@ -179,24 +236,21 @@ const AppAction = {
         );
     };
   },
-  fetchTreeListByPrDetails: ({branch, owner, repo, commit, path, pullRequestNumber}) => {
-    return function (dispatch, getState) {
-      //TODO: implemented fetch tree list by pr details...
-      // TODO: figure this out how to get the list of tree list here...
-    }
-  },
-  fetchTreeListBySha: ({branch, owner, repo, commit, path}) => {
+  fetchExplorerFileListByPrDetails: ({branch, owner, repo, commit, path, pullRequestNumber}) => {
     return function (dispatch, getState) {
       dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
 
-      let newTreeInBranchList = [];
+      let newTreeInPrList = [];
 
-      dataUtil.fetchTreeListBySha(owner, repo, commit)
+      dataUtil.fetchExplorerFileListByPrDetails(owner, repo, pullRequestNumber)
         .then(
-          resp => newTreeInBranchList = _.get(resp, 'paths') || []
+          resp => newTreeInPrList = resp || []
         )
         .catch(
-          () => newTreeInBranchList = []
+          () => {
+            newTreeInPrList = [];
+            console.error(arguments);
+          }
         )
         .then(
           () => {
@@ -204,9 +258,74 @@ const AppAction = {
             dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
 
             dispatch({
-              type : 'UPDATE_TREE_LIST',
-              value : newTreeInBranchList
-            })
+              type : 'UPDATE_EXPLORER_FILE_LIST',
+              value : newTreeInPrList.map(
+                f => _.pick(f, ['filename', 'blob_url'])
+              )
+            });
+          }
+        );
+    }
+  },
+  fetchExplorerFileListBySha: ({branch, owner, repo, commit, path, isPullRequestPage}) => {
+    return function (dispatch, getState) {
+      dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
+
+      let newFileExplorerInBranchList = [];
+
+      dataUtil.fetchExplorerFileListBySha(owner, repo, commit)
+        .then(
+          resp => newFileExplorerInBranchList = _.get(resp, 'paths') || []
+        )
+        .catch(
+          () => {
+            newFileExplorerInBranchList = [];
+            console.error(arguments);
+          }
+        )
+        .then(
+          () => {
+            dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
+
+            // grab the files that makes sense...
+            // non pr mode
+            // we need to filter based on file path...
+            let targetPathDir = path.split('/');
+            if(targetPathDir.length > 1){
+              targetPathDir.pop();
+            }
+            targetPathDir = targetPathDir.join('/');
+
+            newFileExplorerInBranchList = targetPathDir.length === 0
+              // root
+              ? newFileExplorerInBranchList.filter(
+                  filename => filename.indexOf('/') === -1
+                )
+              // non root path
+              : newFileExplorerInBranchList.filter(
+                filename => {
+                  if(path && path.length > 0){
+                    // start with target path and not having any slash after that
+                    return filename.indexOf(targetPathDir) === 0
+                      && filename.lastIndexOf('/') <= targetPathDir.length;
+                  }
+
+                  return filename.indexOf('/') === -1;
+                }
+              );
+
+            dispatch({
+              type : 'UPDATE_EXPLORER_FILE_LIST',
+              value : newFileExplorerInBranchList.map(
+                filename => {
+                  const blob_url = `https://github.com/${owner}/${repo}/tree/${branch}/${filename}`;
+                  return {
+                    filename,
+                    blob_url
+                  }
+                }
+              )
+            });
           }
         );
     }
@@ -223,7 +342,10 @@ const AppAction = {
           resp => newContributorList = resp
         )
         .catch(
-          () => newContributorList = []
+          () => {
+            newContributorList = [];
+            console.error(arguments);
+          }
         )
         .then(
           () => {
@@ -292,16 +414,17 @@ function _shouldShowSearchBox(){
 }
 
 function _shouldShowPrNavBox(){
-  if($('.repohead-details-container').length === 0){
-    return true;
-  }
+  return true;
+  // if($('.repohead-details-container').length === 0){
+  //   return true;
+  // }
 
-  return false;
+  // return false;
 }
 
 
 function _shouldShowDiffBox(){
-  return true;
+  return $('.blob-num-addition, .blob-code-deletion').length > 0;
 }
 
 export default AppAction;

@@ -110,6 +110,24 @@ const dataUtil = {
   clearPersistedProp(key){
     localStorage[`github-improved.${key}`] = null;
   },
+  getInitialFromName(longString){
+    longString = longString || '';
+
+    let ret = _.slice(
+      longString
+        .split(' ')
+        .map(s => s[0])
+        .join(''),
+      0,
+      2
+    ).join('');
+
+    if(ret.length === 1){
+      ret = longString.substr(0,2);
+    }
+
+    return _.upperCase(ret);
+  },
   // github api...
   // https://developer.github.com/v3/
   fetchUserProfile(){
@@ -118,6 +136,11 @@ const dataUtil = {
   fetchContributorList(owner, repo){
     return owner && repo
       ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/stats/contributors`)
+      : Promise.reject();
+  },
+  fetchPullRequests(owner, repo){
+    return owner && repo
+      ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls`)
       : Promise.reject();
   },
   fetchCommitListByPrDetails(owner, repo, pullRequestNumber){
@@ -133,7 +156,7 @@ const dataUtil = {
     }
     return Promise.reject();
   },
-  fetchTreeListBySha(owner, repo, commit){
+  fetchTreeList(owner, repo, commit){
     return owner && repo && commit
       ? restUtil.get(
         `https://github.com/${owner}/${repo}/tree-list/${commit}`,
@@ -142,6 +165,22 @@ const dataUtil = {
           'Accept': 'application/json'
         }
       )
+      : Promise.reject();
+  },
+  fetchExplorerFileListBySha(owner, repo, commit){
+    return owner && repo && commit
+      ? restUtil.get(
+        `https://github.com/${owner}/${repo}/tree-list/${commit}`,
+        null,//data
+        {//config
+          'Accept': 'application/json'
+        }
+      )
+      : Promise.reject();
+  },
+  fetchExplorerFileListByPrDetails(owner, repo, pullRequestNumber){
+    return owner && repo && pullRequestNumber
+      ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/files`)
       : Promise.reject();
   }
 }

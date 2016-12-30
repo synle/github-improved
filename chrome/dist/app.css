@@ -35,9 +35,6 @@ body {
       content: ">>"; }
   #side-bar-body .side-bar-toggle::before {
     content: "<<"; }
-  #side-bar-body button, #side-bar-body input, #side-bar-body select {
-    display: block;
-    width: 100%; }
   #side-bar-body select {
     height: 40px; }
   #side-bar-body .margin-left0 {
@@ -73,6 +70,10 @@ body {
     padding-right: 10px;
     padding-top: 10px;
     padding-bottom: 10px; }
+  #side-bar-body .fill-width {
+    width: 100%; }
+  #side-bar-body .display-block {
+    display: block; }
   #side-bar-body .flex-row {
     display: flex;
     flex-direction: row; }
@@ -85,6 +86,8 @@ body {
     flex-shrink: 0; }
   #side-bar-body .align-self-center {
     align-self: center; }
+  #side-bar-body .justify-content-space-between {
+    justify-content: space-between; }
   #side-bar-body .ta-right {
     text-align: right; }
   #side-bar-body .ta-center {

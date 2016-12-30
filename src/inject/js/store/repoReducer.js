@@ -18,6 +18,8 @@ const DEFAULT_STATE = {
   commits : null,//list of relavant commits
   contributors : null,// list of contributors
   trees: null,//tree map
+  explorerFiles: null, // file explorer
+  pullRequests: null, // current pull requests...
   urlParams: {}
 };
 
@@ -50,25 +52,27 @@ const RepoReducer = (state = DEFAULT_STATE, {type, value}) => {
         repoCommit.commitAuthorName = _.get( repoCommit, 'commit.author.name', '');
 
         // only pick up the first 2 initials...
-        repoCommit.commitAuthorShortName = _.slice(
-          _.upperCase(repoCommit.commitAuthorName)
-            .split(' ')
-            .map(s => s[0])
-            .join(''),
-          0,
-          2
-        );
+        repoCommit.commitAuthorShortName = dataUtil.getInitialFromName(repoCommit.commitAuthorName);
 
         return repoCommit;
       });
       break;
 
     case 'UPDATE_TREE_LIST':
+      //tree list used for the explorer
       state.trees = value;
+      break;
+
+    case 'UPDATE_EXPLORER_FILE_LIST':
+      state.explorerFiles = value;
       break;
 
     case 'UPDATE_CONTRIBUTOR_LIST':
       state.contributors = value;
+      break;
+
+    case 'UPDATE_PULL_REQUEST_LIST':
+      state.pullRequests = value;
       break;
   }
 
