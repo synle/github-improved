@@ -129,7 +129,9 @@ const AppAction = {
           resp => {
             newCommitInPrList = resp;
 
-            // TODO: figure this out how to get the list of tree list here...
+            // trigger fetch tree list using the current pr
+            // TODO: figure out how to fetch tree list here...
+            AppAction.fetchTreeListByPrDetails(owner, repo, pullRequestNumber)(dispatch, getState);
           }
         ).catch(
           () => newCommitInPrList = []
@@ -157,7 +159,8 @@ const AppAction = {
             newCommitInBranchList = resp;
 
             // trigger fetch tree list using the most recent commit
-            AppAction.fetchTreeListByPrDetails( { path, owner, branch, repo, commit } )(dispatch, getState);
+            commit = commit || _.get(resp, '0.sha');
+            AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit } )(dispatch, getState);
           }
         )
         .catch(
@@ -179,6 +182,7 @@ const AppAction = {
   fetchTreeListByPrDetails: ({branch, owner, repo, commit, path, pullRequestNumber}) => {
     return function (dispatch, getState) {
       //TODO: implemented fetch tree list by pr details...
+      // TODO: figure this out how to get the list of tree list here...
     }
   },
   fetchTreeListBySha: ({branch, owner, repo, commit, path}) => {

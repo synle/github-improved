@@ -22,7 +22,7 @@ function _makeRequest(method, url, data, config){
       _.merge(
         {
           'Accept': 'application/vnd.github.v3+json',
-          'Authorization': `token ${auth_token}`
+          'Authorization': `token ${auth_token}`,
           'User-Chrome-Client-Type': 'Github Improved'
         },
         config || {}
