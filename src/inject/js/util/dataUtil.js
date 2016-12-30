@@ -111,6 +111,10 @@ const dataUtil = {
     localStorage[`github-improved.${key}`] = null;
   },
   // github api...
+  // https://developer.github.com/v3/
+  fetchUserProfile(){
+    return restUtil.get(`https://api.github.com/user`);
+  },
   fetchContributorList(owner, repo){
     return owner && repo
       ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/stats/contributors`)

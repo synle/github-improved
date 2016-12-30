@@ -2,8 +2,6 @@
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import createLogger from 'redux-logger';
 import thunk from 'redux-thunk';
-import GitHub from 'github-api';
-
 
 //internal
 import repoReducer from '@src/store/repoReducer';

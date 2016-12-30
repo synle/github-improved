@@ -1,10 +1,5 @@
-import _ from 'lodash';
-
 //external
-import GitHub from 'github-api';
-// https://www.npmjs.com/package/github-api
-// https://github.com/github-tools/github
-// http://github-tools.github.io/github/
+import _ from 'lodash';
 
 //internal
 import dataUtil from '@src/util/dataUtil';
@@ -12,13 +7,7 @@ import restUtil from '@src/util/restUtil';
 
 
 let apiToken = dataUtil.getPersistedProp('api-token');
-let apiInstance;
-if(apiToken){
-  // instances...
-  apiInstance = new GitHub({
-    token: apiToken
-  });
-
+if(_.size(apiToken) > 0){
   // new rest api
   restUtil.setAuthToken(apiToken);
 }
@@ -44,13 +33,10 @@ const AppAction = {
   refresh : () => {
     // init
     return function (dispatch, getState) {
-      if(!apiInstance){
+      if(!apiToken){
         //api instance is not available, then return
-        dispatch({ type: 'SET_TOKEN_VALID', value: false});
-        return;
+        return dispatch({ type: 'SET_TOKEN_VALID', value: false});
       }
-
-      const userInstance = apiInstance.getUser();
 
       const state = _.get(getState(), 'repo');
 
@@ -63,7 +49,7 @@ const AppAction = {
       const pullRequestNumber = _.get( state, 'pullRequestNumber');
 
       let hasError = false;
-      userInstance.getProfile()
+      dataUtil.fetchUserProfile()
         .then(
           resp => {
             // success
@@ -75,9 +61,6 @@ const AppAction = {
             dispatch({ type: 'SET_VISIBLE_PR_NAVIGATION_BOX', value: _shouldShowPrNavBox()});
             dispatch({ type: 'SET_VISIBLE_DIFF_OPTION_BOX', value: _shouldShowDiffBox()});
 
-
-
-
             // set token valid
             dispatch({ type: 'SET_TOKEN_VALID', value: true});
 
@@ -88,12 +71,12 @@ const AppAction = {
             ].forEach(function(func){
               func(dispatch, getState);
             });
-          },
+          }
+        )
+        .catch(
           resp => {
             //failure
-            apiInstance = null;
             apiToken = null;
-
 
             // set token valid
             dispatch({ type: 'SET_TOKEN_VALID', value: false});
@@ -103,9 +86,9 @@ const AppAction = {
   },
   updateApiToken : (value) => {
     apiToken = value;
-    apiInstance = new GitHub({
-      token: apiToken
-    });
+
+    //set api token
+    restUtil.setAuthToken(apiToken);
 
     //persist it
     dataUtil.setPersistedProp('api-token', apiToken);
@@ -120,9 +103,7 @@ const AppAction = {
   },
   fetchCommitList: ({path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber}) => {
     return function (dispatch, getState) {
-      if(!!owner && !!repo && !!apiInstance){
-        const repoInstance = apiInstance.getRepo( owner, repo );
-
+      if(!!owner && !!repo && !!apiToken){
         if(isPullRequestPage){
           //fetch commits based on PR (only applicable when users viewing a PR)
           return AppAction.fetchCommitListByPrDetails(
@@ -172,7 +153,7 @@ const AppAction = {
   },
   fetchCommitListBySha: ({path, owner, branch, repo, commit}) => {
     return function (dispatch, getState) {
-      if(!!owner && !!repo && !!apiInstance){
+      if(!!owner && !!repo && !!apiToken){
         dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
 
         dataUtil.fetchCommitListBySha(owner, repo, path)
@@ -213,11 +194,8 @@ const AppAction = {
     return function (dispatch, getState) {
       //fetch trees
 
-      if(!!owner && !!repo && !!apiInstance){
-        const repoInstance = apiInstance.getRepo( owner, repo );
-
+      if(!!owner && !!repo && !!apiToken){
         dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
-
 
         dataUtil.fetchTreeListBySha(owner, repo, commit)
           .then(
@@ -247,7 +225,7 @@ const AppAction = {
   fetchContributorList: ({owner, repo}) => {
     return function(dispatch, getState){
       //fetch contributors
-      if(!!owner && !!repo && !!apiInstance){
+      if(!!owner && !!repo && !!apiToken){
         dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: true});
 
         dataUtil.fetchContributorList(owner, repo)
