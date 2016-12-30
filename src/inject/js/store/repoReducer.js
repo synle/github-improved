@@ -52,14 +52,7 @@ const RepoReducer = (state = DEFAULT_STATE, {type, value}) => {
         repoCommit.commitAuthorName = _.get( repoCommit, 'commit.author.name', '');
 
         // only pick up the first 2 initials...
-        repoCommit.commitAuthorShortName = _.slice(
-          _.upperCase(repoCommit.commitAuthorName)
-            .split(' ')
-            .map(s => s[0])
-            .join(''),
-          0,
-          2
-        );
+        repoCommit.commitAuthorShortName = dataUtil.getInitialFromName(repoCommit.commitAuthorName);
 
         return repoCommit;
       });

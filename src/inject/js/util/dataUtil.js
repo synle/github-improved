@@ -110,6 +110,24 @@ const dataUtil = {
   clearPersistedProp(key){
     localStorage[`github-improved.${key}`] = null;
   },
+  getInitialFromName(longString){
+    longString = longString || '';
+
+    let ret = _.slice(
+      longString
+        .split(' ')
+        .map(s => s[0])
+        .join(''),
+      0,
+      2
+    );
+
+    if(ret.length === 1){
+      ret = longString.substr(0,2);
+    }
+
+    return _.upperCase(ret);
+  },
   // github api...
   // https://developer.github.com/v3/
   fetchUserProfile(){

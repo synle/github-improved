@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 //internal
+import dataUtil from '@src/util/dataUtil';
 import sidebarUtil from '@src/util/sidebarUtil';
 import Panel from '@src/component/panel';
 import Pagination from '@src/component/pagination';
@@ -18,9 +19,15 @@ const PRNavigation = React.createClass({
         const domPullRequestList = pullRequests.map(
           pr => {
             const domKey = `pr-${pr.id}`;
+            const authorName = _.get(pr, 'user.login') || '';
+            const shortAuthorName = dataUtil.getInitialFromName(authorName);
 
             return (
               <div key={domKey} className="small-text border-top">
+                <strong className="margin-right0 tooltipped tooltipped-ne"
+                  aria-label={authorName}>
+                  {shortAuthorName}
+                </strong>
                 <a href={pr.html_url}>{pr.title}</a>
               </div>
             );
