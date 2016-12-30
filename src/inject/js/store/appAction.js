@@ -103,18 +103,16 @@ const AppAction = {
   },
   fetchCommitList: ({path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber}) => {
     return function (dispatch, getState) {
-      if(!!owner && !!repo && !!apiToken){
-        if(isPullRequestPage){
-          //fetch commits based on PR (only applicable when users viewing a PR)
-          return AppAction.fetchCommitListByPrDetails(
-            {path, owner, branch, repo, commit, pullRequestNumber}
-          )(dispatch, getState);
-        } else {
-          //fetch commit by sha
-          return AppAction.fetchCommitListBySha(
-            {path, owner, branch, repo, commit}
-          )(dispatch, getState);
-        }
+      if(isPullRequestPage){
+        //fetch commits based on PR (only applicable when users viewing a PR)
+        return AppAction.fetchCommitListByPrDetails(
+          {path, owner, branch, repo, commit, pullRequestNumber}
+        )(dispatch, getState);
+      } else {
+        //fetch commit by sha
+        return AppAction.fetchCommitListBySha(
+          {path, owner, branch, repo, commit}
+        )(dispatch, getState);
       }
     };
   },
@@ -149,99 +147,91 @@ const AppAction = {
   },
   fetchCommitListBySha: ({path, owner, branch, repo, commit}) => {
     return function (dispatch, getState) {
-      if(!!owner && !!repo && !!apiToken){
-        dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
+      dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
 
-        let newCommitInBranchList = [];
+      let newCommitInBranchList = [];
 
-        dataUtil.fetchCommitListBySha(owner, repo, path)
-          .then(
-            resp => {
-              newCommitInBranchList = resp;
+      dataUtil.fetchCommitListBySha(owner, repo, path)
+        .then(
+          resp => {
+            newCommitInBranchList = resp;
 
-              // trigger fetch tree list using the most recent commit
-              commit = _.get(resp, '0.sha') || commit;
-              AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit } )(dispatch, getState);
-            }
-          )
-          .catch(
-            () => newCommitInBranchList = []
-          )
-          .then(
-            //finally
-            () => {
-              dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+            // trigger fetch tree list using the most recent commit
+            AppAction.fetchTreeListByPrDetails( { path, owner, branch, repo, commit } )(dispatch, getState);
+          }
+        )
+        .catch(
+          () => newCommitInBranchList = []
+        )
+        .then(
+          //finally
+          () => {
+            dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
 
-              dispatch({
-                type : 'UPDATE_COMMIT_LIST',
-                value : newCommitInBranchList
-              })
-            }
-          );
-      }
+            dispatch({
+              type : 'UPDATE_COMMIT_LIST',
+              value : newCommitInBranchList
+            })
+          }
+        );
     };
   },
   fetchTreeListByPrDetails: ({branch, owner, repo, commit, path, pullRequestNumber}) => {
     return function (dispatch, getState) {
+      //TODO: implemented fetch tree list by pr details...
     }
   },
   fetchTreeListBySha: ({branch, owner, repo, commit, path}) => {
     return function (dispatch, getState) {
-      //fetch trees
+      dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
 
-      if(!!owner && !!repo && !!apiToken){
-        dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
+      let newTreeInBranchList = [];
 
-        let newTreeInBranchList = [];
+      dataUtil.fetchTreeListBySha(owner, repo, commit)
+        .then(
+          resp => newTreeInBranchList = _.get(resp, 'paths') || []
+        )
+        .catch(
+          () => newTreeInBranchList = []
+        )
+        .then(
+          () => {
+            //finally
+            dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
 
-        dataUtil.fetchTreeListBySha(owner, repo, commit)
-          .then(
-            resp => newTreeInBranchList = _.get(resp, 'paths') || []
-          )
-          .catch(
-            () => newTreeInBranchList = []
-          )
-          .then(
-            () => {
-              //finally
-              dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
-
-              dispatch({
-                type : 'UPDATE_TREE_LIST',
-                value : newTreeInBranchList
-              })
-            }
-          );
-      }
+            dispatch({
+              type : 'UPDATE_TREE_LIST',
+              value : newTreeInBranchList
+            })
+          }
+        );
     }
   },
   fetchContributorList: ({owner, repo}) => {
     return function(dispatch, getState){
       //fetch contributors
-      if(!!owner && !!repo && !!apiToken){
-        dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: true});
+      dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: true});
 
-        let newContributorList = [];
+      let newContributorList = [];
 
-        dataUtil.fetchContributorList(owner, repo)
-          .then(
-            resp => newContributorList = resp
-          )
-          .catch(
-            () => newContributorList = []
-          )
-          .then(
-            () => {
-              //finally
-              dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: false});
+      dataUtil.fetchContributorList(owner, repo)
+        .then(
+          resp => newContributorList = resp
+        )
+        .catch(
+          () => newContributorList = []
+        )
+        .then(
+          () => {
+            //finally
+            dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: false});
 
-              dispatch({
-                type : 'UPDATE_CONTRIBUTOR_LIST',
-                value : newContributorList
-              })
-            }
-          )
-      }
+            dispatch({
+              type : 'UPDATE_CONTRIBUTOR_LIST',
+              value : newContributorList
+            })
+          }
+        )
     }
   },
   toggleSideBarVisibility: () => {
