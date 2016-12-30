@@ -42,6 +42,8 @@ function _makeRequest(method, url, data, config){
         successCall ? resolve(respObject)
           : reject(respObject);
       }
+    ).catch(
+      respObject => reject(respObject)
     )
   });
 }
