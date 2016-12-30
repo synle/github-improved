@@ -20,7 +20,7 @@ const PRNavigation = React.createClass({
             const domKey = `pr-${pr.id}`;
 
             return (
-              <div key={domKey} className="small-text border-bottom">
+              <div key={domKey} className="small-text border-top">
                 <a href={pr.html_url}>{pr.title}</a>
               </div>
             );
@@ -28,9 +28,9 @@ const PRNavigation = React.createClass({
         );
         const domBody = (
           <div>
-            <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">PR created by you</button>
-            <button onClick={sidebarUtil.onGoToAssignedPRUrl} className="btn btn-sm margin-top0">PR assigned to you</button>
-            <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm margin-top0">PR mentioning you</button>
+            <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">Created</button>
+            <button onClick={sidebarUtil.onGoToAssignedPRUrl} className="btn btn-sm">Assigned</button>
+            <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">Mentioned</button>
 
             <Pagination domList={domPullRequestList} pageSize={PAGE_SIZE_PULL_REQUEST}></Pagination>
           </div>

@@ -61,11 +61,6 @@ body{
     content: "<<";
   }
 
-  & button, & input, & select{
-    display:block;
-    width: 100%;
-  }
-
   & select{
     height:40px;
   }
@@ -129,6 +124,14 @@ body{
     padding-right: $padding-offset;
     padding-top: $padding-offset;
     padding-bottom: $padding-offset;
+  }
+
+  .fill-width{
+    width: 100%;
+  }
+
+  .display-block{
+    display:block;
   }
 
   //flex
