@@ -184,10 +184,7 @@ const AppAction = {
 
       dataUtil.fetchTreeListByPrDetails(owner, repo, pullRequestNumber)
         .then(
-          resp => newTreeInPrList = (resp || [])
-            .map(
-              f => f.filename
-            )
+          resp => newTreeInPrList = resp || []
         )
         .catch(
           () => newTreeInPrList = []
@@ -198,9 +195,11 @@ const AppAction = {
             dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
 
             dispatch({
-              type : 'UPDATE_TREE_LIST',
-              value : newTreeInPrList
-            })
+              type : 'UPDATE_EXPLORER_FILE_LIST',
+              value : newTreeInPrList.map(
+                f => _.pick(f, ['filename', 'blob_url'])
+              )
+            });
           }
         );
     }
@@ -226,7 +225,21 @@ const AppAction = {
             dispatch({
               type : 'UPDATE_TREE_LIST',
               value : newTreeInBranchList
-            })
+            });
+
+
+            dispatch({
+              type : 'UPDATE_EXPLORER_FILE_LIST',
+              value : newTreeInBranchList.map(
+                f => {
+                  const blob_url = `https://github.com/${owner}/${repo}/tree/${branch}/${f}`;
+                  return {
+                    filename: f,
+                    blob_url
+                  }
+                }
+              )
+            });
           }
         );
     }

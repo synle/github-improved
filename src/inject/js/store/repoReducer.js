@@ -18,6 +18,7 @@ const DEFAULT_STATE = {
   commits : null,//list of relavant commits
   contributors : null,// list of contributors
   trees: null,//tree map
+  explorerFiles: null, // file explorer
   urlParams: {}
 };
 
@@ -64,7 +65,12 @@ const RepoReducer = (state = DEFAULT_STATE, {type, value}) => {
       break;
 
     case 'UPDATE_TREE_LIST':
+      //tree list used for the explorer
       state.trees = value;
+      break;
+
+    case 'UPDATE_EXPLORER_FILE_LIST':
+      state.explorerFiles = value;
       break;
 
     case 'UPDATE_CONTRIBUTOR_LIST':

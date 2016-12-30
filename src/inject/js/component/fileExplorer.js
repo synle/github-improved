@@ -12,7 +12,7 @@ const PAGE_SIZE_FILE_EXPLORER = 15;
 const ContributorBox = React.createClass({
   render() {
     let domBody;
-    const {visible, loading, trees, owner, repo, branch, path} = this.props;
+    const {visible, loading, trees, owner, repo, branch, path, isPullRequestPage} = this.props;
     const treeCount = _.size(trees);
 
     if(visible !== true){
@@ -20,22 +20,22 @@ const ContributorBox = React.createClass({
     } else if(loading === true){
       domBody = <div>Loading...</div>
     } else if( treeCount > 0){
-      domBody = trees.map( (treePath) => {
-        const fileLink = `https://github.com/${owner}/${repo}/tree/${branch}/${treePath}`
-        const key = `blob-${treePath}`;
+      domBody = trees.map( (tree) => {
+        const { filename, blob_url } = tree;
+        const key = `blob-${filename}`;
 
         //get the shortname
-        var splits = treePath.split('/');
-        let shortFileName = treePath;
+        var splits = filename.split('/');
+        let shortFileName = filename;
         if(splits.length > 0){
           shortFileName = splits.pop();
         }
 
         return (
-          <div key={key} className="small-text">
-            <a href={fileLink}>{shortFileName}</a>
-          </div>
-        );
+            <div key={key} className="small-text">
+              <a href={blob_url}>{shortFileName}</a>
+            </div>
+          );
       });
 
       //wrap it in the paging
@@ -58,12 +58,12 @@ const ContributorBox = React.createClass({
 
 const mapStateToProps = function(state) {
   const isPullRequestPage = _.get( state, 'repo.isPullRequestPage' ) || false;
-  let trees = _.get(state, 'repo.trees') || [];
+  let path = _.get( state, 'repo.path' ) || '';
+  let trees = _.get(state, 'repo.explorerFiles') || [];
 
   if(!isPullRequestPage){
     // non pr mode
     // we need to filter based on file path...
-    let path = _.get( state, 'repo.path' ) || '';
 
     let targetPathDir = path.split('/');
     if(targetPathDir.length > 1){
@@ -74,18 +74,20 @@ const mapStateToProps = function(state) {
     trees = targetPathDir.length === 0
       // root
       ? trees.filter(
-          treePath => treePath.indexOf('/') === -1
+          treePath => treePath.filename.indexOf('/') === -1
         )
       // non root path
       : trees.filter(
         treePath => {
+          const filename = treePath.filename;
+
           if(path && path.length > 0){
             // start with target path and not having any slash after that
-            return treePath.indexOf(targetPathDir) === 0
-              && treePath.lastIndexOf('/') <= targetPathDir.length;
+            return filename.indexOf(targetPathDir) === 0
+              && filename.lastIndexOf('/') <= targetPathDir.length;
           }
 
-          return treePath.indexOf('/') === -1;
+          return filename.indexOf('/') === -1;
         }
       );
   }
@@ -93,11 +95,12 @@ const mapStateToProps = function(state) {
   return {
     visible : _.get(state, 'ui.visible.fileExplorer'),
     loading : _.get(state, 'ui.loading.fileExplorer'),
-    trees : trees,
+    isPullRequestPage,
+    trees,
+    path,
     repo : _.get( state, 'repo.repo'),
     owner : _.get( state, 'repo.owner'),
-    branch: _.get( state, 'repo.branch'),
-    path : path
+    branch: _.get( state, 'repo.branch')
   };
 }
 
