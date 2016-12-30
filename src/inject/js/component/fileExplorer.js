@@ -59,9 +59,10 @@ const ContributorBox = React.createClass({
 const mapStateToProps = function(state) {
   let path = _.get( state, 'repo.path' ) || '';
 
-  //
   let targetPathDir = path.split('/');
-  targetPathDir.pop();
+  if(targetPathDir.length > 1){
+    targetPathDir.pop();
+  }
   targetPathDir = targetPathDir.join('/');
 
   const initalTrees = _.get(state, 'repo.trees') || [];
@@ -74,7 +75,9 @@ const mapStateToProps = function(state) {
     : initalTrees.filter(
       treePath => {
         if(path && path.length > 0){
-          return treePath.indexOf(targetPathDir) === 0;
+          // start with target path and not having any slash after that
+          return treePath.indexOf(targetPathDir) === 0
+            && treePath.lastIndexOf('/') <= targetPathDir.length;
         }
 
         return treePath.indexOf('/') === -1;

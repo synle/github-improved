@@ -1,21 +1,15 @@
-import _ from 'lodash';
-
 //external
-import GitHub from 'github-api';
-// https://www.npmjs.com/package/github-api
-// https://github.com/github-tools/github
-// http://github-tools.github.io/github/
+import _ from 'lodash';
 
 //internal
 import dataUtil from '@src/util/dataUtil';
+import restUtil from '@src/util/restUtil';
 
 
 let apiToken = dataUtil.getPersistedProp('api-token');
-let apiInstance;
-if(apiToken){
-  apiInstance = new GitHub({
-    token: apiToken
-  })
+if(_.size(apiToken) > 0){
+  // new rest api
+  restUtil.setAuthToken(apiToken);
 }
 
 const AppAction = {
@@ -29,7 +23,7 @@ const AppAction = {
       });
 
       // side bar expand state
-      const isSideBarExpanded = (dataUtil.getPersistedProp('side-bar-expand') || 'true') === 'true';
+      const isSideBarExpanded = !!dataUtil.getPersistedProp('side-bar-expand');
       AppAction.setSideBarVisibility(isSideBarExpanded)(dispatch, getState);
 
       //trigger refresh
@@ -39,13 +33,10 @@ const AppAction = {
   refresh : () => {
     // init
     return function (dispatch, getState) {
-      if(!apiInstance){
+      if(!apiToken){
         //api instance is not available, then return
-        dispatch({ type: 'SET_TOKEN_VALID', value: false});
-        return;
+        return dispatch({ type: 'SET_TOKEN_VALID', value: false});
       }
-
-      const userInstance = apiInstance.getUser();
 
       const state = _.get(getState(), 'repo');
 
@@ -58,7 +49,7 @@ const AppAction = {
       const pullRequestNumber = _.get( state, 'pullRequestNumber');
 
       let hasError = false;
-      userInstance.getProfile()
+      dataUtil.fetchUserProfile()
         .then(
           resp => {
             // success
@@ -70,9 +61,6 @@ const AppAction = {
             dispatch({ type: 'SET_VISIBLE_PR_NAVIGATION_BOX', value: _shouldShowPrNavBox()});
             dispatch({ type: 'SET_VISIBLE_DIFF_OPTION_BOX', value: _shouldShowDiffBox()});
 
-
-
-
             // set token valid
             dispatch({ type: 'SET_TOKEN_VALID', value: true});
 
@@ -83,12 +71,12 @@ const AppAction = {
             ].forEach(function(func){
               func(dispatch, getState);
             });
-          },
+          }
+        )
+        .catch(
           resp => {
             //failure
-            apiInstance = null;
             apiToken = null;
-
 
             // set token valid
             dispatch({ type: 'SET_TOKEN_VALID', value: false});
@@ -98,9 +86,9 @@ const AppAction = {
   },
   updateApiToken : (value) => {
     apiToken = value;
-    apiInstance = new GitHub({
-      token: apiToken
-    });
+
+    //set api token
+    restUtil.setAuthToken(apiToken);
 
     //persist it
     dataUtil.setPersistedProp('api-token', apiToken);
@@ -115,20 +103,16 @@ const AppAction = {
   },
   fetchCommitList: ({path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber}) => {
     return function (dispatch, getState) {
-      if(!!owner && !!repo && !!apiInstance){
-        const repoInstance = apiInstance.getRepo( owner, repo );
-
-        if(isPullRequestPage){
-          //fetch commits based on PR (only applicable when users viewing a PR)
-          return AppAction.fetchCommitListByPrDetails(
-            {path, owner, branch, repo, commit, pullRequestNumber}
-          )(dispatch, getState);
-        } else {
-          //fetch commit by sha
-          return AppAction.fetchCommitListBySha(
-            {path, owner, branch, repo, commit}
-          )(dispatch, getState);
-        }
+      if(isPullRequestPage){
+        //fetch commits based on PR (only applicable when users viewing a PR)
+        return AppAction.fetchCommitListByPrDetails(
+          {path, owner, branch, repo, commit, pullRequestNumber}
+        )(dispatch, getState);
+      } else {
+        //fetch commit by sha
+        return AppAction.fetchCommitListBySha(
+          {path, owner, branch, repo, commit}
+        )(dispatch, getState);
       }
     };
   },
@@ -136,155 +120,122 @@ const AppAction = {
     return function (dispatch, getState) {
       dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
       dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
-      dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: false});
       dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
 
-      // TODO: enhance the experience by fetching the commits from the PR itself...
-      // const repoInstance = apiInstance.getRepo( owner, repo );
-      // repoInstance.getPullRequest(pullRequestNumber).then(
-      //     resp => {
-      //       console.error('pr details success', pullRequestNumber, resp.data);
-      //     },
-      //     resp => {
-      //       dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
-      //       dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
-      //       dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: false});
-      //       dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
-      //     }
-      //   );
-      //
 
-      // var request = new Request(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`, {
-      //     method: 'GET',
-      //     mode: 'cors',
-      //     redirect: 'follow',
-      //     cache: "no-cache",
-      //     credentials: "include",
-      //     headers: new Headers({
-      //       "Accept": "application/json",
-      //       "Access-Control-Allow-Origin": "https://api.github.com, https://github.com"
-      //     })
-      // });
-
-      // fetch(request).then(
-      //     resp => {
-      //       return resp.ok ? resp.json() : {};
-      //     }
-      //   ).then(
-      //     resp => {
-      //       console.error('stuffs', resp)
-      //     }
-      //   )
-    }
-  },
-  fetchCommitListBySha: ({path, owner, branch, repo, commit}) => {
-    return function (dispatch, getState) {
-      if(!!owner && !!repo && !!apiInstance){
-        const repoInstance = apiInstance.getRepo( owner, repo );
-
-        //fetch commits based on commit hash
-        const listCommitPayload = {
-          // sha
-          // path
-          // author
-        };
-        //filter out by file name if needed
-        if(!!path){
-          listCommitPayload.path = path;
-        }
-
-        dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
-
-        repoInstance.listCommits( listCommitPayload ).then(
+      let newCommitInPrList = [];
+      dataUtil.fetchCommitListByPrDetails(owner, repo, pullRequestNumber)
+        .then(
           resp => {
-            dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+            newCommitInPrList = resp;
 
-            dispatch({
-              type : 'UPDATE_COMMIT_LIST',
-              value : resp.data
-            })
-
-
-            // trigger fetch tree list using the most recent commit
-            commit = commit || resp.data[0].sha;
-            AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit } )(dispatch, getState);
-          },
+            // trigger fetch tree list using the current pr
+            // TODO: figure out how to fetch tree list here...
+            AppAction.fetchTreeListByPrDetails(owner, repo, pullRequestNumber)(dispatch, getState);
+          }
+        ).catch(
+          () => newCommitInPrList = []
+        ).then(
           () => {
             dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
 
             dispatch({
               type : 'UPDATE_COMMIT_LIST',
-              value : []
+              value : newCommitInPrList
             })
           }
         );
-      }
+    }
+  },
+  fetchCommitListBySha: ({path, owner, branch, repo, commit}) => {
+    return function (dispatch, getState) {
+      dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
+
+      let newCommitInBranchList = [];
+
+      dataUtil.fetchCommitListBySha(owner, repo, path)
+        .then(
+          resp => {
+            newCommitInBranchList = resp;
+
+            // trigger fetch tree list using the most recent commit
+            commit = commit || _.get(resp, '0.sha');
+            AppAction.fetchTreeListBySha( { path, owner, branch, repo, commit } )(dispatch, getState);
+          }
+        )
+        .catch(
+          () => newCommitInBranchList = []
+        )
+        .then(
+          //finally
+          () => {
+            dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
+
+            dispatch({
+              type : 'UPDATE_COMMIT_LIST',
+              value : newCommitInBranchList
+            })
+          }
+        );
     };
   },
-  fetchTreeListByPrDetails: ({branch, owner, repo, commit, path}) => {
+  fetchTreeListByPrDetails: ({branch, owner, repo, commit, path, pullRequestNumber}) => {
     return function (dispatch, getState) {
+      //TODO: implemented fetch tree list by pr details...
+      // TODO: figure this out how to get the list of tree list here...
     }
   },
   fetchTreeListBySha: ({branch, owner, repo, commit, path}) => {
     return function (dispatch, getState) {
-      //fetch trees
+      dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
 
-      if(!!owner && !!repo && !!apiInstance){
-        const repoInstance = apiInstance.getRepo( owner, repo );
+      let newTreeInBranchList = [];
 
-        dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
+      dataUtil.fetchTreeListBySha(owner, repo, commit)
+        .then(
+          resp => newTreeInBranchList = _.get(resp, 'paths') || []
+        )
+        .catch(
+          () => newTreeInBranchList = []
+        )
+        .then(
+          () => {
+            //finally
+            dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
 
-        var request = new Request(`https://github.com/${owner}/${repo}/tree-list/${commit}`, {
-            method: 'GET',
-            mode: 'cors',
-            redirect: 'follow',
-            cache: "no-cache",
-            credentials: "include",
-            headers: new Headers({
-              "Accept": "application/json"
+            dispatch({
+              type : 'UPDATE_TREE_LIST',
+              value : newTreeInBranchList
             })
-        });
-
-        fetch(request).then(
-            resp => {
-              return resp.ok ? resp.json() : {};
-            }
-          ).then(
-            resp => {
-              dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
-
-              dispatch({
-                type : 'UPDATE_TREE_LIST',
-                value : resp.paths || []
-              })
-            }
-          );
-      }
+          }
+        );
     }
   },
   fetchContributorList: ({owner, repo}) => {
     return function(dispatch, getState){
       //fetch contributors
-      if(!!owner && !!repo && !!apiInstance){
-        const repoInstance = apiInstance.getRepo( owner, repo );
-        dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: true});
-        repoInstance.getContributors().then(
-          resp => {
-            dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: false});
-            dispatch({
-              type : 'UPDATE_CONTRIBUTOR_LIST',
-              value : resp.data
-            })
-          },
+      dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: true});
+
+      let newContributorList = [];
+
+      dataUtil.fetchContributorList(owner, repo)
+        .then(
+          resp => newContributorList = resp
+        )
+        .catch(
+          () => newContributorList = []
+        )
+        .then(
           () => {
+            //finally
             dispatch({ type: 'SET_LOADING_CONTRIBUTOR_BOX', value: false});
+
             dispatch({
               type : 'UPDATE_CONTRIBUTOR_LIST',
-              value : []
+              value : newContributorList
             })
           }
-        );
-      }
+        )
     }
   },
   toggleSideBarVisibility: () => {

@@ -1,6 +1,3 @@
-// external
-import GitHub from 'github-api';
-
 // internal
 import dataUtil from '@src/util/dataUtil';
 

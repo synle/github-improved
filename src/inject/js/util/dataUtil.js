@@ -1,5 +1,8 @@
 import _ from 'lodash';
 
+// internal
+import restUtil from '@src/util/restUtil';
+
 const dataUtil = {
   getUrlSplits() {
     const pathName = location.pathname;
@@ -90,7 +93,15 @@ const dataUtil = {
     ]
   },
   getPersistedProp(key){
-    return localStorage[`github-improved.${key}`]
+    var ret = localStorage[`github-improved.${key}`];
+    switch(ret){
+      case 'true':
+        return true;
+      case 'false':
+        return false;
+      default:
+        return ret;
+    }
   },
   setPersistedProp(key, value){
     localStorage[`github-improved.${key}`] = value;
@@ -98,6 +109,40 @@ const dataUtil = {
   },
   clearPersistedProp(key){
     localStorage[`github-improved.${key}`] = null;
+  },
+  // github api...
+  // https://developer.github.com/v3/
+  fetchUserProfile(){
+    return restUtil.get(`https://api.github.com/user`);
+  },
+  fetchContributorList(owner, repo){
+    return owner && repo
+      ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/stats/contributors`)
+      : Promise.reject();
+  },
+  fetchCommitListByPrDetails(owner, repo, pullRequestNumber){
+    return owner && repo && pullRequestNumber
+      ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`)
+      : Promise.reject();
+  },
+  fetchCommitListBySha(owner, repo, path){
+    if(owner && repo){
+      return path
+        ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/commits?path=${path}`)
+        : restUtil.get(`https://api.github.com/repos/${owner}/${repo}/commits`);
+    }
+    return Promise.reject();
+  },
+  fetchTreeListBySha(owner, repo, commit){
+    return owner && repo && commit
+      ? restUtil.get(
+        `https://github.com/${owner}/${repo}/tree-list/${commit}`,
+        null,//data
+        {//config
+          'Accept': 'application/json'
+        }
+      )
+      : Promise.reject();
   }
 }
 
