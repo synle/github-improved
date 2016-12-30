@@ -424,7 +424,7 @@ function _shouldShowPrNavBox(){
 
 
 function _shouldShowDiffBox(){
-  return true;
+  return $('.blob-num-addition, .blob-code-deletion').length > 0;
 }
 
 export default AppAction;

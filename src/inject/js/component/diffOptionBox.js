@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 //internal
 import sidebarUtil from '@src/util/sidebarUtil';
+import Panel from '@src/component/panel';
 
 //internal
 const DiffBoxOption = React.createClass({
@@ -34,16 +35,20 @@ const DiffBoxOption = React.createClass({
             cbFormatChange = sidebarUtil.onGoToUnifieDiffUrl;
         }
 
-        if($('.blob-num-addition, .blob-code-deletion').length > 0){
-            return(
-                <div className="margin-top0">
-                  <button onClick={cbWhitespaceChange} className="btn btn-sm">{whiteSpaceText}</button>
-                  <button onClick={cbFormatChange} className="btn btn-sm margin-top0">{diffFormatText}</button>
-                </div>
-            );
-        } else{
-            return null;
-        }
+        const domHeader = 'Diff Options';
+        const domBody = (
+          <div className="flex-row justify-content-space-between">
+            <button onClick={cbWhitespaceChange} className="btn btn-sm">{whiteSpaceText}</button>
+            <button onClick={cbFormatChange} className="btn btn-sm">{diffFormatText}</button>
+          </div>
+        );
+
+        return(
+          <Panel domHeader={domHeader}
+            domBody={domBody}
+            isExpanded={true}
+            />
+        );
       }
   }
 });
