@@ -67,7 +67,9 @@ const AppAction = {
             //trigger async dispatch
             [
               AppAction.fetchCommitList( { path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber } ),
-              AppAction.fetchContributorList( { path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber } )
+              AppAction.fetchContributorList( { path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber } ),
+              AppAction.fetchTreeList( { path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber } ),
+              AppAction.fetchPullRequests( { path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber } )
             ].forEach(function(func){
               func(dispatch, getState);
             });
@@ -127,26 +129,40 @@ const AppAction = {
         )
     }
   },
+  fetchPullRequests: ({branch, owner, repo, commit, path, isPullRequestPage}) => {
+    return function (dispatch, getState) {
+      let newPullRequestList = [];
+
+      dataUtil.fetchPullRequests(owner, repo, commit)
+        .then(
+          resp => newPullRequestList = resp
+        )
+        .catch(
+          () => {
+            newPullRequestList = [];
+            console.error(arguments)
+          }
+        )
+        .then(
+          () => {
+            dispatch({
+              type : 'UPDATE_PULL_REQUEST_LIST',
+              value : newPullRequestList
+            });
+          }
+        )
+    }
+  },
   fetchCommitList: ({path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber}) => {
     return function (dispatch, getState) {
       if(isPullRequestPage){
         // pr mode
-        // fetch tree list
-        AppAction.fetchTreeList(
-          {path, owner, branch, repo, commit, isPullRequestPage}
-        )(dispatch, getState);
-
         //fetch commits based on PR (only applicable when users viewing a PR)
         AppAction.fetchCommitListByPrDetails(
           {path, owner, branch, repo, commit, pullRequestNumber}
         )(dispatch, getState);
       } else {
         // non pr mode
-        // fetch tree list
-        AppAction.fetchTreeList(
-          {path, owner, branch, repo, commit, isPullRequestPage}
-        )(dispatch, getState);
-
         //fetch commit by sha in non pr mode
         AppAction.fetchCommitListBySha(
           {path, owner, branch, repo, commit, isPullRequestPage}
@@ -398,11 +414,12 @@ function _shouldShowSearchBox(){
 }
 
 function _shouldShowPrNavBox(){
-  if($('.repohead-details-container').length === 0){
-    return true;
-  }
+  return true;
+  // if($('.repohead-details-container').length === 0){
+  //   return true;
+  // }
 
-  return false;
+  // return false;
 }
 
 

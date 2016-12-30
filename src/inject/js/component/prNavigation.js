@@ -8,7 +8,7 @@ import Panel from '@src/component/panel';
 
 const PRNavigation = React.createClass({
   render() {
-      const { visible } = this.props;
+      const { visible, pullRequests } = this.props;
 
       if(visible){
         const domHeader = 'Pull Request';
@@ -34,7 +34,8 @@ const PRNavigation = React.createClass({
 
 const mapStateToProps = function(state) {
   return {
-    visible: _.get( state, 'ui.visible.prNavBox')
+    visible: _.get( state, 'ui.visible.prNavBox'),
+    pullRequests: _.get( state, 'repo.pullRequests'),
   };
 }
 

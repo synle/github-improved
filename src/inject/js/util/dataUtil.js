@@ -120,6 +120,11 @@ const dataUtil = {
       ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/stats/contributors`)
       : Promise.reject();
   },
+  fetchPullRequests(owner, repo){
+    return owner && repo
+      ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls`)
+      : Promise.reject();
+  },
   fetchCommitListByPrDetails(owner, repo, pullRequestNumber){
     return owner && repo && pullRequestNumber
       ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`)

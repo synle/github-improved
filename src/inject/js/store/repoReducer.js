@@ -19,6 +19,7 @@ const DEFAULT_STATE = {
   contributors : null,// list of contributors
   trees: null,//tree map
   explorerFiles: null, // file explorer
+  pullRequests: null, // current pull requests...
   urlParams: {}
 };
 
@@ -75,6 +76,10 @@ const RepoReducer = (state = DEFAULT_STATE, {type, value}) => {
 
     case 'UPDATE_CONTRIBUTOR_LIST':
       state.contributors = value;
+      break;
+
+    case 'UPDATE_PULL_REQUEST_LIST':
+      state.pullRequests = value;
       break;
   }
 
