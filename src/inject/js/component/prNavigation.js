@@ -28,9 +28,11 @@ const PRNavigation = React.createClass({
         );
         const domBody = (
           <div>
-            <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">Created</button>
-            <button onClick={sidebarUtil.onGoToAssignedPRUrl} className="btn btn-sm">Assigned</button>
-            <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">Mentioned</button>
+            <div className="flex-row justify-content-space-between padding-bottom0">
+              <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">Created</button>
+              <button onClick={sidebarUtil.onGoToAssignedPRUrl} className="btn btn-sm">Assigned</button>
+              <button onClick={sidebarUtil.onGoToOwnPRUrl} className="btn btn-sm">Mentioned</button>
+            </div>
 
             <Pagination domList={domPullRequestList} pageSize={PAGE_SIZE_PULL_REQUEST}></Pagination>
           </div>
