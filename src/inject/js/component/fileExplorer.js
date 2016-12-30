@@ -59,9 +59,10 @@ const ContributorBox = React.createClass({
 const mapStateToProps = function(state) {
   let path = _.get( state, 'repo.path' ) || '';
 
-  //
   let targetPathDir = path.split('/');
-  targetPathDir.pop();
+  if(targetPathDir.length > 1){
+    targetPathDir.pop();
+  }
   targetPathDir = targetPathDir.join('/');
 
   const initalTrees = _.get(state, 'repo.trees') || [];
