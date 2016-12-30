@@ -64,32 +64,32 @@ gulp.task('js-vendor', simpleGulpBuilder.concatFiles( JS_VENDOR_FILES, DEST_PATH
 gulp.task('watch', ['watch-style', 'watch-js-app']);
 
 gulp.task('watch-style',function() {
-    return gulp.watch(
-        ['src/inject/style/**/*']
-        , ['styles']
-    );
+  return gulp.watch(
+    ['src/inject/style/**/*'],
+    ['styles']
+  );
 });
 
 
 gulp.task('watch-js-app',function() {
-    return gulp.watch(
-        ['src/inject/js/**/*']
-        , ['js-app-dev']
-    );
+  return gulp.watch(
+    ['src/inject/js/**/*'],
+    ['js-app-dev']
+  );
 });
 
 gulp.task('watch-js-bg',function() {
-    return gulp.watch(
-        ['src/background/**/*']
-        , ['js-bg-dev']
-    );
+  return gulp.watch(
+    ['src/background/**/*'],
+    ['js-bg-dev']
+  );
 });
 
 
 // apply-prod environment (mainly used to remove react development warning)
 gulp.task('apply-prod-environment', function() {
-    // this task is mainly used to remove react development warning
-    process.env.NODE_ENV = 'production';
+  // this task is mainly used to remove react development warning
+  process.env.NODE_ENV = 'production';
 });
 
 // build
