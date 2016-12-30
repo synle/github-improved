@@ -144,7 +144,7 @@ const AppAction = {
       // dispatch({ type: 'SET_VISIBLE_COMMIT_BOX', value: false});
       dispatch({ type: 'SET_VISIBLE_FILE_EXPLORER_BOX', value: false});
 
-      dataUtil.fetchCommitListByPrDetails(owner, pulls, pullRequestNumber)
+      dataUtil.fetchCommitListByPrDetails(owner, repo, pullRequestNumber)
         .then(
           resp => {
             dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: false});
