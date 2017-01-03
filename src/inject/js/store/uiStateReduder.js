@@ -65,7 +65,7 @@ const UIStateReducer = (state = DEFAULT_STATE, {type, value}) => {
       dataUtil.setPersistedProp('side-bar-expand', state.isSideBarExpanded)
 
       // toggle sidebar
-      document.querySelector('#side-bar-body').classList.toggle(
+      document.querySelector('body').classList.toggle(
         'collapsed-side-bar',
         !state.isSideBarExpanded
       );

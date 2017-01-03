@@ -3,66 +3,252 @@ $margin-offset: 15px;
 $padding-offset: 15px;
 $z-index: 99;
 
+// expanded state...
 body{
   --side-bar-width: $width !important;
-}
-
-// override existing page style
-// [data-pjax-container], #js-pjax-container, #js-repo-pjax-container{
-//     > .container, > .new-repo-container {
-//       margin-left: var(--side-bar-width) !important;
-//       padding-left: $padding-offset !important;
-//     }
-// }
-// .header , .site-footer-container{
-//   margin-left: var(--side-bar-width) !important;
-//   padding-left: $padding-offset !important;
-// }
-body{
   padding-left: var(--side-bar-width) !important;
-}
 
-.container{
-  width:768px !important;
-  margin-left: $padding-offset !important;
+
+  // override existing page style
+  // [data-pjax-container], #js-pjax-container, #js-repo-pjax-container{
+  //     > .container, > .new-repo-container {
+  //       margin-left: var(--side-bar-width) !important;
+  //       padding-left: $padding-offset !important;
+  //     }
+  // }
+  // .header , .site-footer-container{
+  //   margin-left: var(--side-bar-width) !important;
+  //   padding-left: $padding-offset !important;
+  // }
   .container{
-    margin-left:auto !important;
+    width:768px !important;
+    margin-left: $padding-offset !important;
+    .container{
+      margin-left:auto !important;
+    }
   }
-}
 
 
-.discussion-sidebar{
-  width:150px !important;
-}
-
-.discussion-timeline{
-  width:calc(100% - 180px) !important;
-}
-
-
-.experiment-repo-nav .capped-cards .capped-card{
-  width: 50% !important;
-  margin: 0 !important;
-
-  svg{
-    width: 100% !important;
+  .discussion-sidebar{
+    width:150px !important;
   }
+
+  .discussion-timeline{
+    width:calc(100% - 180px) !important;
+  }
+
+  .btn{
+    padding: 5px !important;
+  }
+
+
+  .experiment-repo-nav .capped-cards .capped-card{
+    width: 50% !important;
+    margin: 0 !important;
+
+    svg{
+      width: 100% !important;
+    }
+  }
+
+  .pinned-repo-item{
+    width:48% !important;
+  }
+
+  //sidebar
+  #side-bar-body{
+    position: fixed;
+    width: var(--side-bar-width);
+    left:0;
+    top:0;
+    bottom:0;
+    padding: $padding-offset / 2;
+    z-index:$z-index;
+    overflow-y:auto;
+    background-color: white;
+
+    //toggle
+    .side-bar-toggle::before {
+      content: "<<";
+    }
+
+    & select{
+      height:40px;
+    }
+
+    //margin
+    .margin-left0{
+      margin-left: $margin-offset;
+    }
+
+    .margin-right0{
+      margin-right: $margin-offset;
+    }
+
+    .margin-bottom0{
+      margin-bottom: $margin-offset;
+    }
+
+    .margin-top0{
+      margin-top: $margin-offset;
+    }
+
+    .margin-side0{
+      margin-left: $margin-offset;
+      margin-right: $margin-offset;
+    }
+
+    .margin-vert0{
+      margin-top: $margin-offset;
+      margin-bottom: $margin-offset;
+    }
+
+    //padding
+    .padding-left0{
+      padding-left: $padding-offset;
+    }
+
+    .padding-right0{
+      padding-right: $padding-offset;
+    }
+
+    .padding-bottom0{
+      padding-bottom: $padding-offset;
+    }
+
+    .padding-top0{
+      padding-top: $padding-offset;
+    }
+
+    .padding-side0{
+      padding-left: $padding-offset;
+      padding-right: $padding-offset;
+    }
+
+    .padding-vert0{
+      padding-top: $padding-offset;
+      padding-bottom: $padding-offset;
+    }
+
+    .padding0{
+      padding-left: $padding-offset;
+      padding-right: $padding-offset;
+      padding-top: $padding-offset;
+      padding-bottom: $padding-offset;
+    }
+
+    .fill-width{
+      width: 100%;
+    }
+
+    .display-block{
+      display:block;
+    }
+
+    //flex
+    .flex-row{
+      display:flex;
+      flex-direction: row;
+    }
+
+    .flex-column{
+      display:flex;
+      flex-direction: column;
+    }
+
+    .flex-grow1{
+      flex-grow: 1;
+    }
+
+    .flex-shrink0{
+      flex-shrink: 0;
+    }
+
+    .align-self-center{
+      align-self: center;
+    }
+
+    .justify-content-space-between{
+      justify-content: space-between;
+    }
+
+    .ta-right{
+      text-align: right;
+    }
+
+    .ta-center{
+      text-align: center;
+    }
+
+    //non-selectable
+    .noselect {
+      -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Chrome/Safari/Opera */
+         -khtml-user-select: none; /* Konqueror */
+           -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none; /* Non-prefixed version, currently
+                                      not supported by any browser */
+    }
+
+    //panel craps
+    .panel{
+      &.panel-default .panel-heading{
+        background-color: #f5f5f5;
+      }
+
+      &.panel-primary .panel-heading{
+        background-color: #4078c0;
+        color:white;
+      }
+
+      .panel-heading{
+        border: 1px solid #ddd;
+        @extend .padding-side0;
+      }
+
+      .panel-body{
+        border: 1px solid #ddd;
+      }
+    }
+
+    border-bottom{
+      border-bottom:1px solid #ddd;
+    }
+
+    .small-text{
+      font-size: 12px;
+    }
+
+    //resizer
+    // mainly for resize
+    .resizable { position: relative; }
+    .resizer {
+      width: 5px;
+      border-right:5px solid #999;
+      height: 100%;
+      position: fixed;
+      left: var(--side-bar-width);
+      top: 0;
+      z-index: $z-index;
+      cursor: move;
+
+      &:hover, &.resizing{
+        border-color: red;
+      }
+    }
+  }
+
+
+
 }
 
-#side-bar-body{
-  position: fixed;
-  width: var(--side-bar-width);
-  left:0;
-  top:0;
-  bottom:0;
-  padding: $padding-offset / 2;
-  z-index:$z-index;
-  overflow-y:auto;
-  background-color: white;
-
-  &.collapsed-side-bar{
+//collapsed state
+body.collapsed-side-bar{
+  #side-bar-body{
     height:50px;
     width:auto;
+    overflow: hidden;
     border:2px solid #999;
 
     #side-bar-body-content, .resizer{
@@ -78,174 +264,5 @@ body{
       content: ">>";
     }
   }
-
-  //toggle
-  .side-bar-toggle::before {
-    content: "<<";
-  }
-
-  & select{
-    height:40px;
-  }
-
-  //margin
-  .margin-left0{
-    margin-left: $margin-offset;
-  }
-
-  .margin-right0{
-    margin-right: $margin-offset;
-  }
-
-  .margin-bottom0{
-    margin-bottom: $margin-offset;
-  }
-
-  .margin-top0{
-    margin-top: $margin-offset;
-  }
-
-  .margin-side0{
-    margin-left: $margin-offset;
-    margin-right: $margin-offset;
-  }
-
-  .margin-vert0{
-    margin-top: $margin-offset;
-    margin-bottom: $margin-offset;
-  }
-
-  //padding
-  .padding-left0{
-    padding-left: $padding-offset;
-  }
-
-  .padding-right0{
-    padding-right: $padding-offset;
-  }
-
-  .padding-bottom0{
-    padding-bottom: $padding-offset;
-  }
-
-  .padding-top0{
-    padding-top: $padding-offset;
-  }
-
-  .padding-side0{
-    padding-left: $padding-offset;
-    padding-right: $padding-offset;
-  }
-
-  .padding-vert0{
-    padding-top: $padding-offset;
-    padding-bottom: $padding-offset;
-  }
-
-  .padding0{
-    padding-left: $padding-offset;
-    padding-right: $padding-offset;
-    padding-top: $padding-offset;
-    padding-bottom: $padding-offset;
-  }
-
-  .fill-width{
-    width: 100%;
-  }
-
-  .display-block{
-    display:block;
-  }
-
-  //flex
-  .flex-row{
-    display:flex;
-    flex-direction: row;
-  }
-
-  .flex-column{
-    display:flex;
-    flex-direction: column;
-  }
-
-  .flex-grow1{
-    flex-grow: 1;
-  }
-
-  .flex-shrink0{
-    flex-shrink: 0;
-  }
-
-  .align-self-center{
-    align-self: center;
-  }
-
-  .justify-content-space-between{
-    justify-content: space-between;
-  }
-
-  .ta-right{
-    text-align: right;
-  }
-
-  .ta-center{
-    text-align: center;
-  }
-
-  //non-selectable
-  .noselect {
-    -webkit-touch-callout: none; /* iOS Safari */
-      -webkit-user-select: none; /* Chrome/Safari/Opera */
-       -khtml-user-select: none; /* Konqueror */
-         -moz-user-select: none; /* Firefox */
-          -ms-user-select: none; /* Internet Explorer/Edge */
-              user-select: none; /* Non-prefixed version, currently
-                                    not supported by any browser */
-  }
-
-  //panel craps
-  .panel{
-    &.panel-default .panel-heading{
-      background-color: #f5f5f5;
-    }
-
-    &.panel-primary .panel-heading{
-      background-color: #4078c0;
-      color:white;
-    }
-
-    .panel-heading{
-      border: 1px solid #ddd;
-      @extend .padding-side0;
-    }
-
-    .panel-body{
-      border: 1px solid #ddd;
-    }
-  }
-
-  border-bottom{
-    border-bottom:1px solid #ddd;
-  }
-
-  .small-text{
-    font-size: 12px;
-  }
 }
 
-// mainly for resize
-.resizable { position: relative; }
-.resizer {
-  width: 5px;
-  border-right:5px solid #999;
-  height: 100%;
-  position: fixed;
-  left: var(--side-bar-width);
-  top: 0;
-  z-index: $z-index;
-  cursor: move;
-
-  &:hover, &.resizing{
-    border-color: red;
-  }
-}
