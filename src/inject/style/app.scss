@@ -1,7 +1,7 @@
 $width : 300px;
 $margin-offset: 10px;
 $padding-offset: 10px;
-$z-index: 100;
+$z-index: 99;
 
 body{
   --side-bar-width: $width !important;
@@ -219,7 +219,7 @@ body{
   position: fixed;
   left: var(--side-bar-width);
   top: 0;
-  z-index: $z-index + 1;
+  z-index: $z-index;
   cursor: move;
 
   &:hover, &.resizing{
