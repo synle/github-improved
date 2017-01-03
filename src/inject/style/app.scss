@@ -1,6 +1,6 @@
 $width : 300px;
-$margin-offset: 10px;
-$padding-offset: 10px;
+$margin-offset: 15px;
+$padding-offset: 15px;
 $z-index: 99;
 
 body{
@@ -8,14 +8,37 @@ body{
 }
 
 // override existing page style
-.container-lg, .page-content, .container{
-  margin-left: var(--side-bar-width) !important;
-  padding-left: $padding-offset !important;
+// [data-pjax-container], #js-pjax-container, #js-repo-pjax-container{
+//     > .container, > .new-repo-container {
+//       margin-left: var(--side-bar-width) !important;
+//       padding-left: $padding-offset !important;
+//     }
+// }
+// .header , .site-footer-container{
+//   margin-left: var(--side-bar-width) !important;
+//   padding-left: $padding-offset !important;
+// }
+body{
+  padding-left: var(--side-bar-width) !important;
+}
 
-  .container-lg, .page-content, .container{
-    margin:auto !important;
+.container{
+  width:768px !important;
+  margin-left: $padding-offset !important;
+  .container{
+    margin-left:auto !important;
   }
 }
+
+
+.discussion-sidebar{
+  width:150px !important;
+}
+
+.discussion-timeline{
+  width:calc(100% - 180px) !important;
+}
+
 
 .experiment-repo-nav .capped-cards .capped-card{
   width: 50% !important;
