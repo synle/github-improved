@@ -33,7 +33,7 @@ chrome.extension.sendMessage({}, (response) => {
     //empty if needed
     $('#side-bar-body').remove();
 
-    sideBarContainer = $('<div id="side-bar-body" class="noselect" />')
+    sideBarContainer = $('<div id="side-bar-body" class="transition-ease noselect" />')
       .appendTo('body');
 
 

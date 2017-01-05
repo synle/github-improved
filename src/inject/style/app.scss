@@ -57,6 +57,12 @@ body{
     width:48% !important;
   }
 
+  .transition-ease{
+    transition-property: all;
+    transition-duration: .3s;
+    transition-timing-function: ease;
+  }
+
   //sidebar
   #side-bar-body{
     position: fixed;
