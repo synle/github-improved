@@ -19,6 +19,10 @@ body {
       width: 100% !important; }
   body .pinned-repo-item {
     width: 48% !important; }
+  body .transition-ease {
+    transition-property: all;
+    transition-duration: .3s;
+    transition-timing-function: ease; }
   body #side-bar-body {
     position: fixed;
     width: var(--side-bar-width);
