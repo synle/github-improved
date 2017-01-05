@@ -37,6 +37,10 @@ const util = {
       vars[hash[0]] = hash[1];
     }
     return vars;
+  },
+  setSideBarWidth(newWidth){
+    // update the side bar width
+    $('body').css('--side-bar-width', `${newWidth} !important`);
   }
 }
 
