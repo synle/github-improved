@@ -60,15 +60,13 @@ chrome.extension.sendMessage({}, (response) => {
     //handling resize
     (function(containerDom){
       // init
-      let startX, startWidth, sideBarWidth = dataUtil.getPersistedProp('side-bar-width') || '300px';
+      let startX, startWidth, sideBarWidth;
       const resizer = document.createElement('div');
       resizer.className = 'resizer';
       resizer.addEventListener('mousedown', initDrag, false);
 
       containerDom.classList.add('resizable');
       containerDom.appendChild(resizer);
-
-      doResize(sideBarWidth);
       //end init
 
       function doDrag(e) {
@@ -101,7 +99,7 @@ chrome.extension.sendMessage({}, (response) => {
 
       function doResize(newWidth){
         // update the side bar width
-        $('body').css('--side-bar-width', `${newWidth} !important`);
+        util.setSideBarWidth(newWidth);
       }
 
       function getNewWidth(e){

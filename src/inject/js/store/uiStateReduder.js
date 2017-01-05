@@ -1,6 +1,6 @@
 // internal
 import dataUtil from '@src/util/dataUtil';
-
+import util from '@src/util/globalUtil';
 
 // default state
 const DEFAULT_STATE = {
@@ -69,6 +69,15 @@ const UIStateReducer = (state = DEFAULT_STATE, {type, value}) => {
         'collapsed-side-bar',
         !state.isSideBarExpanded
       );
+
+
+      // set the width if needed
+      // if collapsed, use the min width of 70px,
+      // if expanded, use the one from persistent storage
+      const newSideBarWidth = state.isSideBarExpanded
+        ? dataUtil.getPersistedProp('side-bar-width') || '300px'
+        : '70px';
+      util.setSideBarWidth(newSideBarWidth);
       break;
   }
 

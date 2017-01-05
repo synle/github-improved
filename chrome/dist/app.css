@@ -11,7 +11,7 @@ body {
   body .discussion-timeline {
     width: calc(100% - 180px) !important; }
   body .btn {
-    padding: 5px !important; }
+    padding: 3px 5px !important; }
   body .experiment-repo-nav .capped-cards .capped-card {
     width: 50% !important;
     margin: 0 !important; }
