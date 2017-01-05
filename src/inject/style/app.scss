@@ -76,7 +76,7 @@ body{
 
     //toggle
     .side-bar-toggle::before {
-      content: "<<";
+      content: "\25C0";
     }
 
     & select{
@@ -277,7 +277,7 @@ body.collapsed-side-bar{
     }
 
     .side-bar-toggle::before {
-      content: ">>";
+      content: "\25B6";
     }
   }
 }
