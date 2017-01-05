@@ -32,7 +32,7 @@ body {
     body #side-bar-body .side-bar-title-text::before {
       content: "Github Improved"; }
     body #side-bar-body .side-bar-toggle::before {
-      content: "<<"; }
+      content: "\25C0"; }
     body #side-bar-body select {
       height: 40px; }
     body #side-bar-body .margin-left0 {
@@ -90,6 +90,8 @@ body {
       text-align: right; }
     body #side-bar-body .ta-center {
       text-align: center; }
+    body #side-bar-body .cpointer {
+      cursor: pointer; }
     body #side-bar-body .noselect {
       -webkit-touch-callout: none;
       /* iOS Safari */
@@ -144,4 +146,4 @@ body.collapsed-side-bar #side-bar-body {
     body.collapsed-side-bar #side-bar-body .side-bar-title-text::before {
       content: "GI"; }
   body.collapsed-side-bar #side-bar-body .side-bar-toggle::before {
-    content: ">>"; }
+    content: "\25B6"; }
