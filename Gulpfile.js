@@ -1,6 +1,9 @@
 //gulp libs
 var gulp = require('gulp');
 var _ = require('lodash');
+var replace = require('gulp-replace');
+var concat = require('gulp-concat');
+
 
 //internal gulp tasks
 var simpleGulpBuilder = require('simple-gulp-builder');
@@ -14,6 +17,8 @@ var STYLE_INJECTED_DEST = 'app.css';
 var JS_INJECTED_SRC  = [ 'src/inject/js/app.js' ];
 var JS_BACKGROUND_SRC  = [ 'src/background/index.js' ];
 var JS_VENDOR_FILES = ['node_modules/zepto/dist/zepto.min.js'];
+var CHROME_MANIFEST_BASE_SRC = './chrome/manifest.json.bak';
+var CHROME_MANIFEST_BASE_DEST = './chrome';
 //config for transformation
 var ALIASIFY_COMMON_CONFIG = {
   "replacements": {
@@ -86,6 +91,24 @@ gulp.task('watch-js-bg',function() {
 });
 
 
+
+gulp.task('chrome-manifest-prod', function(){
+  gulp.src(CHROME_MANIFEST_BASE_SRC)
+    .pipe(replace('$APP_NAME', 'Github Improved'))
+    .pipe(concat('manifest.json'))
+    .pipe(gulp.dest(CHROME_MANIFEST_BASE_DEST));
+});
+
+
+gulp.task('chrome-manifest-dev', function(){
+  gulp.src(CHROME_MANIFEST_BASE_SRC)
+    .pipe(replace('$APP_NAME', 'Github Improved Dev'))
+    .pipe(concat('manifest.json'))
+    .pipe(gulp.dest(CHROME_MANIFEST_BASE_DEST));
+});
+
+
+
 // apply-prod environment (mainly used to remove react development warning)
 gulp.task('apply-prod-environment', function() {
   // this task is mainly used to remove react development warning
@@ -93,7 +116,7 @@ gulp.task('apply-prod-environment', function() {
 });
 
 // build
-gulp.task('build-dev', ['apply-prod-environment', 'styles', 'views', 'js-app-dev', 'js-bg-dev', 'js-vendor']);
-gulp.task('build-prod', ['apply-prod-environment', 'styles', 'views', 'js-app-prod', 'js-bg-prod', 'js-vendor']);
+gulp.task('build-dev', ['apply-prod-environment', 'chrome-manifest-dev','styles', 'views', 'js-app-dev', 'js-bg-dev', 'js-vendor']);
+gulp.task('build-prod', ['apply-prod-environment', 'chrome-manifest-prod', 'styles', 'views', 'js-app-prod', 'js-bg-prod', 'js-vendor']);
 
 gulp.task('default', ['build-dev', 'watch']);
