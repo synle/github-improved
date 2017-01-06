@@ -92,6 +92,9 @@ function _makePjaxRequest(method, url){
   }).then( (data) => {
     const $pjaxContainer = $('#js-repo-pjax-container, .context-loader-container, [data-pjax-container]');
     $pjaxContainer.html(data);
+
+    //trigger pjax end event
+    $(document).trigger('pjax:end');
   });
 }
 
