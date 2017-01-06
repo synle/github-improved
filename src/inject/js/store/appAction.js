@@ -388,6 +388,10 @@ function _shouldShowContributorBox(){
 }
 
 function _shouldShowFileExplorerBox(){
+  if($('.compare-show-header').length === 1){
+    //compare mode, don't show it
+    return false;
+  }
   if($('.repohead-details-container').length === 0){
     return false;
   }
@@ -397,6 +401,10 @@ function _shouldShowFileExplorerBox(){
 
 
 function _shouldShowCommitBox(sha){
+  if($('.compare-show-header').length === 1){
+    //compare mode, don't show it
+    return false;
+  }
   if($('.repohead-details-container').length === 0){
     return false;
   }
