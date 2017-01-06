@@ -6,6 +6,7 @@ import _ from 'lodash';
 import urlUtil from '@src/util/urlUtil';
 import Pagination from '@src/component/pagination';
 import Panel from '@src/component/panel';
+import dataUtil from '@src/util/dataUtil';
 
 const PAGE_SIZE_FILE_EXPLORER = 15;
 
@@ -32,7 +33,7 @@ const ContributorBox = React.createClass({
 
         return (
             <div key={key} className="small-text">
-              <a href={blob_url}
+              <a onClick={() => this.onFileClick(blob_url)}
                 className="tooltipped tooltipped-ne"
                 aria-label={filename}>{shortFileName}</a>
             </div>
@@ -53,6 +54,9 @@ const ContributorBox = React.createClass({
         isExpanded={true}
         />
     );
+  },
+  onFileClick(blob_url){
+    dataUtil.fetchPjaxCall(blob_url);
   }
 });
 

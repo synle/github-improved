@@ -182,6 +182,11 @@ const dataUtil = {
     return owner && repo && pullRequestNumber
       ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/files`)
       : Promise.reject();
+  },
+  fetchPjaxCall(url){
+    return restUtil.pjax(
+      url
+    );
   }
 }
 
