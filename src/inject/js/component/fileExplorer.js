@@ -4,9 +4,9 @@ import _ from 'lodash';
 
 //internal
 import urlUtil from '@src/util/urlUtil';
+import LinkPjax from '@src/component/linkPjax';
 import Pagination from '@src/component/pagination';
 import Panel from '@src/component/panel';
-import dataUtil from '@src/util/dataUtil';
 
 const PAGE_SIZE_FILE_EXPLORER = 15;
 
@@ -33,9 +33,10 @@ const ContributorBox = React.createClass({
 
         return (
             <div key={key} className="small-text">
-              <a onClick={() => this.onFileClick(blob_url)}
-                className="tooltipped tooltipped-ne"
-                aria-label={filename}>{shortFileName}</a>
+              <LinkPjax url={blob_url}>
+                <span className="tooltipped tooltipped-ne"
+                  aria-label={filename}>{shortFileName}</span>
+              </LinkPjax>
             </div>
           );
       });
@@ -54,9 +55,6 @@ const ContributorBox = React.createClass({
         isExpanded={true}
         />
     );
-  },
-  onFileClick(blob_url){
-    dataUtil.fetchPjaxCall(blob_url);
   }
 });
 
