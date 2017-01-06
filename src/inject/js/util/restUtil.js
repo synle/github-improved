@@ -11,7 +11,7 @@ const RestUtil = {
   pjax: (url, container) => {
     return _makePjaxRequest(
       'GET',
-      url + '?_pjax=#js-repo-pjax-container'
+      url
     );
   }
 };
@@ -58,6 +58,7 @@ function _makeRequest(method, url, data, config){
 
 
 function _makePjaxRequest(method, url){
+  const pjaxContainerSelector = '#js-repo-pjax-container, .context-loader-container, [data-pjax-container]';
   var request = new Request(url, {
     method: method,
     mode: 'cors',
@@ -66,9 +67,9 @@ function _makePjaxRequest(method, url){
     credentials: "include",
     headers: new Headers(
       {
-        'Accept': 'text/html, */*; q=0.01',
+        'Accept': 'text/html',
         'X-PJAX': true,
-        'X-PJAX-Container': `#js-repo-pjax-container`
+        'X-PJAX-Container': pjaxContainerSelector
       }
     )
   });
@@ -90,7 +91,7 @@ function _makePjaxRequest(method, url){
       respObject => reject(respObject)
     )
   }).then( (data) => {
-    const $pjaxContainer = $('#js-repo-pjax-container, .context-loader-container, [data-pjax-container]');
+    const $pjaxContainer = $(pjaxContainerSelector);
     $pjaxContainer.html(data);
 
     //trigger pjax end event
