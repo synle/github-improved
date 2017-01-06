@@ -17,7 +17,7 @@ var STYLE_INJECTED_SRC = [ 'src/inject/style/app.scss' ];
 var STYLE_INJECTED_DEST = 'app.css';
 var JS_INJECTED_SRC  = [ 'src/inject/js/app.js' ];
 var JS_BACKGROUND_SRC  = [ 'src/background/index.js' ];
-var JS_VENDOR_FILES = ['node_modules/zepto/dist/zepto.min.js'];
+var JS_VENDOR_FILES = ['node_modules/zepto/dist/zepto.min.js', 'node_modules/jquery-pjax/jquery.pjax.js'];
 var CHROME_MANIFEST_BASE_SRC = './chrome/manifest.json.bak';
 var CHROME_MANIFEST_BASE_DEST = './chrome';
 //config for transformation
