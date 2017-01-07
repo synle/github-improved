@@ -79,8 +79,7 @@ function _makePjaxRequest(url){
     )
   });
 
-
-  $('#js-pjax-loader-bar').addClass('is-loading');
+  _togglePjaxLoaderBar(true);
 
   return new Promise((resolve, reject) => {
     let successCall = false;
@@ -100,14 +99,22 @@ function _makePjaxRequest(url){
     )
   }).then( (data) => {
     const $pjaxContainer = $(pjaxContainerSelector);
-    $pjaxContainer.html(data);
+    if($pjaxContainer.length > 0){
+      $pjaxContainer.html(data);
 
-    //trigger pjax end event
-    $(document).trigger('pjax:end');
+      //trigger pjax end event
+      $(document).trigger('pjax:end');
 
-    // remove it
-    $('#js-pjax-loader-bar').removeClass('is-loading');
+      // remove it
+      _togglePjaxLoaderBar(false);
+    } else {
+      location.href = url;
+    }
   });
+}
+
+function _togglePjaxLoaderBar(isLoading){
+  $('#js-pjax-loader-bar').toggleClass('is-loading', isLoading);
 }
 
 
