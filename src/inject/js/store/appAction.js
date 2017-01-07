@@ -318,7 +318,9 @@ const AppAction = {
               type : 'UPDATE_EXPLORER_FILE_LIST',
               value : newFileExplorerInBranchList.map(
                 filename => {
-                  const blob_url = `https://github.com/${owner}/${repo}/tree/${branch}/${filename}`;
+                  const blob_url = _.size(commit) === 0
+                    ? `https://github.com/${owner}/${repo}/tree/${branch}/${filename}`
+                    : `https://github.com/${owner}/${repo}/tree/${commit}/${filename}`;
                   return {
                     filename,
                     blob_url
