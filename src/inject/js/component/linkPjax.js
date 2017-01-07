@@ -7,7 +7,7 @@ import dataUtil from '@src/util/dataUtil';
 const LinkPjax = React.createClass({
   render() {
     return (
-      <a onClick={this.onLinkPjaxClick}>
+      <a onClick={this.onLinkPjaxClick} data-url={this.props.url}>
         {this.props.children}
       </a>
     );
