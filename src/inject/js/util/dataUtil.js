@@ -23,15 +23,13 @@ const dataUtil = {
     let branchDom1 = $('[aria-label="Switch branches or tags"] span').first();
     let branchDom2 = $('.commit-branches a').first();
     let branch = '';
-    if(branchDom1.length > 0){
+    if(urlSplits.length >= 2){
+      const relavantUrlSplits = urlSplits.filter(url => ['pulls', 'tree', owner, repo].indexOf(url) === -1);
+      branch = _.get(relavantUrlSplits, '0') || '';
+    } else if(branchDom1.length > 0){
       branch = branchDom1.text();
     } else if(branchDom2.length > 0){
       branch = branchDom2.text();
-    } else {
-      if(urlSplits.length >= 2){
-        const relavantUrlSplits = urlSplits.filter(url => ['pulls', 'tree', owner, repo].indexOf(url) === -1);
-        branch = _.get(relavantUrlSplits, '0') || '';
-      }
     }
     branch = _.trim(branch);
 
@@ -182,6 +180,11 @@ const dataUtil = {
     return owner && repo && pullRequestNumber
       ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/files`)
       : Promise.reject();
+  },
+  fetchPjaxCall(url){
+    return restUtil.pjax(
+      url
+    );
   }
 }
 

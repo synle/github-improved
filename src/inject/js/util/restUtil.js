@@ -7,7 +7,18 @@ const RestUtil = {
   // url, data (WILL BE IMPLEMENTED, config (NOT USED)
   setAuthToken: (input_auth_token) => auth_token = input_auth_token,
   get:  (url, data, config) => _makeRequest('GET', url, data, config),
-  post: (url, data, config) => _makeRequest('POST', url, data, config)
+  post: (url, data, config) => _makeRequest('POST', url, data, config),
+  pjax: (url) => {
+    //push history state
+    //only push sate if needed (url changed...)
+    if(document.location.href !== url){
+      history.pushState(null, null, url);
+    }
+
+    return _makePjaxRequest(
+      url
+    );
+  }
 };
 
 
@@ -47,6 +58,71 @@ function _makeRequest(method, url, data, config){
     )
   });
 }
+
+
+
+
+function _makePjaxRequest(url){
+  const pjaxContainerSelector = '#js-repo-pjax-container, .context-loader-container, [data-pjax-container]';
+  var request = new Request(url, {
+    method: 'GET',
+    mode: 'cors',
+    redirect: 'follow',
+    cache: "no-cache",
+    credentials: "include",
+    headers: new Headers(
+      {
+        'Accept': 'text/html',
+        'X-PJAX': true,
+        'X-PJAX-Container': pjaxContainerSelector
+      }
+    )
+  });
+
+  _togglePjaxLoaderBar(true);
+
+  return new Promise((resolve, reject) => {
+    let successCall = false;
+    fetch(request).then(
+      resp => {
+        successCall = resp.ok;
+        window.resp111 = resp;
+        return resp.text();
+      }
+    ).then(
+      respObject => {
+        successCall ? resolve(respObject)
+          : location.href = url;
+      }
+    ).catch(
+      respObject => reject(respObject)
+    )
+  }).then( (data) => {
+    const $pjaxContainer = $(pjaxContainerSelector);
+    if($pjaxContainer.length > 0){
+      $pjaxContainer.html(data);
+
+      //trigger pjax end event
+      $(document).trigger('pjax:end');
+
+      // remove it
+      _togglePjaxLoaderBar(false);
+    } else {
+      location.href = url;
+    }
+  });
+}
+
+function _togglePjaxLoaderBar(isLoading){
+  $('#js-pjax-loader-bar').toggleClass('is-loading', isLoading);
+}
+
+
+//pop state...
+window.onpopstate = function(event) {
+  _makePjaxRequest(document.location);
+};
+
 
 
 export default RestUtil;

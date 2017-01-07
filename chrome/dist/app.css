@@ -12,6 +12,8 @@ body {
     width: calc(100% - 180px) !important; }
   body .btn {
     padding: 3px 5px !important; }
+  body a {
+    cursor: pointer; }
   body .experiment-repo-nav .capped-cards .capped-card {
     width: 50% !important;
     margin: 0 !important; }

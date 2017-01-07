@@ -260,7 +260,7 @@ const AppAction = {
             dispatch({
               type : 'UPDATE_EXPLORER_FILE_LIST',
               value : newTreeInPrList.map(
-                f => _.pick(f, ['filename', 'blob_url'])
+                f => _.pick(f, ['filename', 'blob_url', 'status'])
               )
             });
           }
@@ -318,7 +318,9 @@ const AppAction = {
               type : 'UPDATE_EXPLORER_FILE_LIST',
               value : newFileExplorerInBranchList.map(
                 filename => {
-                  const blob_url = `https://github.com/${owner}/${repo}/tree/${branch}/${filename}`;
+                  const blob_url = _.size(commit) === 0
+                    ? `https://github.com/${owner}/${repo}/tree/${branch}/${filename}`
+                    : `https://github.com/${owner}/${repo}/tree/${commit}/${filename}`;
                   return {
                     filename,
                     blob_url
@@ -388,6 +390,10 @@ function _shouldShowContributorBox(){
 }
 
 function _shouldShowFileExplorerBox(){
+  if($('.compare-show-header').length === 1){
+    //compare mode, don't show it
+    return false;
+  }
   if($('.repohead-details-container').length === 0){
     return false;
   }
@@ -397,6 +403,10 @@ function _shouldShowFileExplorerBox(){
 
 
 function _shouldShowCommitBox(sha){
+  if($('.compare-show-header').length === 1){
+    //compare mode, don't show it
+    return false;
+  }
   if($('.repohead-details-container').length === 0){
     return false;
   }

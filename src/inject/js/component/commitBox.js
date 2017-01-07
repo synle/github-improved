@@ -7,6 +7,7 @@ import _ from 'lodash';
 import urlUtil from '@src/util/urlUtil';
 import Pagination from '@src/component/pagination';
 import Panel from '@src/component/panel';
+import LinkPjax from '@src/component/linkPjax';
 
 const PAGE_SIZE_COMMIT_LIST = 15;
 
@@ -26,14 +27,12 @@ class CommitBox extends Component{
 
         return(
           <div key={sha} className="side-bar-commit-logs small-text border-bottom">
-            <strong className="tooltipped tooltipped-ne"
+            <strong className="tooltipped tooltipped-ne margin-right0"
               aria-label={commitAuthorName}>{commitAuthorShortName}</strong>
-            <a href={commitUrl}
-              className="margin-left0"
-              title={commit.message}
-              data-sha={sha}>
-              {displayCommitMsg}
-            </a>
+            <LinkPjax url={commitUrl}>
+              <span title={commit.message}
+                data-sha={sha}>{displayCommitMsg}</span>
+            </LinkPjax>
           </div>
         );
       });

@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 //internal
 import urlUtil from '@src/util/urlUtil';
+import LinkPjax from '@src/component/linkPjax';
 import Pagination from '@src/component/pagination';
 import Panel from '@src/component/panel';
 
@@ -12,7 +13,7 @@ const PAGE_SIZE_FILE_EXPLORER = 15;
 const ContributorBox = React.createClass({
   render() {
     let domBody;
-    const {visible, loading, explorerFiles} = this.props;
+    const {visible, loading, explorerFiles, isPullRequestPage} = this.props;
 
     if(visible !== true){
       return null;
@@ -20,7 +21,7 @@ const ContributorBox = React.createClass({
       domBody = <div>Loading...</div>
     } else if( _.size(explorerFiles) > 0){
       domBody = explorerFiles.map( (explorerFile) => {
-        const { filename, blob_url } = explorerFile;
+        const { filename, blob_url, status } = explorerFile;
         const key = `blob-${filename}`;
 
         //get the shortname
@@ -30,11 +31,52 @@ const ContributorBox = React.createClass({
           shortFileName = splits.pop();
         }
 
+        // file status in pr mode (deleted, modified, added)
+        let domFileStatus = null;
+        if(isPullRequestPage){
+          let fileStatusColorStyle = '';
+          switch(status){
+            case 'modified':
+              domFileStatus = <span>~</span>;
+              fileStatusColorStyle = 'yellow';
+              break;
+            case 'renamed':
+              domFileStatus = <span>></span>;
+              fileStatusColorStyle = 'yellow';
+              break;
+            case 'added':
+              domFileStatus = <span>+</span>;
+              fileStatusColorStyle = '#a6f3a6';
+              break;
+            case 'deleted':
+            case 'removed':
+              domFileStatus = <span>-</span>;
+              fileStatusColorStyle = '#f8cbcb';
+              break;
+            default:
+              domFileStatus = <span>?</span>;
+              fileStatusColorStyle = 'orange';
+              break;
+          }
+
+          fileStatusColorStyle = {
+            'background-color' : fileStatusColorStyle
+          };
+
+          domFileStatus = (
+            <strong className="margin-right0 tooltipped tooltipped-ne"
+              aria-label={status}
+              style={fileStatusColorStyle}>{domFileStatus}</strong>
+          );
+        }
+
         return (
             <div key={key} className="small-text">
-              <a href={blob_url}
-                className="tooltipped tooltipped-ne"
-                aria-label={filename}>{shortFileName}</a>
+              {domFileStatus}
+              <LinkPjax url={blob_url}>
+                <span className="tooltipped tooltipped-ne"
+                  aria-label={filename}>{shortFileName}</span>
+              </LinkPjax>
             </div>
           );
       });
@@ -61,7 +103,8 @@ const mapStateToProps = function(state) {
   return {
     visible : _.get(state, 'ui.visible.fileExplorer'),
     loading : _.get(state, 'ui.loading.fileExplorer'),
-    explorerFiles: _.get(state, 'repo.explorerFiles') || []
+    explorerFiles: _.get(state, 'repo.explorerFiles') || [],
+    isPullRequestPage: _.get(state, 'repo.isPullRequestPage') || false,
   };
 }
 
