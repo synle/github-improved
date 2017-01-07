@@ -10,7 +10,10 @@ const RestUtil = {
   post: (url, data, config) => _makeRequest('POST', url, data, config),
   pjax: (url) => {
     //push history state
-    history.pushState(null, null, url);
+    //only push sate if needed (url changed...)
+    if(document.location.href !== url){
+      history.pushState(null, null, url);
+    }
 
     return _makePjaxRequest(
       url
