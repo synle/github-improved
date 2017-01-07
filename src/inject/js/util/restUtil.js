@@ -9,8 +9,10 @@ const RestUtil = {
   get:  (url, data, config) => _makeRequest('GET', url, data, config),
   post: (url, data, config) => _makeRequest('POST', url, data, config),
   pjax: (url) => {
+    //push history state
+    history.pushState(null, null, url);
+
     return _makePjaxRequest(
-      'GET',
       url
     );
   }
@@ -57,10 +59,10 @@ function _makeRequest(method, url, data, config){
 
 
 
-function _makePjaxRequest(method, url){
+function _makePjaxRequest(url){
   const pjaxContainerSelector = '#js-repo-pjax-container, .context-loader-container, [data-pjax-container]';
   var request = new Request(url, {
-    method: method,
+    method: 'GET',
     mode: 'cors',
     redirect: 'follow',
     cache: "no-cache",
@@ -74,6 +76,9 @@ function _makePjaxRequest(method, url){
     )
   });
 
+
+  $('#js-pjax-loader-bar').addClass('is-loading');
+
   return new Promise((resolve, reject) => {
     let successCall = false;
     fetch(request).then(
@@ -85,7 +90,7 @@ function _makePjaxRequest(method, url){
     ).then(
       respObject => {
         successCall ? resolve(respObject)
-          : reject(respObject);
+          : location.href = url;
       }
     ).catch(
       respObject => reject(respObject)
@@ -94,19 +99,18 @@ function _makePjaxRequest(method, url){
     const $pjaxContainer = $(pjaxContainerSelector);
     $pjaxContainer.html(data);
 
-    //push history state
-    history.pushState(null, url, url);
-
-
     //trigger pjax end event
     $(document).trigger('pjax:end');
+
+    // remove it
+    $('#js-pjax-loader-bar').removeClass('is-loading');
   });
 }
 
 
 //pop state...
 window.onpopstate = function(event) {
-  RestUtil.pjax(document.location);
+  _makePjaxRequest(document.location);
 };
 
 
