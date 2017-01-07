@@ -94,6 +94,10 @@ function _makePjaxRequest(method, url){
     const $pjaxContainer = $(pjaxContainerSelector);
     $pjaxContainer.html(data);
 
+    //push history state
+    history.pushState(null, url, url);
+
+
     //trigger pjax end event
     $(document).trigger('pjax:end');
   });
