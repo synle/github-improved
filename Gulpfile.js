@@ -10,7 +10,8 @@ var simpleGulpBuilder = require('simple-gulp-builder');
 
 //config
 //paths
-var DEST_PATH = 'chrome/dist';
+var DEST_BASE = 'chrome';
+var DEST_DIST = DEST_BASE + '/dist';
 var VIEW_PAGE_CONFIG = [ ];
 var STYLE_INJECTED_SRC = [ 'src/inject/style/app.scss' ];
 var STYLE_INJECTED_DEST = 'app.css';
@@ -53,17 +54,17 @@ var BABELIFY_CONFIG = {
 
 
 //styles
-gulp.task('styles', simpleGulpBuilder.compileStyles( STYLE_INJECTED_SRC, DEST_PATH, STYLE_INJECTED_DEST ) );
+gulp.task('styles', simpleGulpBuilder.compileStyles( STYLE_INJECTED_SRC, DEST_DIST, STYLE_INJECTED_DEST ) );
 
 //views
-gulp.task('views',  simpleGulpBuilder.copyFile( VIEW_PAGE_CONFIG, DEST_PATH ));
+gulp.task('views',  simpleGulpBuilder.copyFile( VIEW_PAGE_CONFIG, DEST_DIST ));
 
 //js
-gulp.task('js-app-dev', simpleGulpBuilder.compileJs( JS_INJECTED_SRC, DEST_PATH, 'app.js', BABELIFY_CONFIG, ALIASIFY_DEV_CONFIG ));
-gulp.task('js-app-prod', simpleGulpBuilder.compileJs( JS_INJECTED_SRC, DEST_PATH, 'app.js', BABELIFY_CONFIG, ALIASIFY_PROD_CONFIG ));
-gulp.task('js-bg-dev', simpleGulpBuilder.compileJs( JS_BACKGROUND_SRC, DEST_PATH, 'background.js', BABELIFY_CONFIG, ALIASIFY_DEV_CONFIG ));
-gulp.task('js-bg-prod', simpleGulpBuilder.compileJs( JS_BACKGROUND_SRC, DEST_PATH, 'background.js', BABELIFY_CONFIG, ALIASIFY_PROD_CONFIG ));
-gulp.task('js-vendor', simpleGulpBuilder.concatFiles( JS_VENDOR_FILES, DEST_PATH, 'vendor.js' ));
+gulp.task('js-app-dev', simpleGulpBuilder.compileJs( JS_INJECTED_SRC, DEST_DIST, 'app.js', BABELIFY_CONFIG, ALIASIFY_DEV_CONFIG ));
+gulp.task('js-app-prod', simpleGulpBuilder.compileJs( JS_INJECTED_SRC, DEST_DIST, 'app.js', BABELIFY_CONFIG, ALIASIFY_PROD_CONFIG ));
+gulp.task('js-bg-dev', simpleGulpBuilder.compileJs( JS_BACKGROUND_SRC, DEST_DIST, 'background.js', BABELIFY_CONFIG, ALIASIFY_DEV_CONFIG ));
+gulp.task('js-bg-prod', simpleGulpBuilder.compileJs( JS_BACKGROUND_SRC, DEST_DIST, 'background.js', BABELIFY_CONFIG, ALIASIFY_PROD_CONFIG ));
+gulp.task('js-vendor', simpleGulpBuilder.concatFiles( JS_VENDOR_FILES, DEST_DIST, 'vendor.js' ));
 
 //Watch task (mainly used for dev...)
 gulp.task('watch', ['watch-style', 'watch-js-app']);
@@ -90,22 +91,22 @@ gulp.task('watch-js-bg',function() {
   );
 });
 
+gulp.task('chrome-manifest-prod', simpleGulpBuilder.replaceString(
+  CHROME_MANIFEST_BASE_SRC,
+  DEST_BASE,
+  'manifest.json',
+  ['APP_NAME', 'Github Improved']
+));
 
 
-gulp.task('chrome-manifest-prod', function(){
-  gulp.src(CHROME_MANIFEST_BASE_SRC)
-    .pipe(replace('$APP_NAME', 'Github Improved'))
-    .pipe(concat('manifest.json'))
-    .pipe(gulp.dest(CHROME_MANIFEST_BASE_DEST));
-});
+gulp.task('chrome-manifest-dev', simpleGulpBuilder.replaceString(
+  CHROME_MANIFEST_BASE_SRC,
+  DEST_BASE,
+  'manifest.json',
+  ['APP_NAME', 'Github Improved Dev']
+));
 
 
-gulp.task('chrome-manifest-dev', function(){
-  gulp.src(CHROME_MANIFEST_BASE_SRC)
-    .pipe(replace('$APP_NAME', 'Github Improved Dev'))
-    .pipe(concat('manifest.json'))
-    .pipe(gulp.dest(CHROME_MANIFEST_BASE_DEST));
-});
 
 
 
