@@ -34,8 +34,7 @@
     "babel-preset-react": "^6.11.1",
     "gulp": "~3.9.1",
     "gulp-concat": "^2.6.1",
-    "gulp-replace": "^0.5.4",
     "gulp-util": "~3.0.7",
-    "simple-gulp-builder": "synle/simple-gulp-builder"
+    "simple-gulp-builder": "^1.1.0"
   }
 }
