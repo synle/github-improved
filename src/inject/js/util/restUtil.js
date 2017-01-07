@@ -8,7 +8,7 @@ const RestUtil = {
   setAuthToken: (input_auth_token) => auth_token = input_auth_token,
   get:  (url, data, config) => _makeRequest('GET', url, data, config),
   post: (url, data, config) => _makeRequest('POST', url, data, config),
-  pjax: (url, container) => {
+  pjax: (url) => {
     return _makePjaxRequest(
       'GET',
       url
@@ -102,6 +102,13 @@ function _makePjaxRequest(method, url){
     $(document).trigger('pjax:end');
   });
 }
+
+
+//pop state...
+window.onpopstate = function(event) {
+  RestUtil.pjax(document.location);
+};
+
 
 
 export default RestUtil;
