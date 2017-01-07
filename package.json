@@ -4,7 +4,6 @@
   "description": "Improved the experience of github ui",
   "main": "index.js",
   "scripts": {
-    "install": "napa drkibitz/zepto-pjax",
     "start": "gulp",
     "dev": "gulp build-dev",
     "package": "gulp build-prod",
@@ -36,7 +35,6 @@
     "gulp": "~3.9.1",
     "gulp-concat": "^2.6.1",
     "gulp-util": "~3.0.7",
-    "napa": "^2.3.0",
     "simple-gulp-builder": "^1.1.0"
   }
 }
