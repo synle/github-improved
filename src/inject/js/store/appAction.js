@@ -260,7 +260,7 @@ const AppAction = {
             dispatch({
               type : 'UPDATE_EXPLORER_FILE_LIST',
               value : newTreeInPrList.map(
-                f => _.pick(f, ['filename', 'blob_url'])
+                f => _.pick(f, ['filename', 'blob_url', 'status'])
               )
             });
           }
