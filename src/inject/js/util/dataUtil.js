@@ -3,52 +3,58 @@ import _ from 'lodash';
 // internal
 import restUtil from '@src/util/restUtil';
 
+
+function _getStorageKeyName(key){
+  return `github-improved.${key}`;
+}
+
 const LocalStoragePersistentData = {
   getPersistedProp(key){
     return new Promise((resolve, reject) => {
-      var ret = localStorage[`github-improved.${key}`];
+      var ret = localStorage[_getStorageKeyName(key)];
       switch(ret){
         case 'true':
-          return true;
+          ret = true;
+          break;
         case 'false':
-          return false;
-        default:
-          return ret;
+          ret = false;
+          break;
       }
       resolve(ret);
     });
   },
   setPersistedProp(key, value){
     return new Promise((resolve, reject) => {
-      localStorage[`github-improved.${key}`] = value;
+      localStorage[_getStorageKeyName(key)] = value;
       resolve(value);
     });
-  },
-  clearPersistedProp(key){
-    return new Promise((resolve, reject) => {
-      localStorage[`github-improved.${key}`] = null;
-      resolve();
-    });
-  },
+  }
 }
 
 
 const ChromeStoragePersistentData = {
   getPersistedProp(key){
     return new Promise((resolve, reject) => {
-      resolve();
+      chrome.storage.sync.get(
+        _getStorageKeyName(key),
+        function(value) {
+          resolve(value[_getStorageKeyName(key)]);
+        }
+      );
     });
   },
   setPersistedProp(key, value){
     return new Promise((resolve, reject) => {
-      resolve();
+      chrome.storage.sync.set(
+        {
+          [_getStorageKeyName(key)] : value
+        },
+        function() {
+          resolve(value);
+        }
+      );
     });
-  },
-  clearPersistedProp(key){
-    return new Promise((resolve, reject) => {
-      resolve();
-    });
-  },
+  }
 }
 
 const dataUtil = {
@@ -138,9 +144,14 @@ const dataUtil = {
       'java'
     ]
   },
-  getPersistedProp: LocalStoragePersistentData.getPersistedProp,
-  setPersistedProp: LocalStoragePersistentData.setPersistedProp,
-  clearPersistedProp: LocalStoragePersistentData.clearPersistedProp,
+  getPersistedProp: ChromeStoragePersistentData.getPersistedProp,
+  setPersistedProp: ChromeStoragePersistentData.setPersistedProp,
+  clearPersistedProp(key) {  return ChromeStoragePersistentData.clearPersistedProp(key);  },
+
+  // getPersistedProp: LocalStoragePersistentData.getPersistedProp,
+  // setPersistedProp: LocalStoragePersistentData.setPersistedProp,
+  // clearPersistedProp(key) {  return LocalStoragePersistentData.clearPersistedProp(key);  },
+
   getInitialFromName(longString){
     longString = longString || '';
 

@@ -90,10 +90,14 @@ chrome.extension.sendMessage({}, (response) => {
         // doing the resize
         sideBarWidth = getNewWidth(e);
         doResize(sideBarWidth);
-        dataUtil.setPersistedProp('side-bar-width', sideBarWidth);
-
         // remove the resizing class
         resizer.classList.remove('resizing');
+        dataUtil.setPersistedProp('side-bar-width', sideBarWidth)
+          .then(
+            () => {
+
+            }
+          );
       }
 
 

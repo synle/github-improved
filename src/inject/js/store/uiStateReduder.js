@@ -63,21 +63,29 @@ const UIStateReducer = (state = DEFAULT_STATE, {type, value}) => {
 
       // persist it...
       dataUtil.setPersistedProp('side-bar-expand', state.isSideBarExpanded)
+        .then(
+          () => {
+            // toggle sidebar
+            document.querySelector('body').classList.toggle(
+              'collapsed-side-bar',
+              !state.isSideBarExpanded
+            );
 
-      // toggle sidebar
-      document.querySelector('body').classList.toggle(
-        'collapsed-side-bar',
-        !state.isSideBarExpanded
-      );
+            dataUtil.getPersistedProp('side-bar-width')
+              .then(
+                (newSideBarWidth) => {
+                  // set the width if needed
+                  // if collapsed, use the min width of 70px,
+                  // if expanded, use the one from persistent storage
+                  newSideBarWidth = !state.isSideBarExpanded
+                    ? '70px'
+                    : newSideBarWidth;
 
-
-      // set the width if needed
-      // if collapsed, use the min width of 70px,
-      // if expanded, use the one from persistent storage
-      const newSideBarWidth = state.isSideBarExpanded
-        ? dataUtil.getPersistedProp('side-bar-width') || '300px'
-        : '70px';
-      util.setSideBarWidth(newSideBarWidth);
+                  util.setSideBarWidth(newSideBarWidth);
+                }
+              )
+          }
+        )
       break;
   }
 

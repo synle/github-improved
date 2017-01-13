@@ -38,8 +38,7 @@ const TokenRequestForm = React.createClass({
     const apiToken = _.trim( prompt('Enter your API Token below') ) || '';
 
     if (_.size(apiToken) > 0){
-        dataUtil.setPersistedProp('api-token', apiToken);
-        location.reload();
+      this.props.onUpdateApiToken(apiToken);
     }
   }
 });
@@ -54,7 +53,7 @@ const mapStateToProps = function(state) {
 
 const mapDispatchToProps = function(dispatch) {
   return {
-   // onReInitApp: bindActionCreators(AppAction.init, dispatch)
+   onUpdateApiToken: bindActionCreators(AppAction.updateApiToken, dispatch)
  };
 }
 

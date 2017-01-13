@@ -6,28 +6,47 @@ import dataUtil from '@src/util/dataUtil';
 import restUtil from '@src/util/restUtil';
 
 
-let apiToken = dataUtil.getPersistedProp('api-token');
-if(_.size(apiToken) > 0){
-  // new rest api
-  restUtil.setAuthToken(apiToken);
-}
+let apiToken;
 
 const AppAction = {
   init : (state) => {
     // init
     return function (dispatch, getState) {
-      //refersh state
-      dispatch({
-        type : 'REFRESH',
-        value : state
-      });
+      dataUtil.getPersistedProp('api-token')
+        .then(
+          (newApiToken) =>{
+            apiToken = newApiToken;
+            if(_.size(apiToken) > 0){
+              // new rest api
+              restUtil.setAuthToken(apiToken);
+
+              //refersh state
+              dispatch({
+                type : 'REFRESH',
+                value : state
+              });
+            }
+          }
+        )
+        .catch(
+          () => {}
+        )
+        .then(
+          () => {
+            //trigger refresh
+            AppAction.refresh()(dispatch, getState);
+          }
+        );
+
 
       // side bar expand state
-      const isSideBarExpanded = !!dataUtil.getPersistedProp('side-bar-expand');
-      AppAction.setSideBarVisibility(isSideBarExpanded)(dispatch, getState);
-
-      //trigger refresh
-      AppAction.refresh()(dispatch, getState);
+      dataUtil.getPersistedProp('side-bar-expand')
+        .then(
+          (isSideBarExpanded) => {
+            isSideBarExpanded = !!isSideBarExpanded;
+            AppAction.setSideBarVisibility(isSideBarExpanded)(dispatch, getState);
+          }
+        )
     };
   },
   refresh : () => {
@@ -95,10 +114,13 @@ const AppAction = {
     restUtil.setAuthToken(apiToken);
 
     //persist it
-    dataUtil.setPersistedProp('api-token', apiToken);
-
-    //TODO: clean up the reinit
-    location.reload();
+    dataUtil.setPersistedProp('api-token', apiToken)
+      .then(
+        () => {
+          //TODO: clean up the reinit
+          location.reload();
+        }
+      );
 
     return {
       type: 'SET_TOKEN_VALID',
