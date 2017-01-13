@@ -22,7 +22,7 @@ body{
   //   margin-left: var(--side-bar-width) !important;
   //   padding-left: $padding-offset !important;
   // }
-  .container{
+  .container, .container-lg{
     width:900px !important;
     margin-left: $padding-offset !important;
     .container{
@@ -41,6 +41,11 @@ body{
 
   a{
     cursor: pointer;
+  }
+
+  .avatar.width-full{
+    width:95%!important;
+    height:auto !important;
   }
 
 
