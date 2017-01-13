@@ -3,6 +3,54 @@ import _ from 'lodash';
 // internal
 import restUtil from '@src/util/restUtil';
 
+const LocalStoragePersistentData = {
+  getPersistedProp(key){
+    return new Promise((resolve, reject) => {
+      var ret = localStorage[`github-improved.${key}`];
+      switch(ret){
+        case 'true':
+          return true;
+        case 'false':
+          return false;
+        default:
+          return ret;
+      }
+      resolve(ret);
+    });
+  },
+  setPersistedProp(key, value){
+    return new Promise((resolve, reject) => {
+      localStorage[`github-improved.${key}`] = value;
+      resolve(value);
+    });
+  },
+  clearPersistedProp(key){
+    return new Promise((resolve, reject) => {
+      localStorage[`github-improved.${key}`] = null;
+      resolve();
+    });
+  },
+}
+
+
+const ChromeStoragePersistentData = {
+  getPersistedProp(key){
+    return new Promise((resolve, reject) => {
+      resolve();
+    });
+  },
+  setPersistedProp(key, value){
+    return new Promise((resolve, reject) => {
+      resolve();
+    });
+  },
+  clearPersistedProp(key){
+    return new Promise((resolve, reject) => {
+      resolve();
+    });
+  },
+}
+
 const dataUtil = {
   getUrlSplits() {
     const pathName = location.pathname;
@@ -90,24 +138,9 @@ const dataUtil = {
       'java'
     ]
   },
-  getPersistedProp(key){
-    var ret = localStorage[`github-improved.${key}`];
-    switch(ret){
-      case 'true':
-        return true;
-      case 'false':
-        return false;
-      default:
-        return ret;
-    }
-  },
-  setPersistedProp(key, value){
-    localStorage[`github-improved.${key}`] = value;
-    return localStorage[`github-improved.${key}`];
-  },
-  clearPersistedProp(key){
-    localStorage[`github-improved.${key}`] = null;
-  },
+  getPersistedProp: LocalStoragePersistentData.getPersistedProp,
+  setPersistedProp: LocalStoragePersistentData.setPersistedProp,
+  clearPersistedProp: LocalStoragePersistentData.clearPersistedProp,
   getInitialFromName(longString){
     longString = longString || '';
 
