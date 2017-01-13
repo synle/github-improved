@@ -1,19 +1,20 @@
 body {
   --side-bar-width: 300px !important;
   padding-left: var(--side-bar-width) !important; }
-  body .container {
-    width: 768px !important;
+  body .container, body .container-lg {
+    width: 900px !important;
     margin-left: 15px !important; }
-    body .container .container {
+    body .container .container, body .container-lg .container {
       margin-left: auto !important; }
   body .discussion-sidebar {
     width: 150px !important; }
   body .discussion-timeline {
     width: calc(100% - 180px) !important; }
-  body .btn {
-    padding: 3px 5px !important; }
   body a {
     cursor: pointer; }
+  body .avatar.width-full {
+    width: 95% !important;
+    height: auto !important; }
   body .experiment-repo-nav .capped-cards .capped-card {
     width: 50% !important;
     margin: 0 !important; }
