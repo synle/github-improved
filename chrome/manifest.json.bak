@@ -11,7 +11,8 @@
   },
   "permissions": [
     "*://*/*",
-    "*://*.github.com/*"
+    "*://*.github.com/*",
+    "storage"
   ],
   "background": {
     "scripts": ["dist/background.js"]

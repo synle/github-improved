@@ -23,7 +23,7 @@ body{
   //   padding-left: $padding-offset !important;
   // }
   .container{
-    width:768px !important;
+    width:900px !important;
     margin-left: $padding-offset !important;
     .container{
       margin-left:auto !important;
@@ -37,10 +37,6 @@ body{
 
   .discussion-timeline{
     width:calc(100% - 180px) !important;
-  }
-
-  .btn{
-    padding: 3px 5px !important;
   }
 
   a{
