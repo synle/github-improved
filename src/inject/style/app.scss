@@ -293,3 +293,12 @@ body.collapsed-side-bar{
   }
 }
 
+
+
+
+// hide the side bar when printing
+@media print {
+  #side-bar-body {
+     display: none;
+  }
+}
