@@ -18,13 +18,14 @@ const DEFAULT_STATE = {
   commits : null,//list of relavant commits
   contributors : null,// list of contributors
   trees: null,//tree map
-  explorerFiles: null, // file explorer
+  explorerFilesPrMode: null,
+  explorerFilesFileMode: null, // file explorer
   pullRequests: null, // current pull requests...
   urlParams: {}
 };
 
 //App Store reducer
-const RepoReducer = (state = DEFAULT_STATE, {type, value}) => {
+const RepoReducer = (state = DEFAULT_STATE, {type, value, mode}) => {
   switch(type){
     case 'REFRESH':
       state = value;
@@ -63,8 +64,12 @@ const RepoReducer = (state = DEFAULT_STATE, {type, value}) => {
       state.trees = value;
       break;
 
-    case 'UPDATE_EXPLORER_FILE_LIST':
-      state.explorerFiles = value;
+    case 'UPDATE_EXPLORER_FILE_LIST_PR_MODE':
+      state.explorerFilesPrMode = value;
+      break;
+
+    case 'UPDATE_EXPLORER_FILE_LIST_EXPLORER_MODE':
+      state.explorerFilesFileMode = value;
       break;
 
     case 'UPDATE_CONTRIBUTOR_LIST':

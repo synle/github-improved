@@ -16,31 +16,16 @@ const dataUtil = {
     const owner = $('.repohead-details-container [itemprop="author"]').text();
     const repo = $('.repohead-details-container [itemprop="name"]').text();
 
-    // var branch = $$('.branch-select-menu .select-menu-button').attr('title');
-    // if(!branch) {
-    //  branch = 'master';
-    // }
 
-    //get branch
-    let branchDom1 = $('[aria-label="Switch branches or tags"] span').first();
-    let branchDom2 = $('.commit-branches a').first();
-    let branch = '';
-    if(urlSplits.length >= 2) {
-      const relavantUrlSplits = urlSplits.filter(url => ['pulls', 'tree', owner, repo].indexOf(url) === -1);
-      branch = _.get(relavantUrlSplits, '0') || '';
-    } else if(branchDom1.length > 0) {
-      branch = branchDom1.text();
-    } else if(branchDom2.length > 0) {
-      branch = branchDom2.text();
-    }
-    branch = _.trim(branch);
-
-
+    //get commit sha
     var commit = $('.sha.user-select-contain').text();
     if(!commit && (pathName.indexOf('/commit/') >= 0 || pathName.indexOf('/commits/') >= 0)) {
       commit = urlSplits[urlSplits.length - 1];
     }
 
+
+
+    //get current file path
     var file = _.trim($('.file-navigation .breadcrumb').text());
     var path = !!file ? file.substr( file.indexOf('/') + 1 ) : null ||
       '';
@@ -67,6 +52,26 @@ const dataUtil = {
     if(isCompareMode) {
       isPullRequestPage = true;
     }
+
+
+
+    //get branch
+    // var branch = $$('.branch-select-menu .select-menu-button').attr('title');
+    let branchDom1 = $('[aria-label="Switch branches or tags"]').first();
+    let branchDom2 = $('.commit-branches a').first();
+    let branchDom3 = $('.current-branch.head-ref').first();
+    let branch = '';
+    if(isPullRequestPage){
+      branch = branchDom3.text();
+    } else if(branchDom1.length > 0) {
+      branch = branchDom1.attr('title');
+    } else if(branchDom2.length > 0) {
+      branch = branchDom2.text();
+    } else if(urlSplits.length >= 2) {
+      const relavantUrlSplits = urlSplits.filter(url => ['pulls', 'tree', owner, repo].indexOf(url) === -1);
+      branch = _.get(relavantUrlSplits, '0') || '';
+    }
+    branch = _.trim(branch);
 
     return {
       owner,
@@ -152,10 +157,12 @@ const dataUtil = {
       )
       : Promise.reject();
   },
-  fetchExplorerFileListBySha(owner, repo, commit) {
-    return owner && repo && commit
+  fetchExplorerFileListBySha(owner, repo, branch, commit) {
+    const shaRef = commit || branch || 'master';// if not worst case, fall back to master
+
+    return owner && repo && shaRef
       ? restUtil.get(
-        `https://github.com/${owner}/${repo}/tree-list/${commit}`,
+        `https://github.com/${owner}/${repo}/tree-list/${shaRef}`,
         null,//data
         {//config
           'Accept': 'application/json'

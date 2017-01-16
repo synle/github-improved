@@ -102,7 +102,7 @@ const AppAction = {
             // set token valid
             dispatch({ type: 'SET_TOKEN_VALID', value: false});
 
-            console.error('refresh', arguments)
+            console.error('refresh', resp)
           }
         );
     };
@@ -136,9 +136,9 @@ const AppAction = {
           resp => newTreeInBranchList = _.get(resp, 'paths') || []
         )
         .catch(
-          () => {
+          resp => {
             newTreeInBranchList = [];
-            console.error('fetchTreeList', arguments)
+            console.error('fetchTreeList', resp)
           }
         )
         .then(
@@ -160,9 +160,9 @@ const AppAction = {
           resp => newPullRequestList = resp
         )
         .catch(
-          () => {
+          resp => {
             newPullRequestList = [];
-            console.error('fetchPullRequests', arguments)
+            console.error('fetchPullRequests', resp)
           }
         )
         .then(
@@ -192,7 +192,7 @@ const AppAction = {
       }
     };
   },
-  fetchCommitListByPrDetails: ({path, owner, branch, repo, commit, pullRequestNumber}) => {
+  fetchCommitListByPrDetails: ({path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber}) => {
     return function (dispatch, getState) {
       dispatch({ type: 'SET_LOADING_COMMIT_BOX', value: true});
 
@@ -202,14 +202,11 @@ const AppAction = {
         .then(
           resp => {
             newCommitInPrList = resp;
-
-            // trigger fetch tree list using the current pr
-            AppAction.fetchExplorerFileListByPrDetails({owner, repo, pullRequestNumber})(dispatch, getState);
           }
         ).catch(
-          () => {
+          resp => {
             newCommitInPrList = [];
-            console.error('fetchCommitListByPrDetails', arguments)
+            console.error('fetchCommitListByPrDetails', resp)
           }
         ).then(
           () => {
@@ -218,7 +215,16 @@ const AppAction = {
             dispatch({
               type : 'UPDATE_COMMIT_LIST',
               value : newCommitInPrList
-            })
+            });
+
+            // trigger fetch file explorers in pr and files itself...
+            commit = _.first(newCommitInPrList).sha;
+
+            //fetch explorer file list
+            AppAction.fetchExplorerFileListBySha( { path, owner, branch, repo, commit, isPullRequestPage } )(dispatch, getState);
+
+            // trigger fetch tree list using the current pr
+            AppAction.fetchExplorerFileListByPrDetails({path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber})(dispatch, getState);
           }
         );
     }
@@ -240,9 +246,9 @@ const AppAction = {
           }
         )
         .catch(
-          () => {
+          resp => {
             newCommitInBranchList = [];
-            console.error('fetchCommitListBySha', arguments);
+            console.error('fetchCommitListBySha', resp);
           }
         )
         .then(
@@ -258,10 +264,9 @@ const AppAction = {
         );
     };
   },
-  fetchExplorerFileListByPrDetails: ({branch, owner, repo, commit, path, pullRequestNumber}) => {
+  fetchExplorerFileListByPrDetails: ({path, owner, branch, repo, commit, isPullRequestPage, pullRequestNumber}) => {
     return function (dispatch, getState) {
-      dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
-
+      // dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
       let newTreeInPrList = [];
 
       dataUtil.fetchExplorerFileListByPrDetails(owner, repo, pullRequestNumber)
@@ -269,18 +274,18 @@ const AppAction = {
           resp => newTreeInPrList = resp || []
         )
         .catch(
-          () => {
+          resp => {
             newTreeInPrList = [];
-            console.error('fetchExplorerFileListByPrDetails', arguments);
+            console.error('fetchExplorerFileListByPrDetails', resp);
           }
         )
         .then(
           () => {
             //finally
-            dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
+            // dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
 
             dispatch({
-              type : 'UPDATE_EXPLORER_FILE_LIST',
+              type : 'UPDATE_EXPLORER_FILE_LIST_PR_MODE',
               value : newTreeInPrList.map(
                 f => _.pick(f, ['filename', 'blob_url', 'status'])
               )
@@ -291,23 +296,23 @@ const AppAction = {
   },
   fetchExplorerFileListBySha: ({branch, owner, repo, commit, path, isPullRequestPage}) => {
     return function (dispatch, getState) {
-      dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
+      // dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: true});
 
       let newFileExplorerInBranchList = [];
 
-      dataUtil.fetchExplorerFileListBySha(owner, repo, commit)
+      dataUtil.fetchExplorerFileListBySha(owner, repo, branch, commit)
         .then(
           resp => newFileExplorerInBranchList = _.get(resp, 'paths') || []
         )
         .catch(
-          () => {
+          resp => {
             newFileExplorerInBranchList = [];
-            console.error('fetchExplorerFileListBySha', arguments);
+            console.error('fetchExplorerFileListBySha', owner, repo, branch, commit, resp);
           }
         )
         .then(
           () => {
-            dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
+            // dispatch({ type: 'SET_LOADING_FILE_EXPLORER_BOX', value: false});
 
             // grab the files that makes sense...
             // non pr mode
@@ -337,7 +342,7 @@ const AppAction = {
               );
 
             dispatch({
-              type : 'UPDATE_EXPLORER_FILE_LIST',
+              type : 'UPDATE_EXPLORER_FILE_LIST_EXPLORER_MODE',
               value : newFileExplorerInBranchList.map(
                 filename => {
                   const blob_url = _.size(commit) === 0
@@ -366,9 +371,9 @@ const AppAction = {
           resp => newContributorList = resp
         )
         .catch(
-          () => {
+          resp => {
             newContributorList = [];
-            console.error('fetchContributorList', arguments);
+            console.error('fetchContributorList', resp);
           }
         )
         .then(
@@ -412,15 +417,17 @@ function _shouldShowContributorBox(){
 }
 
 function _shouldShowFileExplorerBox(){
-  if($('.compare-show-header').length === 1){
-    //compare mode, don't show it
-    return false;
-  }
-  if($('.repohead-details-container').length === 0){
-    return false;
-  }
-  const urlSplits = dataUtil.getUrlSplits();
-  return urlSplits.length >= 2;
+  return true;
+
+  // if($('.compare-show-header').length === 1){
+  //   //compare mode, don't show it
+  //   return false;
+  // }
+  // if($('.repohead-details-container').length === 0){
+  //   return false;
+  // }
+  // const urlSplits = dataUtil.getUrlSplits();
+  // return urlSplits.length >= 2;
 }
 
 
