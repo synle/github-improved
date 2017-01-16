@@ -17,7 +17,7 @@ const dataUtil = {
     const repo = $('.repohead-details-container [itemprop="name"]').text();
 
     // var branch = $$('.branch-select-menu .select-menu-button').attr('title');
-    // if(!branch){
+    // if(!branch) {
     //  branch = 'master';
     // }
 
@@ -25,19 +25,19 @@ const dataUtil = {
     let branchDom1 = $('[aria-label="Switch branches or tags"] span').first();
     let branchDom2 = $('.commit-branches a').first();
     let branch = '';
-    if(urlSplits.length >= 2){
+    if(urlSplits.length >= 2) {
       const relavantUrlSplits = urlSplits.filter(url => ['pulls', 'tree', owner, repo].indexOf(url) === -1);
       branch = _.get(relavantUrlSplits, '0') || '';
-    } else if(branchDom1.length > 0){
+    } else if(branchDom1.length > 0) {
       branch = branchDom1.text();
-    } else if(branchDom2.length > 0){
+    } else if(branchDom2.length > 0) {
       branch = branchDom2.text();
     }
     branch = _.trim(branch);
 
 
     var commit = $('.sha.user-select-contain').text();
-    if(!commit && (pathName.indexOf('/commit/') >= 0 || pathName.indexOf('/commits/') >= 0)){
+    if(!commit && (pathName.indexOf('/commit/') >= 0 || pathName.indexOf('/commits/') >= 0)) {
       commit = urlSplits[urlSplits.length - 1];
     }
 
@@ -47,7 +47,7 @@ const dataUtil = {
     path = _.trimEnd(path, '/');
 
     var pull;
-    if(pathName.indexOf('/pull/') >= 0 && pathName.indexOf('/files') >= 0){
+    if(pathName.indexOf('/pull/') >= 0 && pathName.indexOf('/files') >= 0) {
       pull = urlSplits[urlSplits.length - 2];
     }
 
@@ -56,7 +56,7 @@ const dataUtil = {
     let splitPrNumber = pathName.match(/\/pull\/\d+/);
     let isPullRequestPage = !!splitPrNumber;
     let pullRequestNumber;
-    if(isPullRequestPage){
+    if(isPullRequestPage) {
       // TODO: null check here
       pullRequestNumber = splitPrNumber[0].split('/')[2];
     }
@@ -64,7 +64,7 @@ const dataUtil = {
 
     let splitCompareBranch = pathName.match(/\/compare\/\w+/);
     let isCompareMode = !!splitCompareBranch;
-    if(isCompareMode){
+    if(isCompareMode) {
       isPullRequestPage = true;
     }
 
@@ -95,7 +95,7 @@ const dataUtil = {
   getPersistedProp: ChromeStoragePersistentData.getPersistedProp,
   setPersistedProp: ChromeStoragePersistentData.setPersistedProp,
   clearPersistedProp(key) {  return ChromeStoragePersistentData.clearPersistedProp(key);  },
-  getInitialFromName(longString){
+  getInitialFromName(longString) {
     longString = longString || '';
 
     let ret = _.slice(
@@ -107,7 +107,7 @@ const dataUtil = {
       2
     ).join('');
 
-    if(ret.length === 1){
+    if(ret.length === 1) {
       ret = longString.substr(0,2);
     }
 
@@ -115,33 +115,33 @@ const dataUtil = {
   },
   // github api...
   // https://developer.github.com/v3/
-  fetchUserProfile(){
+  fetchUserProfile() {
     return restUtil.get(`https://api.github.com/user`);
   },
-  fetchContributorList(owner, repo){
+  fetchContributorList(owner, repo) {
     return owner && repo
       ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/stats/contributors`)
       : Promise.reject();
   },
-  fetchPullRequests(owner, repo){
+  fetchPullRequests(owner, repo) {
     return owner && repo
       ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls`)
       : Promise.reject();
   },
-  fetchCommitListByPrDetails(owner, repo, pullRequestNumber){
+  fetchCommitListByPrDetails(owner, repo, pullRequestNumber) {
     return owner && repo && pullRequestNumber
       ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/commits`)
       : Promise.reject();
   },
-  fetchCommitListBySha(owner, repo, path){
-    if(owner && repo){
+  fetchCommitListBySha(owner, repo, path) {
+    if(owner && repo) {
       return path
         ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/commits?path=${path}`)
         : restUtil.get(`https://api.github.com/repos/${owner}/${repo}/commits`);
     }
     return Promise.reject();
   },
-  fetchTreeList(owner, repo, commit){
+  fetchTreeList(owner, repo, commit) {
     return owner && repo && commit
       ? restUtil.get(
         `https://github.com/${owner}/${repo}/tree-list/${commit}`,
@@ -152,7 +152,7 @@ const dataUtil = {
       )
       : Promise.reject();
   },
-  fetchExplorerFileListBySha(owner, repo, commit){
+  fetchExplorerFileListBySha(owner, repo, commit) {
     return owner && repo && commit
       ? restUtil.get(
         `https://github.com/${owner}/${repo}/tree-list/${commit}`,
@@ -163,12 +163,12 @@ const dataUtil = {
       )
       : Promise.reject();
   },
-  fetchExplorerFileListByPrDetails(owner, repo, pullRequestNumber){
+  fetchExplorerFileListByPrDetails(owner, repo, pullRequestNumber) {
     return owner && repo && pullRequestNumber
       ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/pulls/${pullRequestNumber}/files`)
       : Promise.reject();
   },
-  fetchPjaxCall(url){
+  fetchPjaxCall(url) {
     return restUtil.pjax(
       url
     );
