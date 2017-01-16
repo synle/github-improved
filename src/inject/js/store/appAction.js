@@ -102,7 +102,7 @@ const AppAction = {
             // set token valid
             dispatch({ type: 'SET_TOKEN_VALID', value: false});
 
-            console.error(arguments)
+            console.error('refresh', arguments)
           }
         );
     };
@@ -138,7 +138,7 @@ const AppAction = {
         .catch(
           () => {
             newTreeInBranchList = [];
-            console.error(arguments)
+            console.error('fetchTreeList', arguments)
           }
         )
         .then(
@@ -162,7 +162,7 @@ const AppAction = {
         .catch(
           () => {
             newPullRequestList = [];
-            console.error(arguments)
+            console.error('fetchPullRequests', arguments)
           }
         )
         .then(
@@ -209,7 +209,7 @@ const AppAction = {
         ).catch(
           () => {
             newCommitInPrList = [];
-            console.error(arguments)
+            console.error('fetchCommitListByPrDetails', arguments)
           }
         ).then(
           () => {
@@ -242,7 +242,7 @@ const AppAction = {
         .catch(
           () => {
             newCommitInBranchList = [];
-            console.error(arguments);
+            console.error('fetchCommitListBySha', arguments);
           }
         )
         .then(
@@ -271,7 +271,7 @@ const AppAction = {
         .catch(
           () => {
             newTreeInPrList = [];
-            console.error(arguments);
+            console.error('fetchExplorerFileListByPrDetails', arguments);
           }
         )
         .then(
@@ -302,7 +302,7 @@ const AppAction = {
         .catch(
           () => {
             newFileExplorerInBranchList = [];
-            console.error(arguments);
+            console.error('fetchExplorerFileListBySha', arguments);
           }
         )
         .then(
@@ -368,7 +368,7 @@ const AppAction = {
         .catch(
           () => {
             newContributorList = [];
-            console.error(arguments);
+            console.error('fetchContributorList', arguments);
           }
         )
         .then(
