@@ -17,6 +17,7 @@ var STYLE_INJECTED_SRC = [ 'src/inject/style/app.scss' ];
 var STYLE_INJECTED_DEST = 'app.css';
 var JS_INJECTED_SRC  = [ 'src/inject/js/app.js' ];
 var JS_BACKGROUND_SRC  = [ 'src/background/index.js' ];
+var JS_NEWTAB_SRC  = [ 'src/newtab/index.js' ];
 var JS_VENDOR_FILES = ['node_modules/zepto/dist/zepto.min.js'];
 var CHROME_MANIFEST_BASE_SRC = './chrome/manifest.json.bak';
 var CHROME_MANIFEST_BASE_DEST = './chrome';
@@ -64,10 +65,12 @@ gulp.task('js-app-dev', simpleGulpBuilder.compileJs( JS_INJECTED_SRC, DEST_DIST,
 gulp.task('js-app-prod', simpleGulpBuilder.compileJs( JS_INJECTED_SRC, DEST_DIST, 'app.js', BABELIFY_CONFIG, ALIASIFY_PROD_CONFIG ));
 gulp.task('js-bg-dev', simpleGulpBuilder.compileJs( JS_BACKGROUND_SRC, DEST_DIST, 'background.js', BABELIFY_CONFIG, ALIASIFY_DEV_CONFIG ));
 gulp.task('js-bg-prod', simpleGulpBuilder.compileJs( JS_BACKGROUND_SRC, DEST_DIST, 'background.js', BABELIFY_CONFIG, ALIASIFY_PROD_CONFIG ));
+gulp.task('js-newtab-dev', simpleGulpBuilder.compileJs( JS_NEWTAB_SRC, DEST_DIST, 'newtab.js', BABELIFY_CONFIG, ALIASIFY_DEV_CONFIG ));
+gulp.task('js-newtab-prod', simpleGulpBuilder.compileJs( JS_NEWTAB_SRC, DEST_DIST, 'newtab.js', BABELIFY_CONFIG, ALIASIFY_PROD_CONFIG ));
 gulp.task('js-vendor', simpleGulpBuilder.concatFiles( JS_VENDOR_FILES, DEST_DIST, 'vendor.js' ));
 
 //Watch task (mainly used for dev...)
-gulp.task('watch', ['watch-style', 'watch-js-app']);
+gulp.task('watch', ['watch-style', 'watch-js-app', 'watch-js-newtab']);
 
 gulp.task('watch-style',function() {
   return gulp.watch(
@@ -90,6 +93,15 @@ gulp.task('watch-js-bg',function() {
     ['js-bg-dev']
   );
 });
+
+
+gulp.task('watch-js-newtab',function() {
+  return gulp.watch(
+    ['src/newtab/**/*'],
+    ['js-newtab-dev']
+  );
+});
+
 
 gulp.task('chrome-manifest-prod', simpleGulpBuilder.replaceString(
   CHROME_MANIFEST_BASE_SRC,
@@ -117,7 +129,7 @@ gulp.task('apply-prod-environment', function() {
 });
 
 // build
-gulp.task('build-dev', ['apply-prod-environment', 'chrome-manifest-dev','styles', 'views', 'js-app-dev', 'js-bg-dev', 'js-vendor']);
-gulp.task('build-prod', ['apply-prod-environment', 'chrome-manifest-prod', 'styles', 'views', 'js-app-prod', 'js-bg-prod', 'js-vendor']);
+gulp.task('build-dev', ['apply-prod-environment', 'chrome-manifest-dev','styles', 'views', 'js-app-dev', 'js-bg-dev', 'js-newtab-dev', 'js-vendor']);
+gulp.task('build-prod', ['apply-prod-environment', 'chrome-manifest-prod', 'styles', 'views', 'js-app-prod', 'js-bg-prod', 'js-newtab-prod', 'js-vendor']);
 
 gulp.task('default', ['build-dev', 'watch']);
