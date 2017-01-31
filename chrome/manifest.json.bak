@@ -9,10 +9,14 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
+  "chrome_url_overrides" : {
+    "newtab": "newtab.html"
+  },
   "permissions": [
     "*://*/*",
     "*://*.github.com/*",
-    "storage"
+    "storage",
+    "management"
   ],
   "background": {
     "scripts": ["dist/background.js"]
