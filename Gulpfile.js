@@ -14,7 +14,7 @@ var DEST_BASE = 'chrome';
 var DEST_DIST = DEST_BASE + '/dist';
 var VIEW_PAGE_CONFIG = [ ];
 var STYLE_INJECTED_SRC = [ 'src/inject/style/app.scss' ];
-var STYLE_INJECTED_DEST = 'app.css';
+var STYLE_NEWTAB_SRC = [ 'src/newtab/index.scss' ];
 var JS_INJECTED_SRC  = [ 'src/inject/index.js' ];
 var JS_BACKGROUND_SRC  = [ 'src/background/index.js' ];
 var JS_NEWTAB_SRC  = [ 'src/newtab/index.js' ];
@@ -55,7 +55,10 @@ var BABELIFY_CONFIG = {
 
 
 //styles
-gulp.task('styles', simpleGulpBuilder.compileStyles( STYLE_INJECTED_SRC, DEST_DIST, STYLE_INJECTED_DEST ) );
+gulp.task('styles-app', simpleGulpBuilder.compileStyles( STYLE_INJECTED_SRC, DEST_DIST, 'app.css' ) );
+gulp.task('styles-newtab', simpleGulpBuilder.compileStyles( STYLE_NEWTAB_SRC, DEST_DIST, 'newtab.css' ) );
+//===
+gulp.task('styles', ['styles-app', 'styles-newtab']);
 
 //views
 gulp.task('views',  simpleGulpBuilder.copyFile( VIEW_PAGE_CONFIG, DEST_DIST ));
@@ -68,28 +71,38 @@ gulp.task('js-bg-prod', simpleGulpBuilder.compileJs( JS_BACKGROUND_SRC, DEST_DIS
 gulp.task('js-newtab-dev', simpleGulpBuilder.compileJs( JS_NEWTAB_SRC, DEST_DIST, 'newtab.js', BABELIFY_CONFIG, ALIASIFY_DEV_CONFIG ));
 gulp.task('js-newtab-prod', simpleGulpBuilder.compileJs( JS_NEWTAB_SRC, DEST_DIST, 'newtab.js', BABELIFY_CONFIG, ALIASIFY_PROD_CONFIG ));
 gulp.task('js-vendor', simpleGulpBuilder.concatFiles( JS_VENDOR_FILES, DEST_DIST, 'vendor.js' ));
+//===
+gulp.task('js-dev', ['js-app-dev', 'js-bg-dev', 'js-newtab-dev', 'js-vendor']);
+gulp.task('js-prod', ['js-app-prod', 'js-bg-prod', 'js-newtab-prod', 'js-vendor']);
 
 //Watch task (mainly used for dev...)
-gulp.task('watch', ['watch-style', 'watch-js-app', 'watch-js-newtab']);
+gulp.task('watch', ['watch-style-app', 'watch-style-newtab', 'watch-js-app', 'watch-js-newtab']);
 
-gulp.task('watch-style',function() {
+gulp.task('watch-style-app',function() {
   return gulp.watch(
-    ['src/inject/style/**/*'],
-    ['styles']
+    ['src/inject/**/*.scss'],
+    ['styles-app']
+  );
+});
+
+gulp.task('watch-style-newtab',function() {
+  return gulp.watch(
+    ['src/newtab/**/*.scss'],
+    ['styles-newtab']
   );
 });
 
 
 gulp.task('watch-js-app',function() {
   return gulp.watch(
-    ['src/inject/js/**/*'],
+    ['src/inject/**/*.js'],
     ['js-app-dev']
   );
 });
 
 gulp.task('watch-js-bg',function() {
   return gulp.watch(
-    ['src/background/**/*'],
+    ['src/background/**/*.js'],
     ['js-bg-dev']
   );
 });
@@ -97,7 +110,7 @@ gulp.task('watch-js-bg',function() {
 
 gulp.task('watch-js-newtab',function() {
   return gulp.watch(
-    ['src/newtab/**/*'],
+    ['src/newtab/**/*.js'],
     ['js-newtab-dev']
   );
 });
@@ -129,7 +142,7 @@ gulp.task('apply-prod-environment', function() {
 });
 
 // build
-gulp.task('build-dev', ['apply-prod-environment', 'chrome-manifest-dev','styles', 'views', 'js-app-dev', 'js-bg-dev', 'js-newtab-dev', 'js-vendor']);
-gulp.task('build-prod', ['apply-prod-environment', 'chrome-manifest-prod', 'styles', 'views', 'js-app-prod', 'js-bg-prod', 'js-newtab-prod', 'js-vendor']);
+gulp.task('build-dev', ['apply-prod-environment', 'chrome-manifest-dev','styles', 'views', 'js-dev']);
+gulp.task('build-prod', ['apply-prod-environment', 'chrome-manifest-prod', 'styles', 'views', 'js-prod']);
 
 gulp.task('default', ['build-dev', 'watch']);
