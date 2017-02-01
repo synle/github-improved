@@ -1,6 +1,6 @@
 {
   "name": "Github Improved",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "manifest_version": 2,
   "description": "Advanced github tool",
   "homepage_url": "https://github.com/synle/github-improved",
@@ -9,10 +9,14 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
+  "chrome_url_overrides" : {
+    "newtab": "newtab.html"
+  },
   "permissions": [
     "*://*/*",
     "*://*.github.com/*",
-    "storage"
+    "storage",
+    "management"
   ],
   "background": {
     "scripts": ["dist/background.js"]
