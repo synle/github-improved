@@ -118,6 +118,18 @@ const dataUtil = {
   fetchUserProfile(){
     return restUtil.get(`https://api.github.com/user`);
   },
+  fetchFeeds(){
+    // https://developer.github.com/v3/activity/feeds/
+    return restUtil.get(`https://api.github.com/feeds`);
+  },
+  fetchNotifications(){
+    // https://developer.github.com/v3/activity/notifications/
+    return restUtil.get(`https://api.github.com/notifications`);
+  },
+  fetchEvents(){
+    // https://developer.github.com/v3/activity/events/
+    return restUtil.get(`https://api.github.com/events`);
+  },
   fetchContributorList(owner, repo){
     return owner && repo
       ? restUtil.get(`https://api.github.com/repos/${owner}/${repo}/stats/contributors`)

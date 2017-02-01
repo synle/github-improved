@@ -22,6 +22,9 @@ const DEFAULT_STATE = {
   }
 };
 
+// default sidebar width
+const DEFAULT_SIDE_BAR_WIDTH = '300px';
+
 // App Store reducer
 const UIStateReducer = (state = DEFAULT_STATE, {type, value}) => {
   switch(type){
@@ -74,6 +77,12 @@ const UIStateReducer = (state = DEFAULT_STATE, {type, value}) => {
             dataUtil.getPersistedProp('side-bar-width')
               .then(
                 (newSideBarWidth) => {
+                  if(!newSideBarWidth){
+                    //set default value for sidebar width
+                    newSideBarWidth = DEFAULT_SIDE_BAR_WIDTH;
+                    dataUtil.setPersistedProp('side-bar-width', newSideBarWidth);
+                  }
+
                   // set the width if needed
                   // if collapsed, use the min width of 70px,
                   // if expanded, use the one from persistent storage
