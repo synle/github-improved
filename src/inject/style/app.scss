@@ -8,22 +8,17 @@ $app-title-short: "GI";
 // expanded state...
 body{
   --side-bar-width: $width !important;
-  padding-left: var(--side-bar-width) !important;
+  padding-right: var(--side-bar-width) !important;
 
-
-  // override existing page style
-  // [data-pjax-container], #js-pjax-container, #js-repo-pjax-container{
-  //     > .container, > .new-repo-container {
-  //       margin-left: var(--side-bar-width) !important;
-  //       padding-left: $padding-offset !important;
-  //     }
-  // }
-  // .header , .site-footer-container{
-  //   margin-left: var(--side-bar-width) !important;
-  //   padding-left: $padding-offset !important;
-  // }
   .container, .container-lg{
-    width:900px !important;
+    &.container{
+      width:900px !important;
+    }
+
+    &.container-lg{
+      width:1000px !important;
+    }
+
     margin-left: $padding-offset !important;
     .container{
       margin-left:auto !important;
@@ -72,7 +67,7 @@ body{
   #side-bar-body{
     position: fixed;
     width: var(--side-bar-width);
-    left:0;
+    right:0;
     top:0;
     bottom:0;
     padding: $padding-offset / 2;
@@ -87,7 +82,7 @@ body{
 
     //toggle
     .side-bar-toggle::before {
-      content: "\25C0";
+      content: "\25B6";
     }
 
     & select{
@@ -250,7 +245,7 @@ body{
       border-right:5px solid #999;
       height: 100%;
       position: fixed;
-      left: var(--side-bar-width);
+      right: var(--side-bar-width);
       top: 0;
       z-index: $z-index;
       cursor: move;
@@ -260,9 +255,6 @@ body{
       }
     }
   }
-
-
-
 }
 
 //collapsed state
@@ -288,11 +280,10 @@ body.collapsed-side-bar{
     }
 
     .side-bar-toggle::before {
-      content: "\25B6";
+      content: "\25C0";
     }
   }
 }
-
 
 
 // improve the code diff page in pr

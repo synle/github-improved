@@ -107,8 +107,11 @@ chrome.extension.sendMessage({}, (response) => {
       }
 
       function getNewWidth(e){
+        // let newWidth = startWidth + (e.clientX - startX) * -1; // left sidebar
+        let newWidth = startWidth + (e.clientX - startX) * -1; // right sidebar
+
         // limit the max width to 500
-        let newWidth = Math.min((startWidth + e.clientX - startX), 500);
+        newWidth = Math.min(newWidth, 500);
 
         // limit the min width to 240
         newWidth = Math.max(240, newWidth);
