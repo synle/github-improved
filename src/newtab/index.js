@@ -17,6 +17,10 @@ dataUtil.getPersistedProp('api-token')
 
           notifications = notifications || [];
           var notificationSections = notifications
+            // filter out not important stuffs
+            .filter(
+              notification => notification.reason !== 'subscribed'
+            )
             .reduce(
               (result, notification) => {
                 // commit id (sha) or pull request number
@@ -27,6 +31,7 @@ dataUtil.getPersistedProp('api-token')
                 var repoUrl = notification.repository.html_url;
                 var type = notification.subject.type;
                 var url = '';
+                var reason = notification.reason;
 
                 switch(type){
                   case 'PullRequest':
@@ -45,7 +50,8 @@ dataUtil.getPersistedProp('api-token')
                   type: type,
                   repoName:  repoName,
                   repoUrl: repoUrl,
-                  url: url
+                  url: url,
+                  reason: reason
                 });
 
                 return result;
@@ -59,21 +65,59 @@ dataUtil.getPersistedProp('api-token')
 
             $('<div />')
               .append(`
-                <a href=${repoUrl}><h3>${repoName}</h3></a>
+                <h4><a href=${repoUrl}>${repoName}</a></h4>
               `)
               .appendTo(containerNotifications)
 
-            notifications.forEach(
+
+            var SORT_ORDER_NOTIFICATIONS = [
+              'review_requested',
+              'assign',
+              'mention',
+              'subscribed'
+            ];
+
+            var COLOR_CODE_NOTIFICATION_REASONS = {
+              review_requested: 'text-danger',
+              assign: 'text-danger',
+              mention: 'text-danger',
+              subscribed: 'text-muted'
+            }
+
+            notifications
+              //sort by importances
+              .sort(
+                function(a, b){
+                  var aReason = SORT_ORDER_NOTIFICATIONS.indexOf(a.reason);
+                  aReason = aReason === -1 ? SORT_ORDER_NOTIFICATIONS.length + 1
+                    : aReason;
+
+                  var bReason = SORT_ORDER_NOTIFICATIONS.indexOf(b.reason);
+                  bReason = bReason === -1 ? SORT_ORDER_NOTIFICATIONS.length + 1
+                    : bReason;
+
+                  if(aReason > bReason){
+                    return 1;
+                  } else if(aReason < bReason){
+                    return -1;
+                  }
+                  return 0;
+                }
+              )
+              .forEach(
               (notification) => {
-                $('<div />')
+                $('<ul />')
                   .appendTo(containerNotifications)
                   .append(`
-                    <div>
-                      <strong>
+                    <li>
+                      <span class="badge">
                         ${notification.type}
+                      </span>
+                      <strong class="${COLOR_CODE_NOTIFICATION_REASONS[notification.reason]}">
+                        ${notification.reason}
                       </strong>
                       <a href="${notification.url}">${notification.subject}</a>
-                    </div>
+                    </li>
                   `)
                   // .html(JSON.stringify(data, null, 2))
               }
