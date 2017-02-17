@@ -7,7 +7,7 @@
     "start": "gulp",
     "dev": "gulp build-dev",
     "package": "gulp build-prod",
-    "release": "open chrome",
+    "release": "pushd chrome && find . | grep -v json.bak | zip Archived.zip -@; open . && popd",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
