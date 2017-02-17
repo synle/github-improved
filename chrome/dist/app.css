@@ -1,9 +1,12 @@
 body {
   --side-bar-width: 300px !important;
-  padding-left: var(--side-bar-width) !important; }
+  padding-right: var(--side-bar-width) !important; }
   body .container, body .container-lg {
-    width: 900px !important;
     margin-left: 15px !important; }
+    body .container.container, body .container-lg.container {
+      width: 900px !important; }
+    body .container.container-lg, body .container-lg.container-lg {
+      width: 1000px !important; }
     body .container .container, body .container-lg .container {
       margin-left: auto !important; }
   body .discussion-sidebar {
@@ -29,7 +32,7 @@ body {
   body #side-bar-body {
     position: fixed;
     width: var(--side-bar-width);
-    left: 0;
+    right: 0;
     top: 0;
     bottom: 0;
     padding: 7.5px;
@@ -39,7 +42,7 @@ body {
     body #side-bar-body .side-bar-title-text::before {
       content: "Github Improved"; }
     body #side-bar-body .side-bar-toggle::before {
-      content: "\25C0"; }
+      content: "\25B6"; }
     body #side-bar-body select {
       height: 40px; }
     body #side-bar-body .margin-left0 {
@@ -133,7 +136,7 @@ body {
       border-right: 5px solid #999;
       height: 100%;
       position: fixed;
-      left: var(--side-bar-width);
+      right: var(--side-bar-width);
       top: 0;
       z-index: 99;
       cursor: move; }
@@ -153,7 +156,7 @@ body.collapsed-side-bar #side-bar-body {
     body.collapsed-side-bar #side-bar-body .side-bar-title-text::before {
       content: "GI"; }
   body.collapsed-side-bar #side-bar-body .side-bar-toggle::before {
-    content: "\25B6"; }
+    content: "\25C0"; }
 
 .inline-comment-form-container.js-inline-comment-form-container,
 .review-thread.comment-holder.js-line-comments,
