@@ -293,3 +293,18 @@ body.collapsed-side-bar{
   }
 }
 
+
+
+// improve the code diff page in pr
+.inline-comment-form-container.js-inline-comment-form-container,
+.review-thread.comment-holder.js-line-comments,
+.inline-comment-form {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width:100% !important;
+}
+
+.container.new-discussion-timeline.experiment-repo-nav{
+  min-width: 100% !important;
+  padding-right: 50px;
+}
