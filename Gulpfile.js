@@ -12,7 +12,7 @@ var simpleGulpBuilder = require('simple-gulp-builder');
 //paths
 var DEST_BASE = 'chrome';
 var DEST_DIST = DEST_BASE + '/dist';
-var VIEW_PAGE_CONFIG = [ ];
+var VIEW_PAGE_CONFIG = [ 'src/optionpage/optionpage.html' ];
 var STYLE_INJECTED_SRC = [ 'src/inject/style/app.scss' ];
 var STYLE_NEWTAB_SRC = [ 'src/newtab/index.scss' ];
 var JS_INJECTED_SRC  = [ 'src/inject/index.js' ];
